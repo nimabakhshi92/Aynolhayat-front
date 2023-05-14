@@ -1,0 +1,8 @@
+.button {
+    font-family: IRANSansWeb, serif;
+    background-color: var(--primary-color);
+    color: #FFF;
+}
+.button:hover {
+    opacity: 0.75;
+}

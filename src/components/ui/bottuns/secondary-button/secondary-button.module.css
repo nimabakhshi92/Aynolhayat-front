@@ -1,0 +1,11 @@
+.button{
+    font-family: IRANSansWeb, serif;
+    background-color: #FFF;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+.button:hover{
+    background-color: var(--primary-color);
+    color: #FFF;
+    opacity: 1;
+}
