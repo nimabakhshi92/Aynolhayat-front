@@ -1,5 +1,6 @@
 .button{
     font-family: IRANSansWeb, serif;
+    cursor: pointer;
     background-color: #FFF;
     border: 1px solid var(--primary-color);
     color: var(--primary-color);
