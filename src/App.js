@@ -1,8 +1,9 @@
+import Login from "./components";
 function App() {
   return (
-    <div>
-      <h1>Janat</h1>
-    </div>
+    <>
+      <Login />
+    </>
   );
 }
 
