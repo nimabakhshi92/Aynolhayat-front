@@ -1,13 +1,14 @@
-import classes from './login.module.css'
-import Frame from "./frame";
+import Frame from "../../ui/layouts/user-entrance/frame";
 import LoginForm from "./login-form";
+import UserEntrance from "../../ui/layouts/user-entrance";
 
 export default function Login() {
+
     return (
-        <div className={classes.container}>
+        <UserEntrance>
             <Frame>
                 <LoginForm />
             </Frame>
-        </div>
+        </UserEntrance>
     )
 }
