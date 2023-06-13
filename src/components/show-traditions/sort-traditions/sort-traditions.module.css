@@ -1,0 +1,11 @@
+.container {
+    padding: 1.6rem;
+    box-shadow: -3px 8px 16px -3px #00000026;
+    border-radius: 8px;
+}
+
+.sort_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
