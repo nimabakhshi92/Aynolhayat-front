@@ -17,7 +17,10 @@
     --neutral-color-100: #F1F2F6;
     --error-color: #FF0000;
 }
-
+html{
+    font-size: 62.5%;
+    font-family: IRANSansWeb, serif;
+}
 *, ::before, ::after {
     margin: 0;
     padding: 0;

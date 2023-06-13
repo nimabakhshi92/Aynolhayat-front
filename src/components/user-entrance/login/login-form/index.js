@@ -1,5 +1,5 @@
-import PrimaryButton from "../../../ui/bottuns/primary-button";
-import SecondaryButton from "../../../ui/bottuns/secondary-button";
+import PrimaryButton from "../../../ui/buttons/primary-button";
+import SecondaryButton from "../../../ui/buttons/secondary-button";
 import InputContainer from "../../input-container";
 import ForgetPassword from "../forget-password";
 import {useRef} from "react";

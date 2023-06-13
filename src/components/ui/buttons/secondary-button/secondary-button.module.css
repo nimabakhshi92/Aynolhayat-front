@@ -1,5 +1,5 @@
 .button{
-    font-family: IRANSansWeb, serif;
+    font-family: inherit;
     cursor: pointer;
     background-color: #FFF;
     border: 1px solid var(--primary-color);

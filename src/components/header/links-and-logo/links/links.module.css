@@ -1,0 +1,30 @@
+.link_container {
+    display: none;
+    font-size: 1.2rem;
+}
+
+.link_container span {
+    display: inline-block;
+}
+
+.font_color {
+    color: var(--neutral-color-600);
+}
+
+.link_container__in_modal{
+    display: flex;
+    flex-direction: column;
+}
+
+.link_container__in_modal span{
+    border-bottom: 1px solid #E8E8E8;
+    padding: 10px 0;
+}
+
+@media screen and (min-width: 1024px) {
+    .link_container{
+        display: flex;
+        gap: 3.2rem;
+        font-size: 1.4rem;
+    }
+}

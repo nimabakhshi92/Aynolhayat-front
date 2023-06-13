@@ -1,0 +1,21 @@
+.humber_btn_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 1.6rem;
+    height: 1.1rem;
+    margin-right: 1.5rem;
+}
+
+.humber_btn_container span {
+    display: block;
+    width: 1.6rem;
+    height: 0.147rem;
+    background-color: #FFFFFF;
+}
+@media screen and (min-width: 1024px) {
+    .humber_btn_container {
+        display: none;
+    }
+}

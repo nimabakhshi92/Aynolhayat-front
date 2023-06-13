@@ -1,7 +1,7 @@
 import EntranceForm from "../../entrance-form";
 import InputContainer from "../../input-container";
-import PrimaryButton from "../../../ui/bottuns/primary-button";
-import SecondaryButton from "../../../ui/bottuns/secondary-button";
+import PrimaryButton from "../../../ui/buttons/primary-button";
+import SecondaryButton from "../../../ui/buttons/secondary-button";
 import {useRef} from "react";
 
 export default function SingUpForm(){
