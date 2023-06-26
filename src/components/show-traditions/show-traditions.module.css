@@ -1,3 +1,9 @@
 .container{
     padding: 1.6rem;
 }
+
+.filter {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}

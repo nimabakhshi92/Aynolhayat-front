@@ -8,4 +8,50 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 0.8rem;
+}
+
+.tags_container {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 16px;
+    color: var(--neutral-color-600);
+    font-size: 1.2rem;
+}
+
+.delete {
+    border-right: 1px solid #E8E8E8;
+    padding-right: 0.8rem;
+}
+
+.sort_container p {
+    min-width: 25%;
+}
+
+@media screen and (min-width: 768px) {
+    .container {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.4rem;
+    }
+
+    .sort_container {
+        width: 35%;
+    }
+
+    .sort_container p {
+        min-width: 30%;
+    }
+
+    .tags_container {
+        margin: 0;
+        font-size: 1.4rem;
+    }
+
+    .delete {
+        padding: 1rem 0.8rem;
+    }
 }

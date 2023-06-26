@@ -1,0 +1,41 @@
+.container {
+    margin-top: 16px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: -3px 8px 16px -3px #00000026;
+    color: var(--neutral-color-600);
+}
+
+.header_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #F5F5F5;
+    font-size: 1.4rem;
+    padding: 0.9rem 1.6rem;
+}
+
+.content_container {
+    font-size: 1.2rem;
+}
+
+.content_container p {
+    padding: 1rem 1.6rem;
+}
+
+.shape {
+    width: 100%;
+    height: auto;
+    padding: 1.6rem;
+}
+.button_container {
+    display: flex;
+    justify-content: left;
+}
+.button_container button {
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 1rem 2.2rem;
+    border-radius: 4px;
+    margin: 0 1.6rem 1.6rem;
+}

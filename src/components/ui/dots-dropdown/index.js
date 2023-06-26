@@ -1,11 +1,12 @@
 import {useState} from "react";
 import {MdOutlineArrowForwardIos} from 'react-icons/md'
 
-import classes from "./dropdown.module.css"
+import classes from "./dots-dropdown.module.css"
+import {BsThreeDots} from "react-icons/bs";
 
-export default function Dropdown({items}) {
+export default function DotsDropdown({items}) {
     const [open, setOpen] = useState(false);
-    const [dropdownText, setDropdownText] = useState(items[0].title)
+    const [dropdownText, setDropdownText] = useState()
 
     const handleOpen = () => {
         setOpen(!open);
@@ -17,16 +18,14 @@ export default function Dropdown({items}) {
 
     return (
         <div onClick={handleOpen} className={classes.container}>
-            <div className={classes.dropdown_content}>
-                <div>{dropdownText}</div>
-                <MdOutlineArrowForwardIos className={classes.arrow}/>
-            </div>
+            <BsThreeDots className={classes.dots} />
             {open && (
                 <ul className={classes.menu}>
                     {
                         items.map( item =>
-                            <li key={item.id} onClick={(e) => onMenuClick(e)}>
+                            <li key={item.id}>
                                 {item.title}
+                                {item.icon}
                             </li>)
                     }
                 </ul>
