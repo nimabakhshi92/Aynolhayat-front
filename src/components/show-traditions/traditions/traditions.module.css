@@ -23,15 +23,34 @@
     padding: 1rem 1.6rem;
 }
 
-.shape {
+.content_container__title {
+    display: flex;
+    margin: 1rem 1.6rem;
+    gap: 0.8rem;
+}
+
+.shape_gold {
     width: 100%;
     height: auto;
     padding: 1.6rem;
 }
+
+.shape_green {
+    width: 100%;
+    height: auto;
+    padding: 0 1.6rem;
+}
+
 .button_container {
     display: flex;
     justify-content: left;
 }
+
+.button_container_border {
+    border-bottom: 1px solid #E8E8E8;
+
+}
+
 .button_container button {
     font-size: 1.2rem;
     font-weight: 500;
