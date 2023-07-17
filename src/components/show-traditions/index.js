@@ -17,13 +17,16 @@ export default function ShowTraditions() {
     return (
         <div className={classes.container}>
             <SortTraditions/>
+            <div className={classes.filter_modal}>
+                <FilterModal/>
+            </div>
             <Traditions/>
             <div onClick={onShowModalHandler} className={classes.filter}>
                 <Filter/>
             </div>
             {isModal &&
                 <Modal onCloseHandler={onShowModalHandler}>
-                    <FilterModal />
+                    <FilterModal/>
                 </Modal>}
         </div>
     )

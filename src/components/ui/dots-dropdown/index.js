@@ -18,7 +18,7 @@ export default function DotsDropdown({items}) {
 
     return (
         <div onClick={handleOpen} className={classes.container}>
-            <BsThreeDots className={classes.dots} />
+            <BsThreeDots className={classes.dots } />
             {open && (
                 <ul className={classes.menu}>
                     {

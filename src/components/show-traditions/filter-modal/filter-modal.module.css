@@ -11,17 +11,84 @@
 .alphabet {
     background-color: #FFFFFF;
     margin-top: 30px;
-    /*padding: 0 1.6rem;*/
+    overflow-y: scroll;
+    height: 400px;
+
 }
 
-.alphabet p {
+.alphabet_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 1.2rem;
     padding: 1rem 1.6rem;
     color: var(--neutral-color-600);
     border-bottom: 1px solid var(--neutral-color-200);
 }
 
+.alphabet_title {
+    font-size: 1.2rem;
+    padding: 1rem 1.6rem;
+    color: var(--neutral-color-600);
+    border-bottom: 1px solid var(--neutral-color-200);
+}
+
+.alphabet_open {
+    color: var(--primary-color) !important;
+    font-size: 1.5rem !important;
+    border: 0 !important;
+    background-color: #EEFFF8 !important;
+
+}
+
 .button_container button {
-    padding: 1rem 2.6rem;
+    width: 100%;
+    padding: 1rem;
     border-radius: 4px;
+}
+
+.subject_container__hidden {
+    display: none;
+}
+
+.subject_container__visible {
+    background-color: #EEFFF8;
+    padding: 1.5rem 0;
+}
+
+.subject {
+    color: var(--primary-color) !important;
+    margin-right: 2.6rem;
+    border-bottom: 0 !important;
+    padding: 0.5rem 1.6rem !important;
+    border-right: 1px solid var(--primary-color) !important;
+}
+
+.arrow {
+    font-size: 1.4rem;
+    transform: rotateZ(90deg);
+    color: var(--neutral-color-400);
+    margin: 0 1.6rem;
+}
+
+.arrow__up {
+    transform: rotateZ(-90deg);
+}
+
+@media screen and (min-width: 768px) {
+    .button_container {
+        padding: 3.2rem 2.4rem;
+    }
+
+    .alphabet_container, .alphabet_title {
+        font-size: 1.4rem !important;
+    }
+
+    .subject {
+        font-size: 1.2rem !important;
+    }
+
+    .alphabet {
+        height: 800px;
+    }
 }

@@ -7,7 +7,7 @@ import {BiPencil} from "react-icons/bi";
 import {FiPrinter} from "react-icons/fi";
 import {BsFiletypePdf} from "react-icons/bs"
 import noteIcon from "../../../assets/images/shapes/Icon-Note.svg"
-import shape_green from "../../../assets/images/shapes/shape-green.png"
+import shape_green from "../../../assets/images/shapes/shape-green.svg"
 import {Fragment} from "react";
 
 export default function Traditions() {
@@ -43,12 +43,39 @@ export default function Traditions() {
                     ]
                 }
             ]
+        },
+        {
+            "title": "پرانتز",
+            "sub_subjects": [
+                {
+                    "title": "ازمایشی",
+                    "content": [
+                        {
+                            "expression": "ا",
+                            "summary": "ت"
+                        },
+                        {
+                            "expression": "اب",
+                            "summary": "تب"
+                        },
+                    ]
+                },
+                {
+                    "title": "ازمایشی ذو",
+                    "content": [
+                        {
+                            "expression": "ا",
+                            "summary": "ت"
+                        },
+                    ]
+                }
+            ]
         }
     ]
     return (
         <div className={classes.container}>
             {a.map((i, index) => (
-                <Fragment key={index}>
+                <div className={classes.card_container} key={index}>
                     <div className={classes.header_container}>
                         <p>{i.title}</p>
                         <DotsDropdown items={dropdown}/>
@@ -75,7 +102,7 @@ export default function Traditions() {
                             </div>
                         </div>
                     ))}
-                </Fragment>
+                </div>
             ))}
         </div>
     )

@@ -1,9 +1,12 @@
 .container {
     margin-top: 16px;
+    color: var(--neutral-color-600);
+}
+.card_container {
+    margin-top: 20px;
+    box-shadow: -3px 8px 16px -3px #00000026;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: -3px 8px 16px -3px #00000026;
-    color: var(--neutral-color-600);
 }
 
 .header_container {

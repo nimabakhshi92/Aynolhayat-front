@@ -20,6 +20,9 @@
     transform: rotateZ(90deg);
 }
 
+.arrow_up {
+    transform: rotateZ(-90deg);
+}
 
 .menu {
     position: absolute;

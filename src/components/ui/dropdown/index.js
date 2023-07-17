@@ -19,7 +19,7 @@ export default function Dropdown({items}) {
         <div onClick={handleOpen} className={classes.container}>
             <div className={classes.dropdown_content}>
                 <div>{dropdownText}</div>
-                <MdOutlineArrowForwardIos className={classes.arrow}/>
+                <MdOutlineArrowForwardIos className={`${classes.arrow} ${open && classes.arrow_up}`}/>
             </div>
             {open && (
                 <ul className={classes.menu}>
