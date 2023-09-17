@@ -1,37 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
-    font-family: IRANSansWeb;
-    src: url("./assets/fonts/IRANSansWeb(FaNum).woff");
+  font-family: IRANSansWeb;
+  src: url("./assets/fonts/IRANSansWeb(FaNum).woff");
 }
 
 :root {
-    --primary-color: #0BAB64;
-    --secondary-brown-color: #D69F69;
-    --secondary-blue-color: #0085FF;
-    --secondary-whaite-color: #EEFFF8;
-    --neutral-color-700: #2F3542;
-    --neutral-color-600: #57606F;
-    --neutral-color-500: #747D8C;
-    --neutral-color-400: #A4B0BE;
-    --neutral-color-300: #CED6E0;
-    --neutral-color-200: #DFE4EA;
-    --neutral-color-100: #F1F2F6;
-    --error-color: #FF0000;
+  --primary-color: #0bab64;
+  --secondary-brown-color: #d69f69;
+  --secondary-blue-color: #0085ff;
+  --secondary-whaite-color: #eefff8;
+  --neutral-color-700: #2f3542;
+  --neutral-color-600: #57606f;
+  --neutral-color-500: #747d8c;
+  --neutral-color-400: #a4b0be;
+  --neutral-color-300: #ced6e0;
+  --neutral-color-200: #dfe4ea;
+  --neutral-color-100: #f1f2f6;
+  --error-color: #ff0000;
 }
-html{
-    font-size: 62.5%;
-    font-family: IRANSansWeb, serif;
+html {
+  font-size: 62.5%;
+  font-family: IRANSansWeb, serif;
 }
-*, ::before, ::after {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*,
+::before,
+::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 button {
-    border: none;
-    outline: none;
+  border: none;
+  outline: none;
 }
 
-a{
-    text-decoration: none;
+a {
+  text-decoration: none;
+}
+.Toastify__toast {
+  font-family: IRANSansWeb, serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.7rem;
+  letter-spacing: 0.04em;
 }

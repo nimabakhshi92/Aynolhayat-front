@@ -1,16 +1,17 @@
 .search_icon {
-    transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
 
 .profile_icon {
-    width: 2.4rem;
-    height: 2.4rem;
-    border-radius: 50%;
-    background-color: var(--secondary-blue-color);
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-    margin-right: 1.5rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background-color: var(--secondary-blue-color);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  margin-right: 1.5rem;
+  cursor: pointer;
 }

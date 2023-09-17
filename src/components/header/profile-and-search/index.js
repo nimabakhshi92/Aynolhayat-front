@@ -1,11 +1,16 @@
-import {FiSearch} from "react-icons/fi";
+import { FiSearch } from "react-icons/fi";
 
 import classes from "./profile-and-search.module.css";
-export default function ProfileAndSearch(){
-    return(
-        <div>
-            <FiSearch className={classes.search_icon} />
-            <div className={classes.profile_icon}>M</div>
-        </div>
-    )
+import { useDispatch } from "react-redux";
+import { logout } from "../../../features/user/userSlice";
+export default function ProfileAndSearch() {
+  const dispatch = useDispatch();
+  return (
+    <div>
+      <FiSearch className={classes.search_icon} />
+      <div className={classes.profile_icon} onClick={() => dispatch(logout())}>
+        M
+      </div>
+    </div>
+  );
 }

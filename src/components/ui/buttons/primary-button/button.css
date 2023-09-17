@@ -1,0 +1,21 @@
+.btn {
+  font-family: inherit;
+  cursor: pointer;
+}
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+.btn-primary:hover {
+  opacity: 0.75;
+}
+.btn-secondary {
+  background-color: #fff;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+}
+.btn-secondary:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+  opacity: 1;
+}

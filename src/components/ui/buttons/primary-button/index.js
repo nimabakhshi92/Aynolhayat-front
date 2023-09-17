@@ -1,5 +1,13 @@
-import classes from "./primary-button.module.css";
+import "./button.css";
 
-export default function PrimaryButton({children, onClickHandler}) {
-    return <button onClick={onClickHandler} className={classes.button}>{children}</button>
+export default function Button({ children, onClickHandler, variant, type }) {
+  return (
+    <button
+      type={type}
+      className={`btn btn-${variant}`}
+      onClick={onClickHandler}
+    >
+      {children}
+    </button>
+  );
 }

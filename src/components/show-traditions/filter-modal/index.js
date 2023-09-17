@@ -1,279 +1,44 @@
-import PrimaryButton from "../../ui/buttons/primary-button";
-import SecondaryButton from "../../ui/buttons/secondary-button";
+import { useDispatch, useSelector } from "react-redux";
+import { useGetSummaryTree } from "../../../api/hooks/allHooks";
+import { SummaryTree } from "../../NarrationSummaries/SummaryTree";
+import { SurahSummaryTree } from "../../NarrationSummaries/SurahSummaryTree";
+import Button from "../../ui/buttons/primary-button";
 
-import classes from "./filter-modal.module.css"
-import {Fragment, useState, useEffect} from "react";
-import {MdOutlineArrowForwardIos} from "react-icons/md";
+import classes from "./filter-modal.module.css";
+import { Fragment, useState, useEffect } from "react";
+import { MdOutlineArrowForwardIos } from "react-icons/md";
+import { setSection } from "../../../features/summaryTree/summaryTreeSlice";
 
-export default function FilterModal() {
-    const data = [
-        {
-            "alphabet": "ائمه اطهار علیهم السلام",
-            "subjects": [
-                {
-                    "title": "امیرالمومنین علیه السلام",
-                    "sub_subjects": [
-                        {
-                            "title": "حب علی بن ابی طالب علیه السلام",
-                            "content": [
-                                {
-                                    "expression": "خداوند حسنه ای را از کسی قبول نمی کند تا از حب امیرالمومنین از او سوال کند",
-                                    "summary": "وَ الَّذِي بَعَثَنِي بِالْحَقِّ لَا يَقْبَلُ اللَّهُ مِنْ عَبْدٍ حَسَنَةً حَتَّى يَسْأَلَهُ عَنْ حُبِ‏ عَلِيِ‏ بْنِ أَبِي طَالِبٍ ع‏."
-                                },
-                                {
-                                    "expression": "محب علی بن ابی طالب نمی میرد مگر اینکه حضرت را در بهترین جایگاهی ( منظور منزلت خودش نزد حضرت ) که دوست دارد ببیند ، می بیند و مبغض حضرت نمی میرد مگر اینکه حضرت را در منفورترین جایگاه ( منظور منزلت خودش نزد حضرت ) ببیند",
-                                    "summary": "لَا يَهْلِكُ هَالِكٌ عَلَى حُبِ‏ عَلِيِ‏ بْنِ أَبِي طَالِبٍ إِلَّا رَآهُ فِي أَحَبِّ الْمَوَاطِنِ إِلَيْهِ وَ لَا يَهْلِكُ هَالِكٌ عَلَى بُغْضِ عَلِيِّ بْنِ أَبِي طَالِبٍ إِلَّا رَآهُ فِي أَبْغَضِ الْمَوَاطِنِ إِلَيْهِ"
-                                },
-                                {
-                                    "expression": "اگر همگی مردم به (پذیرش) حب امیرالمومنین علیه السلام جمع می شدند ، خداوند آتش ( جهنم ) را نمی آفرید",
-                                    "summary": "إِنَّ النَّاسَ لَوِ اجْتَمَعُوا عَلَى حُبِ‏ عَلِيِ‏ بْنِ أَبِي طَالِبٍ علیه السلام لَمَا خَلَقَ اللَّهُ النَّارَ."
-                                },
-                                {
-                                    "expression": "برای هر چیزی جوازی است و جواز عبور از پل صراط حب حضرت امیرالمومنین علیه السلام است",
-                                    "summary": "لِكُلِّ شَيْ‏ءٍ جَوَازٌ وَ جَوَازُ الصِّرَاطِ حُبُ‏ عَلِيِ‏ بْنِ أَبِي طَالِبٍ علیه السلام ."
-                                },
-                                {
-                                    "expression": "حب امیرالمومنین علیه السلام گناهان را می خورد همانطور که آتش هیزم را می خورد",
-                                    "summary": "حُبُ‏ عَلِيِ‏ بْنِ أَبِي طَالِبٍ يَأْكُلُ الذُّنُوبَ كَمَا تَأْكُلُ النَّارُ الْحَطَبَ"
-                                },
-                                {
-                                    "expression": "حب امیرالمومنین علیه السلام مایه ی نجات از آتش است",
-                                    "summary": "حُبُ‏ عَلِيٍ‏ بَرَاءَةٌ مِنَ النَّارِ"
-                                },
-                                {
-                                    "expression": "حب علی بن ابی طالب علیه السلام حسنه ای است که با وجود آن سیئه ضرری نمی رساند و بغض ایشان سیئه ای است که با وجود آن حسنه ای نفعی نمی رساند",
-                                    "summary": "حُبُ‏ عَلِيِ‏ بْنِ أَبِي طَالِبٍ حَسَنَةٌ لَا تَضُرُّ مَعَهَا سَيِّئَةٌ وَ بُغْضُهُ سَيِّئَةٌ لَا تَنْفَعُ مَعَهَا حَسَنَةٌ"
-                                },
-                                {
-                                    "expression": "حضرت پیامبر صلی الله علیه و آله فرمودند : همان امیدی که در ( پذیرش ) سخن لا اله الاالله در باره امتم دارم ، همان امید را در ( پذیرش ) حب امیرالمومنین علیه السلام دارم",
-                                    "summary": "إِنِّي لَأَرْجُو لِأُمَّتِي فِي حُبِ‏ عَلِيٍ‏ كَمَا أَرْجُو فِي قَوْلِ لَا إِلَهَ إِلَّا اللَّهُ‏"
-                                },
-                                {
-                                    "expression": "لحظه مرگ به اندازه دانه خردلی حب امیرالمومنین علیه السلام در قلب کسی باشد ، خداوند او را وارد بهشت می کند",
-                                    "summary": "مَا مِنْ عَبْدٍ وَ لَا أَمَةٍ  يَمُوتُ وَ فِي قَلْبِهِ مِثْقَالُ حَبَّةِ خَرْدَلٍ‏ مِنْ حُبِ‏ عَلِيِ‏ بْنِ أَبِي طَالِبٍ ع إِلَّا أَدْخَلَهُ اللَّهُ عَزَّ وَ جَلَّ الْجَنَّةَ."
-                                },
-                                {
-                                    "expression": "مُهری که به نامه ی عمل مومن می زنند ،حب امیرالمومنین است",
-                                    "summary": "عُنْوَانُ صَحِيفَةِ الْمُؤْمِنِ حُبُ‏ عَلِيِ‏ بْنِ أَبِي طَالِبٍ ع‏."
-                                }
-                            ]
-                        },
-                        {
-                            "title": "ولایت علی بن ابیطالب علیه السلام",
-                            "content": [
-                                {
-                                    "expression": "ولایت علی بن ابی طالب (علیه السلام) دژ محکم خداوند است که هر کس به ان وارد شود از عذاب خداوند ایمن می شود",
-                                    "summary": "وَلَايَةُ عَلِيِّ بْنِ أَبِي طَالِبٍ حِصْنِي فَمَنْ دَخَلَ حِصْنِي أَمِنَ مِنْ عَذَابِي‏."
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "alphabet": "الف",
-            "subjects": [
-                {
-                    "title": "ائمه اطهار (علیهم السلام)",
-                    "sub_subjects": [
-                        {
-                            "title": "امام حسن (علیه السلام) ،  از موعظه های حضرت (علیه السلام)",
-                            "content": [
-                                {
-                                    "expression": "امام حسن (علیه السلام) فرمودند: ای فرزند آدم ، تو از وقتی که از مادر متولد شدی پیوسته در نابود کردن عمر خویش هستی ،پس از آن چه در اختیارت هست برای آینده ات (سرای آخرت)  ذخیره کن. پس همانا مؤمن ، توشه بر می دارد و همانا کافر، از دنیا بهره می برد. و گاهی با صدای بلند این پند را می دادند : « برای خود توشه برگیرید که همانا ، بهترین توشه ، پرهیزگاری است.",
-                                    "summary": "یا ابْنَ آدَمَ إِنَّكَ لَمْ تَزَلْ فِي هَدْمِ عُمُرِكَ مُنْذُ سَقَطْتَ مِنْ بَطْنِ أُمِّكَ فَخُذْ مِمَّا فِي يَدَيْكَ لِمَا بَيْنَ يَدَيْكَ فَإِنَّ الْمُؤْمِنَ يَتَزَوَّدُ وَ إِنَّ الْكَافِرَ يَتَمَتَّعُ وَ كَانَ يُنَادِي مَعَ هَذِهِ الْمَوْعِظَةِ-$ وَ تَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوى$ 197بقره"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "title": "اجابت",
-                    "sub_subjects": [
-                        {
-                            "title": "اجابت دعا در نماز شب",
-                            "content": [
-                                {
-                                    "expression": "وقت نماز شب دعا اجابت می شود",
-                                    "summary": "هُوَ وَقْتُ الْإِجَابَةِ"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "title": "اجل",
-                    "sub_subjects": [
-                        {
-                            "title": "اجل مسمی در 60 انعام",
-                            "content": [
-                                {
-                                    "expression": "اجل مسمی در این حدیث ، همان مرگ است",
-                                    "summary": "لِيُقْضى‏ أَجَلٌ مُسَمًّى‏ قال: «هو الموت"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "title": "اخلاص",
-                    "sub_subjects": [
-                        {
-                            "title": "خالص بودن چگونه است",
-                            "content": [
-                                {
-                                    "expression": "تفسیر اخلاص چیست ؟",
-                                    "summary": "- الْمُخْلِصُ الَّذِي لَا يَسْأَلُ النَّاسَ شَيْئاً حَتَّى يَجِدَ وَ إِذَا وَجَدَ رَضِيَ وَ إِذَا بَقِيَ عِنْدَهُ شَيْ‏ءٌ أَعْطَاهُ اللَّهُ فَإِنْ لَمْ يَسْأَلِ الْمَخْلُوقَ فَقَدْ أَقَرَّ لِلَّهِ بِالْعُبُودِيَّةِ وَ إِذَا وَجَدَ أَقْرَضَ فَهُوَ عَنِ اللَّهِ رَاضٍ وَ اللَّهُ تَبَارَكَ وَ تَعَالَى عَنْهُ رَاضٍ وَ إِذَا أَعْطَاهُ اللَّهُ فَهُوَ جَدِيرٌ"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "title": "اقوام",
-                    "sub_subjects": [
-                        {
-                            "title": "قوم حضرت موسی علیه السلام ( بنی اسرائیل)",
-                            "content": [
-                                {
-                                    "expression": "«اِسرا» به معنی «عبد» ، و «ئیل» به معنی «الله» است و «بنی اسرائیل» به معنی بنده خداست و نام حضرت یعقوب علیه السلام است.",
-                                    "summary": "و يعقوب هو إسرائيل، و معنى إسرائيل عبد الله، لأن (إسرا) هو عبد، و (ئيل) هو الله عز و جل»."
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "alphabet": "ب",
-            "subjects": [
-                {
-                    "title": "باب",
-                    "sub_subjects": [
-                        {
-                            "title": "منظور از باب های خدا چیست ؟",
-                            "content": [
-                                {
-                                    "expression": "ما (ائمه اطهار (علیهم السلام)) باب های خداییم",
-                                    "summary": "نَحْنُ أَبْوَابُ اللَّهِ"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "title": "بعث",
-                    "sub_subjects": [
-                        {
-                            "title": "برانگیختن ( مبعوث کردن ) خداوند",
-                            "content": [
-                                {
-                                    "expression": "همه ی خلایق را که خدا آفریده ، مبعوث می کند و خلق کردن و مبعوث نمودن همه ی خلایق برای خداوند مثل خلق و مبعوث کردن یک نفر است",
-                                    "summary": "خَلْقُ جَمِيعِ الْخَلْقِ وَ بَعْثُهُمْ عَلَى اللَّهِ عَزَّ وَ جَلَّ كَخَلْقِ نَفْسٍ وَاحِدَةٍ وَ بَعْثِهَا قَالَ اللَّهُ تَعَالَى‏ $ ما خَلْقُكُمْ وَ لا بَعْثُكُمْ إِلَّا كَنَفْسٍ واحِدَةٍ$ 28 لقمان"
-                                }
-                            ]
-                        },
-                        {
-                            "title": "وَ يَعْلَمُ ما جَرَحْتُمْ بِالنَّهارِ يعني ما علمتم بالنهار",
-                            "content": [
-                                {
-                                    "expression": "بعث در این ایه با توجه به این حدیث ، انجام دادن خیر و شر است",
-                                    "summary": "$ ثُمَّ يَبْعَثُكُمْ فِيهِ‏ $ يعني ما عملتم من الخير و الشر"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "title": "بنی اسرائیل",
-                    "sub_subjects": [
-                        {
-                            "title": "بنی اسرائیل در ایه 122 بقره",
-                            "content": [
-                                {
-                                    "expression": "«اِسرا» به معنی «عبد» ، و «ئیل» به معنی «الله» است و «بنی اسرائیل» به معنی بنده خداست و نام حضرت یعقوب علیه السلام است.",
-                                    "summary": "و يعقوب هو إسرائيل، و معنى إسرائيل عبد الله، لأن (إسرا) هو عبد، و (ئيل) هو الله عز و جل»."
-                                },
-                                {
-                                    "expression": "منظور از بنی اسرائیل در ایه 122 بقره ، ائمه اطهار علیهم السلام هستند",
-                                    "summary": "سَأَلْتُ أَبَا عَبْدِ اللَّهِ ع عَنْ قَوْلِ اللَّهِ‏ يا بَنِي إِسْرائِيلَ‏ قَالَ هُمْ‏ نَحْنُ‏ خَاصَّةً."
-                                },
-                                {
-                                    "expression": "منظور از بنی اسرائیل در ایه 122 بقره ، خاندان حضرت پیامبر  علیهم السلام هستند",
-                                    "summary": "سَأَلْتُهُ عَنْ قَوْلِهِ‏ يا بَنِي إِسْرائِيلَ‏ قَالَ هِيَ خَاصَّةٌ بِآلِ مُحَمَّد"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "alphabet": "پ",
-            "subjects": [
-                {
-                    "title": "پرانتز",
-                    "sub_subjects": [
-                        {
-                            "title": "ازمایشی",
-                            "content": [
-                                {
-                                    "expression": "ا",
-                                    "summary": "ت"
-                                },
-                                {
-                                    "expression": "پ ا",
-                                    "summary": "انت"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-    ]
-
-    const [subjectVisibility, setSubjectVisibility] = useState([]);
-
-    function toggleVisibility(index) {
-        setSubjectVisibility(prevVisibility => {
-            const updatedVisibility = [...prevVisibility];
-            updatedVisibility[index] = !updatedVisibility[index];
-            return updatedVisibility;
-        });
-    }
-
-
-    return (
-        <>
-            <div className={classes.button_container}>
-                <PrimaryButton>روایات</PrimaryButton>
-                <SecondaryButton>آیات</SecondaryButton>
-                <SecondaryButton>سوره ها</SecondaryButton>
-            </div>
-            <div className={classes.alphabet}>
-                <p className={classes.alphabet_title}>فهرست مطالب</p>
-                {data.map((item, index) => (
-                    <Fragment key={index}>
-                        <div
-                            className={`${classes.alphabet_container} ${!subjectVisibility[index] ? '' : classes.alphabet_open}`}
-                            onClick={() => toggleVisibility(index)}>
-                            <p>{item.alphabet}</p>
-                            <MdOutlineArrowForwardIos
-                                className={`${classes.arrow} ${!subjectVisibility[index] ? '' : classes.arrow__up}`}/>
-                        </div>
-                        <div
-                            className={`${!subjectVisibility[index] ? classes.subject_container__hidden : classes.subject_container__visible}`}
-                        >
-                            {item.subjects.map((sub, subIndex) => (
-                                <p key={subIndex} className={classes.subject}>{sub.title}</p>
-                            ))}
-                        </div>
-                    </Fragment>
-                ))}
-            </div>
-        </>
-    )
+export default function FilterModal({ className, data }) {
+  const { section, selectedNode } = useSelector((store) => store.summaryTree);
+  const dispatch = useDispatch();
+  return (
+    <section className={className}>
+      <div className={classes.button_container}>
+        <Button
+          onClickHandler={() => dispatch(setSection("narration"))}
+          variant={section === "narration" ? "primary" : "secondary"}
+        >
+          روایات
+        </Button>
+        <Button
+          onClickHandler={() => dispatch(setSection("verse"))}
+          variant={section === "verse" ? "primary" : "secondary"}
+        >
+          آیات
+        </Button>
+        <Button
+          onClickHandler={() => dispatch(setSection("surah"))}
+          variant={section === "surah" ? "primary" : "secondary"}
+        >
+          سوره ها
+        </Button>
+      </div>
+      {section === "surah" ? (
+        <SurahSummaryTree data={data || []} />
+      ) : (
+        <SummaryTree data={data || []} />
+      )}
+    </section>
+  );
 }

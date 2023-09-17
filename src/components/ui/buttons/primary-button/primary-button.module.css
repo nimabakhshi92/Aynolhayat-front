@@ -1,9 +1,0 @@
-.button {
-    cursor: pointer;
-    font-family: inherit;
-    background-color: var(--primary-color);
-    color: #FFF;
-}
-.button:hover {
-    opacity: 0.75;
-}
