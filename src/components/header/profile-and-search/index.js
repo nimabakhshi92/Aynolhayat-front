@@ -7,10 +7,13 @@ export default function ProfileAndSearch() {
   const dispatch = useDispatch();
   return (
     <div>
-      <FiSearch className={classes.search_icon} />
-      <div className={classes.profile_icon} onClick={() => dispatch(logout())}>
+      {/* <FiSearch className={classes.search_icon} /> */}
+      {/* <div className={classes.profile_icon} onClick={() => dispatch(logout())}>
         M
-      </div>
+      </div> */}
+      <p className="cursor-pointer" onClick={() => dispatch(logout())}>
+        خروج
+      </p>
     </div>
   );
 }

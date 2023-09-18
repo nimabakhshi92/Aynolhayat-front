@@ -17,12 +17,15 @@ export default function ShowTraditions() {
     setIsModal((prevState) => !prevState);
   }
   function filterData(data) {
-    const filteredData = (data || []).filter((item) => {
-      if (section === "surah") return item.surah_no === selectedNode;
-      if (section !== "surah") return item.alphabet === selectedNode;
+    data = data || [];
+    const subSection = section !== "surah" ? "subjects" : "verses";
+    if (!selectedNode[section])
+      return data.length > 0 ? data[0][subSection] : [];
+    const filteredData = data.filter((item) => {
+      if (section === "surah") return item.surah_no === selectedNode[section];
+      if (section !== "surah") return item.alphabet === selectedNode[section];
     });
-    if (filteredData?.length > 0)
-      return filteredData[0][section !== "surah" ? "subjects" : "verses"];
+    if (filteredData?.length > 0) return filteredData[0][subSection];
     return [];
   }
   const { data, isLoading } = useGetSummaryTree(section);
@@ -30,7 +33,7 @@ export default function ShowTraditions() {
     <div className="p-4 grid gap-6 grid-cols-[3fr_7fr]">
       <FilterModal data={data} className="hidden lg:block" />
       {/* <SortTraditions /> */}
-      <Traditions data={filterData(data)} className="" />
+      <Traditions section={section} data={filterData(data)} className="" />
       {/* <div onClick={onShowModalHandler} className={classes.filter}>
         <Filter />
       </div> */}

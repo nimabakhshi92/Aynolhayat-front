@@ -5,14 +5,16 @@ import {
   removeUserFromLocalStorage,
 } from "../../utils/localStorage";
 import { toast } from "react-toastify";
-import { loginUserThunk } from "./userThunk";
+import { loginUserThunk, refreshTokenThunk } from "./userThunk";
 import i18next from "i18next";
 
 const initialState = {
   user: getUserFromLocalStorage(),
   isLoading: false,
+  refreshIsLoading: false,
 };
 export const loginUser = createAsyncThunk("user/login", loginUserThunk);
+export const refreshToken = createAsyncThunk("user/refresh", refreshTokenThunk);
 
 const userSlice = createSlice({
   name: "user",
@@ -37,6 +39,18 @@ const userSlice = createSlice({
       .addCase(loginUser.rejected, (state, { payload }) => {
         state.isLoading = false;
         toast.error(payload);
+      })
+      .addCase(refreshToken.pending, (state) => {
+        state.refreshIsLoading = true;
+      })
+      .addCase(refreshToken.fulfilled, (state, { payload }) => {
+        state.refreshIsLoading = false;
+        state.user.refresh = payload.refresh;
+        state.user.access = payload.access;
+        addUserToLocalStorage(payload);
+      })
+      .addCase(refreshToken.rejected, (state, { payload }) => {
+        state.refreshIsLoading = false;
       });
   },
 });

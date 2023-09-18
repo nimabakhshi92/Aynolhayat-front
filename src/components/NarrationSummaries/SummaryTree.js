@@ -4,7 +4,7 @@ import { MdOutlineArrowForwardIos } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { setSelectedNode } from "../../features/summaryTree/summaryTreeSlice";
 
-export const SummaryTree = ({ data }) => {
+export const SummaryTree = ({ data, section, selectedNode }) => {
   const [subjectVisibility, setSubjectVisibility] = useState([]);
   const dispatch = useDispatch();
 
@@ -14,7 +14,9 @@ export const SummaryTree = ({ data }) => {
       updatedVisibility[index] = !updatedVisibility[index];
       return updatedVisibility;
     });
-    dispatch(setSelectedNode({ node: alphabet }));
+    dispatch(
+      setSelectedNode({ node: { ...selectedNode, [section]: alphabet } })
+    );
   }
 
   return (
@@ -24,20 +26,22 @@ export const SummaryTree = ({ data }) => {
         <Fragment key={index}>
           <div
             className={`${classes.alphabet_container} ${
-              !subjectVisibility[index] ? "" : classes.alphabet_open
+              selectedNode[section] !== item.alphabet
+                ? ""
+                : classes.alphabet_open
             }`}
             onClick={() => toggleVisibility(index, item.alphabet)}
           >
             <p>{item.alphabet}</p>
             <MdOutlineArrowForwardIos
               className={`${classes.arrow} ${
-                !subjectVisibility[index] ? "" : classes.arrow__up
+                selectedNode[section] !== item.alphabet ? "" : classes.arrow__up
               }`}
             />
           </div>
           <div
             className={`${
-              !subjectVisibility[index]
+              selectedNode[section] !== item.alphabet
                 ? classes.subject_container__hidden
                 : classes.subject_container__visible
             }`}

@@ -7,7 +7,10 @@ import Button from "../../ui/buttons/primary-button";
 import classes from "./filter-modal.module.css";
 import { Fragment, useState, useEffect } from "react";
 import { MdOutlineArrowForwardIos } from "react-icons/md";
-import { setSection } from "../../../features/summaryTree/summaryTreeSlice";
+import {
+  setSection,
+  setSelectedNode,
+} from "../../../features/summaryTree/summaryTreeSlice";
 
 export default function FilterModal({ className, data }) {
   const { section, selectedNode } = useSelector((store) => store.summaryTree);
@@ -16,28 +19,38 @@ export default function FilterModal({ className, data }) {
     <section className={className}>
       <div className={classes.button_container}>
         <Button
-          onClickHandler={() => dispatch(setSection("narration"))}
+          onClickHandler={() => {
+            dispatch(setSection({ section: "narration" }));
+          }}
           variant={section === "narration" ? "primary" : "secondary"}
         >
           روایات
         </Button>
         <Button
-          onClickHandler={() => dispatch(setSection("verse"))}
+          onClickHandler={() => dispatch(setSection({ section: "verse" }))}
           variant={section === "verse" ? "primary" : "secondary"}
         >
           آیات
         </Button>
         <Button
-          onClickHandler={() => dispatch(setSection("surah"))}
+          onClickHandler={() => dispatch(setSection({ section: "surah" }))}
           variant={section === "surah" ? "primary" : "secondary"}
         >
           سوره ها
         </Button>
       </div>
       {section === "surah" ? (
-        <SurahSummaryTree data={data || []} />
+        <SurahSummaryTree
+          section={section}
+          selectedNode={selectedNode}
+          data={data || []}
+        />
       ) : (
-        <SummaryTree data={data || []} />
+        <SummaryTree
+          selectedNode={selectedNode}
+          section={section}
+          data={data || []}
+        />
       )}
     </section>
   );

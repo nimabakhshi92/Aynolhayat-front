@@ -23,6 +23,10 @@
   padding: 1rem 1.6rem;
   color: var(--neutral-color-600);
   border-bottom: 1px solid var(--neutral-color-200);
+  cursor: pointer;
+}
+.alphabet_container:hover {
+  background-color: #eefff850 !important;
 }
 
 .alphabet_title {

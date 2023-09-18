@@ -11,7 +11,7 @@ import shape_green from "../../../assets/images/shapes/shape-green.svg";
 import { Fragment } from "react";
 import { useSelector } from "react-redux";
 
-export default function Traditions({ data }) {
+export default function Traditions({ data, section }) {
   const dropdown = [
     { id: 1, title: "پربازدیدترین", icon: <BiPencil /> },
     { id: 2, title: "پرتکرارترین", icon: <FiPrinter /> },
@@ -22,7 +22,13 @@ export default function Traditions({ data }) {
       {data?.map((i, index) => (
         <div className={classes.card_container} key={index}>
           <div className={classes.header_container}>
-            <p>{i.title}</p>
+            {section === "surah" ? (
+              <p>
+                {i.verse_no}- {i.verse_content}
+              </p>
+            ) : (
+              <p>{i.title}</p>
+            )}
             <DotsDropdown items={dropdown} />
           </div>
           {i.sub_subjects.map((subItem, subIndex) => (

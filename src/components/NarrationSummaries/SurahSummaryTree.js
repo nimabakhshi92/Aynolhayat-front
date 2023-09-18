@@ -4,7 +4,7 @@ import { MdOutlineArrowForwardIos } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedNode } from "../../features/summaryTree/summaryTreeSlice";
 
-export const SurahSummaryTree = ({ data }) => {
+export const SurahSummaryTree = ({ data, section, selectedNode }) => {
   const [subjectVisibility, setSubjectVisibility] = useState([]);
   const dispatch = useDispatch();
 
@@ -14,7 +14,9 @@ export const SurahSummaryTree = ({ data }) => {
       updatedVisibility[index] = !updatedVisibility[index];
       return updatedVisibility;
     });
-    dispatch(setSelectedNode({ node: surahNo }));
+    dispatch(
+      setSelectedNode({ node: { ...selectedNode, [section]: surahNo } })
+    );
   }
 
   return (
@@ -24,7 +26,9 @@ export const SurahSummaryTree = ({ data }) => {
         <Fragment key={index}>
           <div
             className={`${classes.alphabet_container} ${
-              !subjectVisibility[index] ? "" : classes.alphabet_open
+              selectedNode[section] !== item.surah_no
+                ? ""
+                : classes.alphabet_open
             }`}
             onClick={() => toggleVisibility(index, item.surah_no)}
           >
@@ -33,13 +37,13 @@ export const SurahSummaryTree = ({ data }) => {
             </p>
             <MdOutlineArrowForwardIos
               className={`${classes.arrow} ${
-                !subjectVisibility[index] ? "" : classes.arrow__up
+                selectedNode[section] !== item.surah_no ? "" : classes.arrow__up
               }`}
             />
           </div>
           <div
             className={`${
-              !subjectVisibility[index]
+              selectedNode[section] !== item.surah_no
                 ? classes.subject_container__hidden
                 : classes.subject_container__visible
             }`}

@@ -2,7 +2,11 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
   section: "narration",
-  selectedNode: "",
+  selectedNode: {
+    narration: "",
+    verse: "",
+    surah: "",
+  },
 };
 
 const summaryTreeSlice = createSlice({
