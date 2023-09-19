@@ -1,5 +1,19 @@
-.input{
-    font-family: inherit;
-    display: block;
-    text-align: right;
+.input {
+  font-family: inherit;
+  display: block;
+  text-align: right;
+  height: 4rem;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  background-color: white;
+}
+
+.input:focus {
+  outline: none;
+  border: 1px solid var(--primary-color);
+}
+
+.input::placeholder {
+  color: var(--neutral-color-400);
 }

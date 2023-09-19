@@ -10,7 +10,7 @@ import { store } from "./store";
 import { ProtectedRoute } from "./pages/ProtectedRoute";
 import { SharedLayout } from "./pages/SharedLayout";
 import { QueryClient, QueryClientProvider } from "react-query";
-
+import { NarrationSave } from "./pages/NarrationSave";
 import "react-toastify/dist/ReactToastify.css";
 
 const queryClient = new QueryClient({
@@ -41,7 +41,10 @@ function App() {
               }
             >
               <Route index element={<NarrationSummaries />}></Route>
-              {/* <Route path="contact" element={<Page1></Page1>}></Route> */}
+              <Route
+                path="save narration"
+                element={<NarrationSave></NarrationSave>}
+              ></Route>
             </Route>
           </Routes>
         </BrowserRouter>
