@@ -38,3 +38,23 @@ export const useGetSummaryTree = (section) => {
   const url = apiUrls.narrationSummaries.list(section);
   return use2GeneralGetHook(["summaryTree", section], url);
 };
+export const useGetImam = () => {
+  const url = apiUrls.Imam.list;
+  return use2GeneralGetHook("Imam", url);
+};
+export const useGetBooks = () => {
+  const url = apiUrls.book.list;
+  return use2GeneralGetHook("book", url);
+};
+export const useGetSubjects = () => {
+  const url = apiUrls.subject.list;
+  return use2GeneralGetHook("subject", url);
+};
+export const useGetSurah = () => {
+  const url = apiUrls.quran.surah;
+  return use2GeneralGetHook("surah", url);
+};
+export const useGetVerse = (surahNo, verseNo) => {
+  const url = apiUrls.quran.verse(surahNo, verseNo);
+  return use2GeneralGetHook(["verse", surahNo, verseNo], url);
+};

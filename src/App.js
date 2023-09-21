@@ -13,6 +13,9 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { NarrationSave } from "./pages/NarrationSave";
 import "react-toastify/dist/ReactToastify.css";
 
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -25,10 +28,20 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  function ScrollToTop() {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, [pathname]);
+
+    return null;
+  }
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             <Route path="login" element={<Login />}></Route>
             <Route path="signup" element={<SingUp />}></Route>

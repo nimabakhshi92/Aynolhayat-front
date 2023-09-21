@@ -1,7 +1,9 @@
 import { NavLink } from "react-router-dom";
 import classes from "./links.module.css";
+import { useSelector } from "react-redux";
 
 export default function Links({ onModal }) {
+  const { user } = useSelector((store) => store.user);
   return (
     <div
       className={`${
@@ -18,15 +20,17 @@ export default function Links({ onModal }) {
       >
         خلاصه احادیث
       </NavLink>
-      <NavLink
-        className={({ isActive }) =>
-          `hover:border-b border-solid ${isActive && "border-b border-solid"}`
-        }
-        to={"save narration"}
-        tabIndex={-1}
-      >
-        ذخیره حدیث
-      </NavLink>
+      {user?.id === 1 && (
+        <NavLink
+          className={({ isActive }) =>
+            `hover:border-b border-solid ${isActive && "border-b border-solid"}`
+          }
+          to={"save narration"}
+          tabIndex={-1}
+        >
+          ذخیره حدیث
+        </NavLink>
+      )}
 
       {/* <NavLink to={"/"} tabIndex={-1}>
         ذخیره کتاب

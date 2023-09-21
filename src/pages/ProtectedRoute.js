@@ -11,12 +11,12 @@ export const ProtectedRoute = ({ children }) => {
   const newToken = () => {
     if (!user) return;
     const expiresTime = new Date(user.expires_aat);
-    if (expiresTime > new Date(new Date().getTime() - 1 * 60000)) return;
+    if (expiresTime > new Date(new Date().getTime() - 10 * 60000)) return;
     dispatch(refreshToken(user));
   };
 
   useEffect(() => {
-    const getNewAccessToken = setInterval(newToken, 5000);
+    const getNewAccessToken = setInterval(newToken, 25000);
     return () => clearInterval(getNewAccessToken);
   }, []);
 

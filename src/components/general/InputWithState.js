@@ -1,29 +1,33 @@
-import classes from "./input.module.css";
+import classes from "../ui/input/input.module.css";
 
-export default function Input({
+export const InputWithState = ({
   style,
   type,
   placeholder,
-  reference,
+  value,
+  setValue,
   className,
   onClick,
   onBlur,
   onChange,
   onKeyDown,
   disabled,
-}) {
+}) => {
   return (
     <input
       style={style}
-      ref={reference}
+      value={value}
       className={`${classes.input} ${className}`}
       type={type}
       placeholder={placeholder}
       onClick={onClick}
-      onChange={onChange}
+      onChange={(e) => {
+        setValue(e.target.value);
+        if (onChange) onChange();
+      }}
       onBlur={onBlur}
       onKeyDown={onKeyDown}
       disabled={disabled}
     />
   );
-}
+};

@@ -1,36 +1,49 @@
-import {useState} from "react";
-import {MdOutlineArrowForwardIos} from 'react-icons/md'
+import { useState } from "react";
+import { MdOutlineArrowForwardIos } from "react-icons/md";
 
-import classes from "./dropdown.module.css"
+import classes from "./dropdown.module.css";
 
-export default function Dropdown({items}) {
-    const [open, setOpen] = useState(false);
-    const [dropdownText, setDropdownText] = useState(items[0].title)
+export default function Dropdown({
+  className,
+  items,
+  selected,
+  setSelected,
+  dataKey,
+  placeholder,
+}) {
+  const displayValue = !selected
+    ? placeholder
+    : dataKey
+    ? selected[dataKey]
+    : selected;
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    setOpen(!open);
+  };
 
-    const handleOpen = () => {
-        setOpen(!open);
-    }
+  const onMenuClick = (item) => {
+    setSelected(item);
+  };
 
-    const onMenuClick = (e) => {
-        setDropdownText(e.target.textContent)
-    }
-
-    return (
-        <div onClick={handleOpen} className={classes.container}>
-            <div className={classes.dropdown_content}>
-                <div>{dropdownText}</div>
-                <MdOutlineArrowForwardIos className={`${classes.arrow} ${open && classes.arrow_up}`}/>
-            </div>
-            {open && (
-                <ul className={classes.menu}>
-                    {
-                        items.map( item =>
-                            <li key={item.id} onClick={(e) => onMenuClick(e)}>
-                                {item.title}
-                            </li>)
-                    }
-                </ul>
-            )}
+  return (
+    <div onClick={handleOpen} className={`${classes.container} ${className}`}>
+      <div className={classes.dropdown_content}>
+        <div style={{ color: !selected ? "" : "var(--neutral-color-700)" }}>
+          {displayValue}
         </div>
-    )
+        <MdOutlineArrowForwardIos
+          className={`${classes.arrow} ${open && classes.arrow_up}`}
+        />
+      </div>
+      {open && (
+        <ul className={classes.menu}>
+          {items?.map((item, index) => (
+            <li key={index} onClick={(e) => onMenuClick(item)}>
+              {dataKey ? item[dataKey] : item}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 }
