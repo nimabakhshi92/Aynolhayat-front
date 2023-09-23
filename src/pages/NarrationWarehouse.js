@@ -12,20 +12,80 @@ import { InputWithState } from "../components/general/InputWithState";
 import InputWithSuggestion from "../components/general/InputWithSuggestion";
 import { useQueryClient } from "react-query";
 import { CircularProgress } from "@mui/material";
-const SingleNarration = ({ narration }) => {
+import { AiFillDelete, AiFillEdit, AiOutlineClose } from "react-icons/ai";
+import apiUrls from "../api/urls";
+import { useNavigate } from "react-router-dom";
+import { customApiCall } from "../utils/axios";
+import Button from "../components/ui/buttons/primary-button";
+import { BiCloset } from "react-icons/bi";
+import { useSelector } from "react-redux";
+const SingleNarration = ({ narration, onDelete, onEdit }) => {
   const [short, setShort] = useState(true);
+  const { user } = useSelector((store) => store.user);
+
+  const [open, setOpen] = useState(false);
+  const pass = useRef();
   return (
     <ContentContainer
       title={`${narration.book.name}`}
       actionComponent={
-        <span>
-          {narration.book_vol_no ? `جلد ${narration.book_vol_no}` : ""}
-          &nbsp;
-          {narration.book_page_no ? `/  صفحه ${narration.book_page_no}` : ""}
-        </span>
+        <div className="flex gap-4 items-center">
+          {user?.id === 1 ? (
+            <>
+              <AiFillDelete
+                className="cursor-pointer"
+                onClick={() => setOpen(true)}
+              />
+              <AiFillEdit className="cursor-pointer" onClick={onEdit} />
+            </>
+          ) : null}
+
+          <span>
+            {narration.book_vol_no ? `جلد ${narration.book_vol_no}` : ""}
+            &nbsp;
+            {narration.book_page_no ? `/  صفحه ${narration.book_page_no}` : ""}
+          </span>
+        </div>
       }
       className="mb-4"
     >
+      {open && (
+        <div
+          className=" fixed top-1/2 left-1/2 "
+          style={{
+            backgroundColor: "white",
+            borderRadius: "8px",
+            transform: "translate(-50%, -50%)",
+            zIndex: 101,
+          }}
+        >
+          <div
+            style={{
+              flexDirection: "column",
+            }}
+            className="relative p-6 flex gap-8  w-100  items-center "
+          >
+            <p className="mt-6">
+              آیا از حذف حدیث مطمئن هستید؟ لطفا در کادر زیر پسورد را وارد کنید:
+            </p>
+            <Input reference={pass} />
+            <Button
+              variant="primary"
+              className="w-30"
+              onClickHandler={() => {
+                setOpen(false);
+                if (onDelete) onDelete(pass.current?.value);
+              }}
+            >
+              OK
+            </Button>
+            <AiOutlineClose
+              className="absolute cursor-pointer right-2 top-2"
+              onClick={() => setOpen(false)}
+            />
+          </div>
+        </div>
+      )}
       <p>
         <span>
           {short ? narration.content.substr(0, 1000) : narration.content}
@@ -60,6 +120,7 @@ const SingleNarration = ({ narration }) => {
 };
 
 export const NarrationWarehouse = () => {
+  const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(1);
   const queryClient = useQueryClient();
   const searchTerm = useRef();
@@ -98,6 +159,14 @@ export const NarrationWarehouse = () => {
   const handleSelect = (newValue, category) => {
     setSelectedOptions({ ...selectedOptions, [category]: newValue });
   };
+
+  const handleDelete = async (narrationId, pass) => {
+    if (Number(pass) !== 1348) return;
+    const url = apiUrls.narration.get(narrationId);
+    const resp = await customApiCall.delete({ url });
+    queryClient.refetchQueries();
+  };
+
   const sort = (array) => {
     if (!array) return array;
     const newArray = [...array];
@@ -214,7 +283,12 @@ export const NarrationWarehouse = () => {
               </div>
               <section className="h-full" style={{}}>
                 {narrationList?.results?.map((narration, index) => (
-                  <SingleNarration key={index} narration={narration} />
+                  <SingleNarration
+                    key={index}
+                    onEdit={() => navigate(`edit narration/:${narration?.id}`)}
+                    onDelete={(pass) => handleDelete(narration?.id, pass)}
+                    narration={narration}
+                  />
                 ))}
               </section>
               {narrationList?.last > 0 && (

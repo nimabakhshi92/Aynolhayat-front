@@ -11,9 +11,11 @@ export default function Input({
   onChange,
   onKeyDown,
   disabled,
+  value,
 }) {
   return (
     <input
+      value={value}
       style={style}
       ref={reference}
       className={`${classes.input} ${className}`}

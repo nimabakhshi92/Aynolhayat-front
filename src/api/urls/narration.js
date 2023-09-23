@@ -14,6 +14,7 @@ export default {
     baseUrl += `${index !== 0 ? "&" : ""}page=${pageNo}&page_size=${pageSize}`;
     return baseUrl;
   },
+  get: (narrationId) => `${url}/narration/${narrationId}/`,
 
   filterOptions: `${url0}/test/`,
 };
