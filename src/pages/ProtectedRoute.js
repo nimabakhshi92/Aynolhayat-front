@@ -10,7 +10,7 @@ export const ProtectedRoute = ({ children }) => {
 
   const newToken = () => {
     if (!user) return;
-    const expiresTime = new Date(user.expires_aat);
+    const expiresTime = new Date(user.expires_at);
     if (expiresTime > new Date(new Date().getTime() - 10 * 60000)) return;
     dispatch(refreshToken(user));
   };

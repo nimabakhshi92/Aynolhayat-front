@@ -9,10 +9,12 @@ export default function InputWithSuggestion({
   className,
   suggestions,
   onPressEnter,
+  onChange,
 }) {
   const [matchedSuggesttions, setMatchedSuggestions] = useState(suggestions);
   const [openSuggestions, setOpenSuggestions] = useState(false);
   const matchSearch = () => {
+    if (!reference?.current) return suggestions;
     const searchTerm = reference.current?.value;
     if (!searchTerm) return suggestions;
     return suggestions.filter((item) => item.includes(searchTerm));
@@ -21,6 +23,7 @@ export default function InputWithSuggestion({
   const suggestionsExist = matchedSuggesttions?.length > 0;
   const onMenuClick = (item) => {
     reference.current.value = item;
+    if (onChange) onChange();
   };
   return (
     <div className="relative">
@@ -34,7 +37,10 @@ export default function InputWithSuggestion({
         onBlur={() => {
           setTimeout(() => setOpenSuggestions(false), 100);
         }}
-        onChange={() => setMatchedSuggestions(matchSearch())}
+        onChange={() => {
+          setMatchedSuggestions(matchSearch());
+          if (onChange) onChange();
+        }}
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === "NumpadEnter")
             onPressEnter();

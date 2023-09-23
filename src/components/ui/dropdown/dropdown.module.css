@@ -48,3 +48,8 @@
 .menu > li:hover {
   background-color: var(--neutral-color-100);
 }
+
+.filterOption:hover {
+  background-color: #0bab6460;
+  cursor: pointer;
+}

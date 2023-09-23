@@ -15,6 +15,15 @@ export default function Links({ onModal }) {
         className={({ isActive }) =>
           `hover:border-b border-solid ${isActive && "border-b border-solid"}`
         }
+        to={"/warehouse"}
+        tabIndex={-1}
+      >
+        مخزن حدیث
+      </NavLink>
+      <NavLink
+        className={({ isActive }) =>
+          `hover:border-b border-solid ${isActive && "border-b border-solid"}`
+        }
         to={"/"}
         tabIndex={-1}
       >

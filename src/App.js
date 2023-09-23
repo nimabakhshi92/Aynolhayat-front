@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { NarrationWarehouse } from "./pages/NarrationWarehouse";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -58,6 +59,7 @@ function App() {
                 path="save narration"
                 element={<NarrationSave></NarrationSave>}
               ></Route>
+              <Route path="warehouse" element={<NarrationWarehouse />}></Route>
             </Route>
           </Routes>
         </BrowserRouter>

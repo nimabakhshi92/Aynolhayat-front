@@ -47,8 +47,8 @@ const userSlice = createSlice({
         state.refreshIsLoading = false;
         state.user.refresh = payload.refresh;
         state.user.access = payload.access;
-        state.user.expires_aat = payload.expires_aat;
-        addUserToLocalStorage(payload);
+        state.user.expires_at = payload.expires_at;
+        addUserToLocalStorage(state.user);
       })
       .addCase(refreshToken.rejected, (state, { payload }) => {
         state.refreshIsLoading = false;

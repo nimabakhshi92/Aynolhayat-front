@@ -11,7 +11,10 @@ export const SingleNarrationSummaries = ({ onInputChange }) => {
   surah = surah || [];
   const sortedSurah = surah?.sort((a, b) => a.surah_no - b.surah_no);
   const [selectedSurah, setSelectedSurah] = useState(null);
-  const verseNos = [...Array(selectedSurah?.no_of_verses || 1).keys()];
+  const verseNos = Array.from(
+    { length: selectedSurah?.no_of_verses || 1 },
+    (_, i) => i + 1
+  );
   const [selectedVerse, setSelectedVerse] = useState(1);
 
   let { data: verse } = useGetVerse(selectedSurah?.surah_no, selectedVerse);
