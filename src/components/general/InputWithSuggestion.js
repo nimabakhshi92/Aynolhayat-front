@@ -10,6 +10,7 @@ export default function InputWithSuggestion({
   suggestions,
   onPressEnter,
   onChange,
+  value,
 }) {
   const [matchedSuggesttions, setMatchedSuggestions] = useState(suggestions);
   const [openSuggestions, setOpenSuggestions] = useState(false);
@@ -28,6 +29,7 @@ export default function InputWithSuggestion({
   return (
     <div className="relative">
       <Input
+        value={value}
         style={style}
         reference={reference}
         className={className}

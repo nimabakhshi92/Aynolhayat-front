@@ -16,30 +16,28 @@ import InputWithSuggestion from "../components/general/InputWithSuggestion";
 import { AllNarrationFootnotes } from "../components/NarrationSave/NarrationFootnotes";
 import { AllNarrationSummaries } from "../components/NarrationSave/NarrationSummaries";
 import Button from "../components/ui/buttons/primary-button";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { createNarration } from "../features/narrationSave/narrationSlice";
 import { NarrationEditForm } from "../components/NarrationSave/NarrationEditForm";
+import { NarrationSubjectEditForm } from "../components/NarrationSave/NarrationSubjectEditForm";
+import { useQueryClient } from "react-query";
+import { NarrationSummaryEditForm } from "../components/NarrationSave/NarrationSummaryEditForm";
 
-export const NarrationEdit = ({ narrationId }) => {
+export const NarrationEdit = () => {
+  const { narrationId } = useParams();
   const { user } = useSelector((store) => store.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const narration = useGetNarrationIndividual(narrationId);
+  const { data: narration } = useGetNarrationIndividual(narrationId);
 
   const newSubject = useRef();
-  let { data: imam } = useGetImam();
-  imam = imam || [];
-  let { data: book } = useGetBooks();
-  book = book || [];
-  let { data: subject } = useGetSubjects();
-  subject = subject?.subjects || [];
 
-  const [addedSubjects, setAddedSubjects] = useState([]);
-  const [selectedImam, setSelectedImam] = useState(imam[0]);
-  const [selectedBook, setSelectedBook] = useState(book[0]);
+  // const [addedSubjects, setAddedSubjects] = useState([]);
+  // const [selectedImam, setSelectedImam] = useState(imam[0]);
+  // const [selectedBook, setSelectedBook] = useState(book[0]);
 
   const emptySummary = {
     alphabet: "",
@@ -74,67 +72,16 @@ export const NarrationEdit = ({ narrationId }) => {
   //   setAllFootnotes([emptyFootnote]);
   // };
 
-  if (!imam?.length > 0 || !book?.length > 0) return <p>data is not loaded</p>;
+  // if (!imam?.length > 0 || !book?.length > 0) return <p>data is not loaded</p>;
   if (!(user?.id === 1)) return <Navigate to={"/"} />;
   return (
     <section className="mt-8">
       <NarrationEditForm narration={narration} />
 
-      {/* 
-      <ContentContainer className="mb-4" title="موضوعات مرتبط با حدیث">
-        <div className="flex items-center">
-          <InputWithSuggestion
-            style={{
-              borderTopLeftRadius: 0,
-              borderBottomLeftRadius: 0,
-              width: "250px",
-            }}
-            reference={newSubject}
-            placeholder="موضوع اضافه کنید"
-            suggestions={subject}
-            onPressEnter={() => {
-              if (newSubject.current?.value)
-                setAddedSubjects([...addedSubjects, newSubject.current?.value]);
-              newSubject.current.value = "";
-            }}
-          />
-          <div
-            className="flex hover:opacity-[0.75] cursor-pointer items-center justify-center w-10 h-10"
-            style={{
-              backgroundColor: "var(--primary-color)",
-              color: "white",
-              fontSize: "30px",
-              fontWeight: 400,
-              borderTopLeftRadius: 8,
-              borderBottomLeftRadius: 8,
-            }}
-            onClick={() => {
-              if (newSubject.current?.value)
-                setAddedSubjects([...addedSubjects, newSubject.current?.value]);
-              newSubject.current.value = "";
-            }}
-          >
-            <AiOutlinePlus />
-          </div>
-        </div>
-        <div className="mt-6 flex gap-4 items-start">
-          {addedSubjects?.map((subject, index) => {
-            return (
-              <Tag
-                onClose={() => {
-                  setAddedSubjects(
-                    addedSubjects.filter((sub) => sub !== subject)
-                  );
-                }}
-                key={index}
-                tag={subject}
-              />
-            );
-          })}
-        </div>
-      </ContentContainer>
+      <NarrationSubjectEditForm narration={narration} />
 
-      <AllNarrationSummaries
+      <NarrationSummaryEditForm narration={narration} />
+      {/* <AllNarrationSummaries
         allSummaries={allSummaries}
         setAllSummaries={setAllSummaries}
         emptySummary={emptySummary}

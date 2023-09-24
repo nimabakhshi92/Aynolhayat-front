@@ -55,13 +55,13 @@ function App() {
                 </ProtectedRoute>
               }
             >
-              <Route index element={<NarrationSummaries />}></Route>
+              <Route index element={<NarrationWarehouse />}></Route>
               <Route path="save narration" element={<NarrationSave />}></Route>
               <Route
                 path="edit narration/:narrationId"
                 element={<NarrationEdit />}
               ></Route>
-              <Route path="warehouse" element={<NarrationWarehouse />}></Route>
+              <Route path="summary" element={<NarrationSummaries />}></Route>
             </Route>
           </Routes>
         </BrowserRouter>

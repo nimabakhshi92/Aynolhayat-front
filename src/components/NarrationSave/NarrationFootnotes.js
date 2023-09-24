@@ -68,6 +68,7 @@ export const AllNarrationFootnotes = ({
     >
       {allFootnotes?.map((_, index) => (
         <SingleNarrationFootnotes
+          key={index}
           onInputChange={(newValues) => handleOnInputChange(index, newValues)}
         />
       ))}

@@ -144,6 +144,7 @@ export const AllNarrationSummaries = ({
     >
       {allSummaries?.map((_, index) => (
         <SingleNarrationSummaries
+          key={index}
           onInputChange={(newValues) => handleOnInputChange(index, newValues)}
         />
       ))}

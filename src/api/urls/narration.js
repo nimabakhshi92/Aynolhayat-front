@@ -17,4 +17,12 @@ export default {
   get: (narrationId) => `${url}/narration/${narrationId}/`,
 
   filterOptions: `${url0}/test/`,
+  subject: {
+    get: (subjectId) => `${url}/subject/${subjectId}/`,
+    post: `${url}/subject/`,
+  },
+  summaryTree: {
+    get: (summaryId) => `${url}/summary_tree/${summaryId}/`,
+    post: `${url}/summary_tree/`,
+  },
 };

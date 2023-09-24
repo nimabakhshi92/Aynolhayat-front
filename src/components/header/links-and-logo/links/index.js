@@ -15,7 +15,7 @@ export default function Links({ onModal }) {
         className={({ isActive }) =>
           `hover:border-b border-solid ${isActive && "border-b border-solid"}`
         }
-        to={"/warehouse"}
+        to={"/"}
         tabIndex={-1}
       >
         مخزن حدیث
@@ -24,7 +24,7 @@ export default function Links({ onModal }) {
         className={({ isActive }) =>
           `hover:border-b border-solid ${isActive && "border-b border-solid"}`
         }
-        to={"/"}
+        to={"/summary"}
         tabIndex={-1}
       >
         خلاصه احادیث

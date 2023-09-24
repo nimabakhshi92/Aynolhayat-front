@@ -285,7 +285,7 @@ export const NarrationWarehouse = () => {
                 {narrationList?.results?.map((narration, index) => (
                   <SingleNarration
                     key={index}
-                    onEdit={() => navigate(`edit narration/:${narration?.id}`)}
+                    onEdit={() => navigate(`edit narration/${narration?.id}`)}
                     onDelete={(pass) => handleDelete(narration?.id, pass)}
                     narration={narration}
                   />
