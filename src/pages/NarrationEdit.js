@@ -24,6 +24,7 @@ import { NarrationEditForm } from "../components/NarrationSave/NarrationEditForm
 import { NarrationSubjectEditForm } from "../components/NarrationSave/NarrationSubjectEditForm";
 import { useQueryClient } from "react-query";
 import { NarrationSummaryEditForm } from "../components/NarrationSave/NarrationSummaryEditForm";
+import { NarrationFootnoteEditForm } from "../components/NarrationSave/NarrationFootnoteEditForm";
 
 export const NarrationEdit = () => {
   const { narrationId } = useParams();
@@ -31,8 +32,16 @@ export const NarrationEdit = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { data: narration } = useGetNarrationIndividual(narrationId);
+  const { data: narration, isLoading } = useGetNarrationIndividual(narrationId);
 
+  // useEffect(() => {
+  //   console.log(
+  //     'queryClient.getQueryData(["narrationIndividual", narrationId])'
+  //   );
+  //   queryClient.setQueryData(["narrationIndividual", narrationId], {});
+  //   console.log(queryClient.getQueryData(["narrationIndividual", narrationId]));
+  //   console.log(narration);
+  // }, [isLoading]);
   const newSubject = useRef();
 
   // const [addedSubjects, setAddedSubjects] = useState([]);
@@ -81,6 +90,7 @@ export const NarrationEdit = () => {
       <NarrationSubjectEditForm narration={narration} />
 
       <NarrationSummaryEditForm narration={narration} />
+      <NarrationFootnoteEditForm narration={narration} />
       {/* <AllNarrationSummaries
         allSummaries={allSummaries}
         setAllSummaries={setAllSummaries}

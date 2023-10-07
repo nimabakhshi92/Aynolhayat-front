@@ -2,14 +2,24 @@ import { useEffect, useState } from "react";
 import { ContentContainer } from "../general/ContentContainer";
 
 import { InputWithState } from "../general/InputWithState";
-import { AiOutlineClose, AiOutlinePlusCircle } from "react-icons/ai";
 import {
+  AiFillDelete,
+  AiOutlineClose,
+  AiOutlinePlusCircle,
+} from "react-icons/ai";
+import {
+  useAddNarrationSummary,
+  useDeleteNarrationSummary,
+  useGetNarrationFilterOptions,
+  useGetSummaryTree,
   useGetSurah,
   useGetVerse,
   useModifyNarrationSummary,
 } from "../../api/hooks/allHooks";
 import Dropdown from "../ui/dropdown";
 import Input from "../ui/input";
+import { useQueryClient } from "react-query";
+import InputWithSuggestion from "../general/InputWithSuggestion";
 
 export const SingleNarrationSummariesForEdit = ({
   inSummary,
@@ -33,7 +43,18 @@ export const SingleNarrationSummariesForEdit = ({
 
   let { data: verse } = useGetVerse(inSummary?.verse?.surah_no, selectedVerse);
   verse = (verse || [])[0] || {};
-
+  const emptySummary = {
+    alphabet: "",
+    // subject: "",
+    // sub_subject: "",
+    subject_1: "",
+    subject_2: "",
+    expression: "",
+    summary: "",
+    surah_no: "",
+    verse_no: "",
+    verse_content: "",
+  };
   const [summary, setSummary] = useState({
     alphabet: "",
     subject: "",
@@ -57,8 +78,24 @@ export const SingleNarrationSummariesForEdit = ({
     }
     return selectedSurah;
   };
+  function uniqueArray3(a) {
+    function onlyUnique(value, index, self) {
+      return self?.indexOf(value) === index;
+    }
 
+    // usage
+    var unique = a?.filter(onlyUnique); // returns ['a', 1, 2, '1']
+
+    return unique;
+  }
+
+  const { data: ss } = useGetNarrationFilterOptions();
+  const level1 = uniqueArray3(ss?.map((s) => s.alphabet));
+  const level2 = uniqueArray3(ss?.map((s) => s.subject));
+  const level3 = uniqueArray3(ss?.map((s) => s.sub_subject));
   const { mutate } = useModifyNarrationSummary();
+  const { mutate: addSummary } = useAddNarrationSummary();
+  const { mutate: deleteSummary } = useDeleteNarrationSummary();
 
   const handleChange = (key, newValue) => {
     setSummary({ ...summary, [key]: newValue });
@@ -68,6 +105,13 @@ export const SingleNarrationSummariesForEdit = ({
   const handleVerseChange = (key, newValue) => {
     setSummary({ ...summary, verse: { ...summary.verse, [key]: newValue } });
     // onInputChange({ ...summary, verse: { ...summary.verse, [key]: newValue } });
+  };
+
+  const handleDelete = () => {
+    deleteSummary({
+      narrationId: narration?.id,
+      summaryId: summary?.id,
+    });
   };
 
   const handleBlur = (key, newValue) => {
@@ -82,14 +126,23 @@ export const SingleNarrationSummariesForEdit = ({
       default:
         keyForPost = key;
     }
-
-    mutate({
-      narrationId: narration?.id,
-      summaryId: summary?.id,
-      data: { [keyForPost]: newValue, quran_verse: 0 },
-    });
+    if (summary?.id)
+      mutate({
+        narrationId: narration?.id,
+        summaryId: summary?.id,
+        data: { [keyForPost]: newValue, quran_verse: 0 },
+      });
+    else {
+      addSummary({
+        narrationId: narration?.id,
+        data: {
+          [keyForPost]: newValue,
+          quran_verse: 0,
+          narration: narration?.id,
+        },
+      });
+    }
   };
-
   const handleVerseBlur = () => {
     mutate({
       narrationId: narration?.id,
@@ -101,106 +154,149 @@ export const SingleNarrationSummariesForEdit = ({
   // useEffect(() => setSelectedSurah(getSurah(selectedSurah)), [narration]);
   useEffect(() => {
     // const ss = getSurah(inSummary.verse);
-    // console.log(ss);
     // setSummary({ ...inSummary, verse: ss });
     setSummary(inSummary);
-  }, [summary]);
+  }, [inSummary]);
   // useEffect(() => setSelectedVerse(1), [inSummary?.verse?.surah_name]);
-  useEffect(() => {
-    if (verse?.id) {
-      handleVerseBlur();
-    }
-  }, [verse?.id]);
-  console.log(summary);
+  // useEffect(() => {
+  //   if (verse?.id) {
+  //     handleVerseBlur();
+  //   }
+  // }, [verse?.id]);
   return (
-    <div
-      style={{
-        borderBottom: "1px solid var(--neutral-color-400)",
-        marginBottom: "32px",
-        paddingBottom: "32px",
-      }}
-      className="grid gap-4 grid-cols-7 grid-rows-2"
-    >
-      <InputWithState
-        value={summary.alphabet}
-        setValue={(newValue) => handleChange("alphabet", newValue)}
-        onBlur={() => handleBlur("alphabet", summary.alphabet)}
-        type="text"
-        placeholder="سطح 1"
+    <div className="flex gap-2 items-start">
+      <AiFillDelete
+        className="cursor-pointer"
+        style={{
+          height: "30px",
+          width: "30px",
+        }}
+        onClick={() => handleDelete()}
       />
-      <InputWithState
-        value={summary.subject}
-        setValue={(newValue) => handleChange("subject", newValue)}
-        onBlur={() => handleBlur("subject", summary.subject)}
-        type="text"
-        placeholder="سطح 2"
-      />
-      <InputWithState
-        value={summary.sub_subject}
-        setValue={(newValue) => handleChange("sub_subject", newValue)}
-        onBlur={() => handleBlur("sub_subject", summary.sub_subject)}
-        type="text"
-        placeholder="توضیح من"
-      />
-      <InputWithState
-        className="col-span-2"
-        value={summary.expression}
-        setValue={(newValue) => handleChange("expression", newValue)}
-        onBlur={() => handleBlur("expression", summary.expression)}
-        type="text"
-        placeholder="عبارت فارسی"
-      />
-      <InputWithState
-        className="col-span-2"
-        value={summary.summary}
-        setValue={(newValue) => handleChange("summary", newValue)}
-        onBlur={() => handleBlur("summary", summary.summary)}
-        type="text"
-        placeholder="عبارت عربی"
-      />
-      {/* <div className="relative col-span-2">
-        <Dropdown
-          className=""
-          selected={summary?.verse}
-          setSelected={(newValue) => {
-            // setSelectedSurah(newValue);
-            handleVerseChange("surah_name", newValue?.surah_name);
-            handleVerseChange("surah_no", newValue?.surah_no);
+      <div
+        style={{
+          borderBottom: "1px solid var(--neutral-color-400)",
+          marginBottom: "32px",
+          paddingBottom: "32px",
+        }}
+        className="grid gap-4 grid-cols-7 grid-rows-2"
+      >
+        {/* <InputWithState
+          value={summary.alphabet}
+          setValue={(newValue) => handleChange("alphabet", newValue)}
+          onBlur={() => handleBlur("alphabet", summary.alphabet)}
+          type="text"
+          placeholder="سطح 1"
+        /> */}
+        <InputWithSuggestion
+          suggestions={level1?.sort()}
+          className="w-full"
+          onPressEnter={(e) => handleBlur("alphabet", e.target.value)}
+          onChange={(e) => {
+            handleChange("alphabet", e.target.value);
           }}
-          items={sortedSurah?.map((surah) => ({
-            ...surah,
-            surahWithNo: surah.surah_no + "- " + surah.surah_name,
-          }))}
-          dataKey="surah_name"
-          placeholder="نام سوره"
+          value={summary.alphabet}
+          placeholder="سطح 1"
+          onBlur={(e) => handleBlur("alphabet", e.target.value)}
         />
-        <AiOutlineClose
-          color="var(--neutral-color-400)"
-          className="absolute left-8 top-3 w-4 h-4 cursor-pointer"
-          onClick={() => setSelectedSurah(null)}
+        {/* <InputWithState
+          value={summary.subject}
+          setValue={(newValue) => handleChange("subject", newValue)}
+          onBlur={() => handleBlur("subject", summary.subject)}
+          type="text"
+          placeholder="سطح 2"
+        /> */}
+        <InputWithSuggestion
+          suggestions={level2?.sort()}
+          className="w-full"
+          onPressEnter={(e) => handleBlur("subject", e.target.value)}
+          onChange={(e) => {
+            handleChange("subject", e.target.value);
+          }}
+          value={summary.subject}
+          placeholder="سطح 2"
+          onBlur={(e) => handleBlur("subject", e.target.value)}
+        />
+        {/* <InputWithState
+          value={summary.sub_subject}
+          setValue={(newValue) => handleChange("sub_subject", newValue)}
+          onBlur={() => handleBlur("sub_subject", summary.sub_subject)}
+          type="text"
+          placeholder="توضیح من"
+        /> */}
+        <InputWithSuggestion
+          suggestions={level3?.sort()}
+          className="w-full"
+          onPressEnter={(e) => handleBlur("sub_subject", e.target.value)}
+          onChange={(e) => {
+            handleChange("sub_subject", e.target.value);
+          }}
+          value={summary.sub_subject}
+          placeholder="توضیح من"
+          onBlur={(e) => handleBlur("sub_subject", e.target.value)}
+        />
+
+        <InputWithState
+          className="col-span-2"
+          value={summary.expression}
+          setValue={(newValue) => handleChange("expression", newValue)}
+          onBlur={() => handleBlur("expression", summary.expression)}
+          type="text"
+          placeholder="عبارت فارسی"
+        />
+        <InputWithState
+          className="col-span-2"
+          value={summary.summary}
+          setValue={(newValue) => handleChange("summary", newValue)}
+          onBlur={() => handleBlur("summary", summary.summary)}
+          type="text"
+          placeholder="عبارت عربی"
+        />
+        <div className="relative col-span-2">
+          <Dropdown
+            className=""
+            selected={summary?.verse}
+            setSelected={(newValue) => {
+              // setSelectedSurah(newValue);
+              handleVerseChange("surah_name", newValue?.surah_name);
+              handleVerseChange("surah_no", newValue?.surah_no);
+            }}
+            items={sortedSurah?.map((surah) => ({
+              ...surah,
+              surahWithNo: surah.surah_no + "- " + surah.surah_name,
+            }))}
+            dataKey="surah_name"
+            placeholder="نام سوره"
+          />
+          <AiOutlineClose
+            color="var(--neutral-color-400)"
+            className="absolute left-8 top-3 w-4 h-4 cursor-pointer"
+            onClick={() => setSelectedSurah(null)}
+          />
+        </div>
+        <Dropdown
+          selected={selectedVerse}
+          setSelected={(newValue) => {
+            setSelectedVerse(newValue);
+            handleVerseChange("verse_no", newValue);
+          }}
+          items={verseNos}
+          placeholder="شماره آیه"
+        />
+        <Input
+          className="col-span-4"
+          type="text"
+          placeholder={verse?.verse_content || "متن آیه"}
+          disabled={true}
         />
       </div>
-      <Dropdown
-        selected={selectedVerse}
-        setSelected={(newValue) => {
-          setSelectedVerse(newValue);
-          handleVerseChange("verse_no", newValue);
-        }}
-        items={verseNos}
-        placeholder="شماره آیه"
-      />
-      <Input
-        className="col-span-4"
-        type="text"
-        placeholder={verse?.verse_content || "متن آیه"}
-        disabled={true}
-      /> */}
     </div>
   );
 };
 
 export const NarrationSummaryEditForm = ({ narration }) => {
   let { data: surah } = useGetSurah();
+  const queryClient = useQueryClient();
   surah = surah || [];
 
   const emptySummary = {
@@ -216,7 +312,6 @@ export const NarrationSummaryEditForm = ({ narration }) => {
     verse_content: "",
   };
   const [updatedNarration, setUpdatedNarration] = useState({});
-
   useEffect(() => {
     const cst = narration?.content_summary_tree?.map((c) => {
       const s = surah?.find((item) => item.surah_name === c?.verse?.surah_name);
@@ -231,6 +326,7 @@ export const NarrationSummaryEditForm = ({ narration }) => {
         };
       } else return c;
     });
+
     setUpdatedNarration({ ...narration, content_summary_tree: cst });
   }, [narration]);
 
@@ -243,13 +339,16 @@ export const NarrationSummaryEditForm = ({ narration }) => {
     });
   };
   const handleAddInputComponent = () => {
+    const newSummaryTree = [...updatedNarration.content_summary_tree];
+    newSummaryTree.unshift(emptySummary);
     setUpdatedNarration({
       ...updatedNarration,
-      content_summary_tree: [
-        ...updatedNarration.content_summary_tree,
-        emptySummary,
-      ],
+      content_summary_tree: newSummaryTree,
     });
+    // queryClient.setQueryData(["narrationIndividual", narration.id], {
+    //   ...updatedNarration,
+    //   content_summary_tree: newSummaryTree,
+    // });
   };
 
   return (
@@ -264,14 +363,16 @@ export const NarrationSummaryEditForm = ({ narration }) => {
       className="mb-4"
       title="خلاصه‌ها و فهرست"
     >
-      {updatedNarration?.content_summary_tree?.map((summary, index) => (
-        <SingleNarrationSummariesForEdit
-          key={index}
-          narration={narration}
-          inSummary={summary}
-          onInputChange={(newValues) => handleOnInputChange(index, newValues)}
-        />
-      ))}
+      {updatedNarration?.content_summary_tree?.map((summary, index) => {
+        return (
+          <SingleNarrationSummariesForEdit
+            key={index}
+            narration={narration}
+            inSummary={summary}
+            onInputChange={(newValues) => handleOnInputChange(index, newValues)}
+          />
+        );
+      })}
     </ContentContainer>
   );
 };

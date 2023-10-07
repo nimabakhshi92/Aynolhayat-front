@@ -11,20 +11,36 @@ export default function InputWithSuggestion({
   onPressEnter,
   onChange,
   value,
+  onBlur,
 }) {
   const [matchedSuggesttions, setMatchedSuggestions] = useState(suggestions);
   const [openSuggestions, setOpenSuggestions] = useState(false);
-  const matchSearch = () => {
+  const matchSearch = (e) => {
+    // console.log(e.target.value);
+    // console.log(
+    //   suggestions.filter((item) => {
+    //     return item?.includes(e.target.value);
+    //   })
+    // );
+    if (!reference)
+      return suggestions?.filter((item) => {
+        return item?.includes(value);
+      });
+
     if (!reference?.current) return suggestions;
     const searchTerm = reference.current?.value;
     if (!searchTerm) return suggestions;
-    return suggestions.filter((item) => item.includes(searchTerm));
+    return suggestions.filter((item) => item?.includes(searchTerm));
   };
 
   const suggestionsExist = matchedSuggesttions?.length > 0;
   const onMenuClick = (item) => {
-    reference.current.value = item;
-    if (onChange) onChange();
+    if (reference) reference.current.value = item;
+    if (reference && onChange) onChange();
+    if (!reference && onChange) {
+      onChange({ target: { value: item } });
+      onPressEnter({ target: { value: item } });
+    }
   };
   return (
     <div className="relative">
@@ -36,22 +52,32 @@ export default function InputWithSuggestion({
         type="text"
         placeholder={placeholder}
         onClick={() => setOpenSuggestions(true)}
-        onBlur={() => {
+        onBlur={(e) => {
           setTimeout(() => setOpenSuggestions(false), 100);
+          if (onBlur) onBlur(e);
         }}
-        onChange={() => {
-          setMatchedSuggestions(matchSearch());
-          if (onChange) onChange();
+        onChange={(e) => {
+          setMatchedSuggestions(matchSearch(e));
+          if (onChange) onChange(e);
         }}
         onKeyDown={(event) => {
-          if (event.key === "Enter" || event.key === "NumpadEnter")
-            onPressEnter();
+          if (event.key === "Enter" || event.key === "NumpadEnter") {
+            if (reference) onPressEnter();
+            else {
+              onPressEnter(event);
+            }
+          }
         }}
       />
       {openSuggestions && suggestionsExist && (
         <ul className={classes.menu}>
-          {matchedSuggesttions?.map((item, index) => (
-            <li key={index} onClick={(e) => onMenuClick(item)}>
+          {matchSearch()?.map((item, index) => (
+            <li
+              key={index}
+              onClick={() => {
+                onMenuClick(item);
+              }}
+            >
               {item}
             </li>
           ))}

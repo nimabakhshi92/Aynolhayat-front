@@ -25,4 +25,8 @@ export default {
     get: (summaryId) => `${url}/summary_tree/${summaryId}/`,
     post: `${url}/summary_tree/`,
   },
+  footnote: {
+    get: (footnoteId) => `${url}/footnote/${footnoteId}/`,
+    post: `${url}/footnote/`,
+  },
 };

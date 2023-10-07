@@ -11,7 +11,6 @@ import { useQueryClient } from "react-query";
 
 export const NarrationEditForm = ({ narration }) => {
   const [updatedNarration, setUpdatedNarration] = useState({});
-
   let { data: imam } = useGetImam();
   imam = imam || [];
   let { data: book } = useGetBooks();

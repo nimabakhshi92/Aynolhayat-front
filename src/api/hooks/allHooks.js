@@ -103,9 +103,11 @@ export const useModifyNarrationInfo = () => {
         context.previousData
       );
     },
-    onSettled: (inputs) => {
-      const { narrationId, data } = inputs;
-      queryClient.invalidateQueries(["narrationIndividual", narrationId]);
+    onSettled: (inputs, error, variables, context) => {
+      queryClient.invalidateQueries([
+        "narrationIndividual",
+        context.narrationId,
+      ]);
     },
   });
 };
@@ -139,7 +141,7 @@ export const useAddNarrationSubject = () => {
             ...oldData,
             subjects: [
               ...oldData.subjects,
-              { id: "-1", subject: data.subject },
+              { id: Math.random(), subject: data.subject },
             ],
           };
         }
@@ -153,9 +155,11 @@ export const useAddNarrationSubject = () => {
         context.previousData
       );
     },
-    onSettled: (inputs) => {
-      const { narrationId, data } = inputs;
-      queryClient.invalidateQueries(["narrationIndividual", narrationId]);
+    onSettled: (inputs, error, variables, context) => {
+      queryClient.invalidateQueries([
+        "narrationIndividual",
+        context.narrationId,
+      ]);
     },
   });
 };
@@ -194,10 +198,10 @@ export const useDeleteNarrationSubject = () => {
   });
 };
 
+//////////// NARRATION SUMMARY
 export const modifyNarrationSummary = async (inputs) => {
   const { summaryId, data } = inputs;
   const url = apiUrls.narration.summaryTree.get(summaryId);
-  console.log(data);
   const resp = await customApiCall.patch({ url, data });
   return resp;
 };
@@ -223,6 +227,104 @@ export const useModifyNarrationSummary = () => {
           };
         }
       );
+      return { previousData, narrationId, data };
+    },
+    onError: (error, _output, context) => {
+      if (context?.data?.alphabet !== "")
+        toast.error("تغییر مورد نظر انجام نشد");
+      queryClient.setQueryData(
+        ["narrationIndividual", context.narrationId],
+        context.previousData
+      );
+      // queryClient.invalidateQueries([
+      //   "narrationIndividual",
+      //   context.narrationId,
+      // ]);
+    },
+    onSettled: (inputs, error, variables, context) => {
+      queryClient.invalidateQueries([
+        "narrationIndividual",
+        context.narrationId,
+      ]);
+    },
+  });
+};
+
+export const addNarrationSummary = async (inputs) => {
+  const { data } = inputs;
+  const url = apiUrls.narration.summaryTree.post;
+  const resp = await customApiCall.post({ url, data });
+  return resp;
+};
+export const useAddNarrationSummary = () => {
+  const queryClient = useQueryClient();
+  return useMutation(addNarrationSummary, {
+    onMutate: async (inputs) => {
+      const { narrationId, data } = inputs;
+      await queryClient.cancelQueries(["narrationIndividual", narrationId]);
+      const previousData = queryClient.getQueryData([
+        "narrationIndividual",
+        narrationId,
+      ]);
+      queryClient.setQueryData(
+        ["narrationIndividual", narrationId],
+        (oldData) => {
+          return {
+            ...oldData,
+            content_summary_tree: [...oldData.content_summary_tree, data],
+          };
+        }
+      );
+      return { previousData, narrationId };
+    },
+    onError: (error, _output, context) => {
+      toast.error("تغییر مورد نظر انجام نشد");
+      queryClient.setQueryData(
+        ["narrationIndividual", context.narrationId],
+        context.previousData
+      );
+      // queryClient.invalidateQueries([
+      //   "narrationIndividual",
+      //   context.narrationId,
+      // ]);
+    },
+    onSettled: (inputs, error, variables, context) => {
+      queryClient.invalidateQueries([
+        "narrationIndividual",
+        context.narrationId,
+      ]);
+    },
+  });
+};
+
+export const deleteNarrationSummary = async (inputs) => {
+  const { summaryId } = inputs;
+  const url = apiUrls.narration.summaryTree.get(summaryId);
+  const resp = await customApiCall.delete({ url });
+  return resp;
+};
+
+export const useDeleteNarrationSummary = () => {
+  const queryClient = useQueryClient();
+  return useMutation(deleteNarrationSummary, {
+    onMutate: async (inputs) => {
+      const { narrationId, summaryId } = inputs;
+      await queryClient.cancelQueries(["narrationIndividual", narrationId]);
+      const previousData = queryClient.getQueryData([
+        "narrationIndividual",
+        narrationId,
+      ]);
+      queryClient.setQueryData(
+        ["narrationIndividual", narrationId],
+        (oldData) => {
+          return {
+            ...oldData,
+            content_summary_tree: oldData.content_summary_tree.filter(
+              (e) => e.id !== summaryId
+            ),
+          };
+        }
+      );
       return { previousData, narrationId };
     },
     onError: (error, _output, context) => {
@@ -232,9 +334,153 @@ export const useModifyNarrationSummary = () => {
         context.previousData
       );
     },
-    onSettled: (inputs) => {
+    onSettled: (inputs, error, variables, context) => {
+      queryClient.invalidateQueries([
+        "narrationIndividual",
+        context.narrationId,
+      ]);
+    },
+  });
+};
+
+//////////// NARRATION FOOTNOTE
+export const modifyNarrationFootnote = async (inputs) => {
+  const { footnoteId, data } = inputs;
+  const url = apiUrls.narration.footnote.get(footnoteId);
+  const resp = await customApiCall.patch({ url, data });
+  return resp;
+};
+export const useModifyNarrationFootnote = () => {
+  const queryClient = useQueryClient();
+  return useMutation(modifyNarrationFootnote, {
+    onMutate: async (inputs) => {
+      const { narrationId, footnoteId, data } = inputs;
+      await queryClient.cancelQueries(["narrationIndividual", narrationId]);
+      const previousData = queryClient.getQueryData([
+        "narrationIndividual",
+        narrationId,
+      ]);
+      queryClient.setQueryData(
+        ["narrationIndividual", narrationId],
+        (oldData) => {
+          return {
+            ...oldData,
+            footnotes: oldData.footnotes.map((s) => {
+              if (s.id !== footnoteId) return s;
+              else return { ...s, ...data };
+            }),
+          };
+        }
+      );
+      return { previousData, narrationId };
+    },
+    onError: (error, _output, context) => {
+      toast.error("تغییر مورد نظر انجام نشد");
+      queryClient.setQueryData(
+        ["narrationIndividual", context.narrationId],
+        context.previousData
+      );
+      // queryClient.invalidateQueries([
+      //   "narrationIndividual",
+      //   context.narrationId,
+      // ]);
+    },
+    onSettled: (inputs, error, variables, context) => {
+      queryClient.invalidateQueries([
+        "narrationIndividual",
+        context.narrationId,
+      ]);
+    },
+  });
+};
+
+export const addNarrationFootnote = async (inputs) => {
+  const { data } = inputs;
+  const url = apiUrls.narration.footnote.post;
+  const resp = await customApiCall.post({ url, data });
+  return resp;
+};
+export const useAddNarrationFootnote = () => {
+  const queryClient = useQueryClient();
+  return useMutation(addNarrationFootnote, {
+    onMutate: async (inputs) => {
       const { narrationId, data } = inputs;
-      queryClient.invalidateQueries(["narrationIndividual", narrationId]);
+      await queryClient.cancelQueries(["narrationIndividual", narrationId]);
+      const previousData = queryClient.getQueryData([
+        "narrationIndividual",
+        narrationId,
+      ]);
+      queryClient.setQueryData(
+        ["narrationIndividual", narrationId],
+        (oldData) => {
+          return {
+            ...oldData,
+            footnotes: [...oldData.footnotes, data],
+          };
+        }
+      );
+      return { previousData, narrationId };
+    },
+    onError: (error, _output, context) => {
+      toast.error("تغییر مورد نظر انجام نشد");
+      queryClient.setQueryData(
+        ["narrationIndividual", context.narrationId],
+        context.previousData
+      );
+      // queryClient.invalidateQueries([
+      //   "narrationIndividual",
+      //   context.narrationId,
+      // ]);
+    },
+    onSettled: (inputs, error, variables, context) => {
+      queryClient.invalidateQueries([
+        "narrationIndividual",
+        context.narrationId,
+      ]);
+    },
+  });
+};
+
+export const deleteNarrationFootnote = async (inputs) => {
+  const { footnoteId } = inputs;
+  const url = apiUrls.narration.footnote.get(footnoteId);
+  const resp = await customApiCall.delete({ url });
+  return resp;
+};
+
+export const useDeleteNarrationFootnote = () => {
+  const queryClient = useQueryClient();
+  return useMutation(deleteNarrationFootnote, {
+    onMutate: async (inputs) => {
+      const { narrationId, footnoteId } = inputs;
+      await queryClient.cancelQueries(["narrationIndividual", narrationId]);
+      const previousData = queryClient.getQueryData([
+        "narrationIndividual",
+        narrationId,
+      ]);
+      queryClient.setQueryData(
+        ["narrationIndividual", narrationId],
+        (oldData) => {
+          return {
+            ...oldData,
+            footnotes: oldData.footnotes.filter((e) => e.id !== footnoteId),
+          };
+        }
+      );
+      return { previousData, narrationId };
+    },
+    onError: (error, _output, context) => {
+      toast.error("تغییر مورد نظر انجام نشد");
+      queryClient.setQueryData(
+        ["narrationIndividual", context.narrationId],
+        context.previousData
+      );
+    },
+    onSettled: (inputs, error, variables, context) => {
+      queryClient.invalidateQueries([
+        "narrationIndividual",
+        context.narrationId,
+      ]);
     },
   });
 };
