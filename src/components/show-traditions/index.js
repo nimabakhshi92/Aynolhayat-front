@@ -31,7 +31,7 @@ export default function ShowTraditions() {
   const { data, isLoading } = useGetSummaryTree(section);
   return (
     <div className="p-4 grid gap-6 grid-cols-[3fr_7fr]">
-      <FilterModal data={data} className="hidden lg:block" />
+      <FilterModal data={data} className="block" />
       {/* <SortTraditions /> */}
       <Traditions section={section} data={filterData(data)} className="" />
       {/* <div onClick={onShowModalHandler} className={classes.filter}>

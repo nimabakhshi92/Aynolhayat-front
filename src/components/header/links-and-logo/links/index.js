@@ -10,7 +10,7 @@ export default function Links({ onModal }) {
         onModal ? classes.link_container__in_modal : classes.link_container
       } ${onModal && classes.font_color}`}
     >
-      {onModal && <span>عین الحیاه</span>}
+      {<span>عین الحیاه</span>}
       <NavLink
         className={({ isActive }) =>
           `hover:border-b border-solid ${isActive && "border-b border-solid"}`

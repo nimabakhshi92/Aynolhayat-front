@@ -27,24 +27,11 @@ export const SingleNarrationSummariesForEdit = ({
   handleCancelNewItem,
   ss,
 }) => {
-  const queryClient = useQueryClient();
   let { data: surah } = useGetSurah();
   surah = surah || [];
   const sortedSurah = surah?.sort((a, b) => a.surah_no - b.surah_no);
   const [selectedSurah, setSelectedSurah] = useState(null);
 
-  const emptySummary = {
-    alphabet: "",
-    // subject: "",
-    // sub_subject: "",
-    subject_1: "",
-    subject_2: "",
-    expression: "",
-    summary: "",
-    surah_no: "",
-    verse_no: "",
-    verse_content: "",
-  };
   const [summary, setSummary] = useState({
     alphabet: "",
     subject: "",
@@ -74,18 +61,6 @@ export const SingleNarrationSummariesForEdit = ({
     { length: getNoOfVerses(summary?.verse?.surah_name) || 0 },
     (_, i) => i + 1
   );
-
-  console.log(verse);
-  const getSurah = (selectedSurah) => {
-    const s = surah?.find(
-      (item) => item.surah_name === selectedSurah?.surah_name
-    );
-    if (s) {
-      selectedSurah.no_of_verses = s.no_of_verses;
-      selectedSurah.surahWithNo = s.surah_no + "- " + selectedSurah.surah_name;
-    }
-    return selectedSurah;
-  };
 
   function uniqueArray3(a) {
     function onlyUnique(value, index, self) {
@@ -117,7 +92,6 @@ export const SingleNarrationSummariesForEdit = ({
   useEffect(() => {
     setSummary(addNoOfVerses(inSummary));
     setSelectedVerse(inSummary?.verse?.verse_no);
-    // queryClient.invalidateQueries("");
   }, [inSummary]);
 
   const level1 = uniqueArray3(ss?.map((s) => s.alphabet));
@@ -129,7 +103,6 @@ export const SingleNarrationSummariesForEdit = ({
 
   const handleChange = (key, newValue) => {
     setSummary({ ...summary, [key]: newValue });
-    // onInputChange({ ...summary, [key]: newValue });
   };
 
   const handleSurahChange = (data) => {
@@ -138,7 +111,6 @@ export const SingleNarrationSummariesForEdit = ({
 
   const handleVerseChange = (key, newValue) => {
     setSummary({ ...summary, verse: { ...summary.verse, [key]: newValue } });
-    // onInputChange({ ...summary, verse: { ...summary.verse, [key]: newValue } });
   };
 
   const handleDelete = () => {
@@ -203,19 +175,6 @@ export const SingleNarrationSummariesForEdit = ({
       handleVerseBlur();
   }, [verse]);
 
-  // useEffect(() => setSelectedSurah(getSurah(selectedSurah)), [narration]);
-  // useEffect(() => {
-  // const ss = getSurah(inSummary.verse);
-  // setSummary({ ...inSummary, verse: ss });
-  //   setSummary(inSummary);
-  // }, [inSummary]);
-  // useEffect(() => setSelectedVerse(1), [inSummary?.verse?.surah_name]);
-  // useEffect(() => {
-  //   if (verse?.id) {
-  //     handleVerseBlur();
-  //   }
-  // }, [verse?.id]);
-  console.log(selectedVerse);
   return (
     <div className="flex gap-2 items-start">
       <AiFillDelete
@@ -309,7 +268,12 @@ export const SingleNarrationSummariesForEdit = ({
           <AiOutlineClose
             color="var(--neutral-color-400)"
             className="absolute left-8 top-3 w-4 h-4 cursor-pointer"
-            onClick={() => setSelectedSurah(null)}
+            onClick={() =>
+              handleSurahChange({
+                surah_name: "",
+                surah_no: 0,
+              })
+            }
           />
         </div>
         <Dropdown

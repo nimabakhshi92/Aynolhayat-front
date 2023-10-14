@@ -18,11 +18,11 @@ export default function Header() {
     <header className={classes.container}>
       <LinksAndLogo menuClickHandler={onShowModalHandler} />
       <ProfileAndSearch />
-      {isModal && (
+      {/* {isModal && (
         <Modal onCloseHandler={onShowModalHandler}>
           <Links onModal={isModal} />
         </Modal>
-      )}
+      )} */}
     </header>
   );
 }
