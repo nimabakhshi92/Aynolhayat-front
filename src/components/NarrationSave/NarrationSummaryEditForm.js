@@ -191,7 +191,7 @@ export const SingleNarrationSummariesForEdit = ({
           marginBottom: "32px",
           paddingBottom: "32px",
         }}
-        className="grid gap-4 grid-cols-7 grid-rows-2"
+        className="grid gap-4 grid-cols-7 grid-rows-4"
       >
         <InputWithSuggestion
           suggestions={level1?.sort()}
@@ -219,6 +219,7 @@ export const SingleNarrationSummariesForEdit = ({
 
         <InputWithSuggestion
           suggestions={level3?.sort()}
+          parentClassName=" col-span-5"
           className="w-full"
           onPressEnter={(e) => handleBlur("sub_subject", e.target.value)}
           onChange={(e) => {
@@ -230,7 +231,7 @@ export const SingleNarrationSummariesForEdit = ({
         />
 
         <InputWithState
-          className="col-span-2"
+          className="col-span-7"
           value={summary.expression}
           setValue={(newValue) => handleChange("expression", newValue)}
           onBlur={() => handleBlur("expression", summary.expression)}
@@ -238,7 +239,7 @@ export const SingleNarrationSummariesForEdit = ({
           placeholder="عبارت فارسی"
         />
         <InputWithState
-          className="col-span-2"
+          className="col-span-7"
           value={summary.summary}
           setValue={(newValue) => handleChange("summary", newValue)}
           onBlur={() => handleBlur("summary", summary.summary)}

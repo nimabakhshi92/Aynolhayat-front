@@ -12,6 +12,7 @@ export default function InputWithSuggestion({
   onChange,
   value,
   onBlur,
+  parentClassName,
 }) {
   const [matchedSuggesttions, setMatchedSuggestions] = useState(suggestions);
   const [openSuggestions, setOpenSuggestions] = useState(false);
@@ -45,7 +46,7 @@ export default function InputWithSuggestion({
     }
   };
   return (
-    <div className="relative">
+    <div className={`relative ${parentClassName}`}>
       <Input
         value={value}
         style={style}

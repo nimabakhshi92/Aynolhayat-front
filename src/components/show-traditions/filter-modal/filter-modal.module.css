@@ -5,7 +5,7 @@
   align-items: center;
   gap: 1.6rem;
   box-shadow: 0 8px 16px -3px rgba(0, 0, 0, 0.15);
-  padding: 3.2rem 0;
+  padding: 1.6rem 0;
   background-color: white;
 }
 
@@ -22,7 +22,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: 1.2rem;
-  padding: 1rem 1.6rem;
+  padding: 1.2rem 0.6rem;
   color: var(--neutral-color-600);
   border-bottom: 1px solid var(--neutral-color-200);
   cursor: pointer;
@@ -33,21 +33,21 @@
 
 .alphabet_title {
   font-size: 1.2rem;
-  padding: 1rem 1.6rem;
+  padding: 0.4rem 0.6rem;
   color: var(--neutral-color-600);
   border-bottom: 1px solid var(--neutral-color-200);
 }
 
 .alphabet_open {
   color: var(--primary-color) !important;
-  font-size: 1.5rem !important;
+  font-size: 1.2rem !important;
   border: 0 !important;
   background-color: #eefff8 !important;
 }
 
 .button_container button {
   width: 100%;
-  padding: 1rem;
+  /* padding: 1.2rem; */
   border-radius: 4px;
 }
 
@@ -64,12 +64,12 @@
   color: var(--primary-color) !important;
   margin-right: 2.6rem;
   border-bottom: 0 !important;
-  padding: 0.5rem 1.6rem !important;
+  padding: 0.5rem 0.6rem !important;
   border-right: 1px solid var(--primary-color) !important;
 }
 
 .arrow {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   transform: rotateZ(90deg);
   color: var(--neutral-color-400);
   margin: 0 1.6rem;
@@ -81,12 +81,12 @@
 
 @media screen and (min-width: 768px) {
   .button_container {
-    padding: 3.2rem 2.4rem;
+    padding: 1.3rem 1.2rem;
   }
 
   .alphabet_container,
   .alphabet_title {
-    font-size: 1.4rem !important;
+    font-size: 1.2rem !important;
   }
 
   .subject {
