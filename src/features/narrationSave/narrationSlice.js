@@ -21,7 +21,11 @@ export const createNarration = createAsyncThunk(
 const narrationSlice = createSlice({
   name: "narration",
   initialState,
-  reducers: {},
+  reducers: {
+    clearNarration: (state) => {
+      state.narration = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createNarration.pending, (state) => {
@@ -40,4 +44,6 @@ const narrationSlice = createSlice({
       });
   },
 });
+
+export const { clearNarration } = narrationSlice.actions;
 export default narrationSlice.reducer;

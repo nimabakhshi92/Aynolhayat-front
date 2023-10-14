@@ -22,10 +22,12 @@ export default function InputWithSuggestion({
     //     return item?.includes(e.target.value);
     //   })
     // );
-    if (!reference)
+    if (!reference) {
+      if (!value) return suggestions;
       return suggestions?.filter((item) => {
         return item?.includes(value);
       });
+    }
 
     if (!reference?.current) return suggestions;
     const searchTerm = reference.current?.value;
@@ -34,12 +36,12 @@ export default function InputWithSuggestion({
   };
 
   const suggestionsExist = matchedSuggesttions?.length > 0;
-  const onMenuClick = (item) => {
+  const onMenuClick = async (item) => {
     if (reference) reference.current.value = item;
     if (reference && onChange) onChange();
     if (!reference && onChange) {
-      onChange({ target: { value: item } });
-      onPressEnter({ target: { value: item } });
+      // await onChange({ target: { value: item } });
+      await onPressEnter({ target: { value: item } });
     }
   };
   return (
@@ -52,8 +54,12 @@ export default function InputWithSuggestion({
         type="text"
         placeholder={placeholder}
         onClick={() => setOpenSuggestions(true)}
+        onMouseEnter={(e) => {
+          setMatchedSuggestions(matchSearch(e));
+          setOpenSuggestions(true);
+        }}
+        onMouseLeave={() => setOpenSuggestions(false)}
         onBlur={(e) => {
-          setTimeout(() => setOpenSuggestions(false), 100);
           if (onBlur) onBlur(e);
         }}
         onChange={(e) => {
@@ -66,15 +72,21 @@ export default function InputWithSuggestion({
             else {
               onPressEnter(event);
             }
+            event.currentTarget.blur();
           }
         }}
       />
       {openSuggestions && suggestionsExist && (
-        <ul className={classes.menu}>
+        <ul
+          className={classes.menu}
+          onMouseEnter={() => setOpenSuggestions(true)}
+          onMouseLeave={() => setOpenSuggestions(false)}
+        >
           {matchSearch()?.map((item, index) => (
             <li
               key={index}
               onClick={() => {
+                setOpenSuggestions(false);
                 onMenuClick(item);
               }}
             >

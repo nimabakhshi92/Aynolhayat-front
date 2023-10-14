@@ -13,11 +13,12 @@ import {
 import InputWithSuggestion from "../general/InputWithSuggestion";
 import { AiOutlinePlus } from "react-icons/ai";
 import Tag from "../ui/tag";
+import { useQueryClient } from "react-query";
 
 export const NarrationSubjectEditForm = ({ narration }) => {
   const [updatedNarration, setUpdatedNarration] = useState({});
   const newSubject = useRef();
-
+  const queryClient = useQueryClient();
   let { data: subject } = useGetSubjects();
   subject = subject?.subjects || [];
 
@@ -36,6 +37,7 @@ export const NarrationSubjectEditForm = ({ narration }) => {
 
   useEffect(() => {
     setUpdatedNarration(narration);
+    queryClient.invalidateQueries("subject");
   }, [narration]);
 
   return (

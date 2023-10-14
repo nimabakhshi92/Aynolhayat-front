@@ -56,7 +56,12 @@ function App() {
               }
             >
               <Route index element={<NarrationWarehouse />}></Route>
-              <Route path="save narration" element={<NarrationSave />}></Route>
+              <Route path=":narrationId" element={<NarrationEdit />}></Route>
+              <Route path="save narration/" element={<NarrationEdit />}></Route>
+              <Route
+                path="save narration/:narrationId"
+                element={<NarrationEdit />}
+              ></Route>
               <Route
                 path="edit narration/:narrationId"
                 element={<NarrationEdit />}

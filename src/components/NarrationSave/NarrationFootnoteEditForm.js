@@ -10,13 +10,18 @@ import {
   useModifyNarrationFootnote,
 } from "../../api/hooks/allHooks";
 import { InputWithState } from "../general/InputWithState";
-
+const emptyFootnote0 = {
+  expression: "",
+  explanation: "",
+};
 export const SingleNarrationFootnoteForEdit = ({
   onInputChange,
   inFootnote,
   narration,
+  last,
+  handleAddInputComponent,
 }) => {
-  const [footnote, setFootnote] = useState({ inFootnote });
+  const [footnote, setFootnote] = useState(inFootnote);
   useEffect(() => {
     setFootnote(inFootnote);
   }, [inFootnote]);
@@ -88,27 +93,31 @@ export const SingleNarrationFootnoteForEdit = ({
           onBlur={() => handleBlur("explanation", footnote.explanation)}
         />
       </div>
+      {handleAddInputComponent && footnote.id && (
+        <AiOutlinePlusCircle
+          className="w-6 h-6 cursor-pointer"
+          color="var(--neutral-color-400)"
+          onClick={handleAddInputComponent}
+        />
+      )}
     </div>
   );
 };
 
 export const NarrationFootnoteEditForm = ({ narration }) => {
   const [allFootnotes, setAllFootnotes] = useState([]);
-  const [updatedNarration, setUpdatedNarration] = useState({});
+
   useEffect(() => {
     setAllFootnotes(narration?.footnotes);
   }, [narration]);
-  const emptyFootnote = {
-    expression: "",
-    explanation: "",
-  };
+
   const handleOnInputChange = (index, newValues) => {
     const updatedAllFootnotes = [...allFootnotes];
     updatedAllFootnotes[index] = newValues;
     setAllFootnotes(updatedAllFootnotes);
   };
   const handleAddInputComponent = () => {
-    setAllFootnotes([...allFootnotes, emptyFootnote]);
+    setAllFootnotes([...allFootnotes, emptyFootnote0]);
   };
 
   return (
@@ -126,6 +135,9 @@ export const NarrationFootnoteEditForm = ({ narration }) => {
       {allFootnotes?.map((footnote, index) => (
         <SingleNarrationFootnoteForEdit
           key={index}
+          handleAddInputComponent={
+            index === allFootnotes.length - 1 && handleAddInputComponent
+          }
           inFootnote={footnote}
           narration={narration}
           onInputChange={(newValues) => handleOnInputChange(index, newValues)}

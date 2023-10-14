@@ -23,26 +23,16 @@ import InputWithSuggestion from "../general/InputWithSuggestion";
 
 export const SingleNarrationSummariesForEdit = ({
   inSummary,
-  onInputChange,
   narration,
+  handleCancelNewItem,
+  ss,
 }) => {
+  const queryClient = useQueryClient();
   let { data: surah } = useGetSurah();
   surah = surah || [];
   const sortedSurah = surah?.sort((a, b) => a.surah_no - b.surah_no);
   const [selectedSurah, setSelectedSurah] = useState(null);
-  // const verseNos = Array.from(
-  //   { length: selectedSurah?.no_of_verses || 1 },
-  //   (_, i) => i + 1
-  // );
-  const verseNos = Array.from(
-    { length: inSummary?.verse?.no_of_verses || 1 },
-    (_, i) => i + 1
-  );
 
-  const [selectedVerse, setSelectedVerse] = useState(1);
-
-  let { data: verse } = useGetVerse(inSummary?.verse?.surah_no, selectedVerse);
-  verse = (verse || [])[0] || {};
   const emptySummary = {
     alphabet: "",
     // subject: "",
@@ -63,11 +53,29 @@ export const SingleNarrationSummariesForEdit = ({
     // subject_2: "",
     expression: "",
     summary: "",
-    surah_no: "",
-    verse_no: "",
-    verse_content: "",
+    verse: {
+      surah_no: "",
+      verse_no: "",
+      verse_content: "",
+    },
   });
+  const [selectedVerse, setSelectedVerse] = useState(summary?.verse?.verse_no);
 
+  let { data: verse } = useGetVerse(summary?.verse?.surah_no, selectedVerse);
+  verse = verse?.length === 1 ? verse[0] : {};
+  const getNoOfVerses = (surah_name) => {
+    const s = surah?.find((item) => item.surah_name === surah_name);
+    if (s) {
+      return s.no_of_verses;
+    }
+    return 0;
+  };
+  const verseNos = Array.from(
+    { length: getNoOfVerses(summary?.verse?.surah_name) || 0 },
+    (_, i) => i + 1
+  );
+
+  console.log(verse);
   const getSurah = (selectedSurah) => {
     const s = surah?.find(
       (item) => item.surah_name === selectedSurah?.surah_name
@@ -78,6 +86,7 @@ export const SingleNarrationSummariesForEdit = ({
     }
     return selectedSurah;
   };
+
   function uniqueArray3(a) {
     function onlyUnique(value, index, self) {
       return self?.indexOf(value) === index;
@@ -89,7 +98,28 @@ export const SingleNarrationSummariesForEdit = ({
     return unique;
   }
 
-  const { data: ss } = useGetNarrationFilterOptions();
+  const addNoOfVerses = (inSummary) => {
+    const s = surah?.find(
+      (item) => item.surah_name === inSummary?.verse?.surah_name
+    );
+    if (s) {
+      return {
+        ...inSummary,
+        verse: {
+          ...inSummary.verse,
+          no_of_verses: s.no_of_verses,
+          surahWithNo: s.surah_no + "- " + s.surah_name,
+        },
+      };
+    }
+    return inSummary;
+  };
+  useEffect(() => {
+    setSummary(addNoOfVerses(inSummary));
+    setSelectedVerse(inSummary?.verse?.verse_no);
+    // queryClient.invalidateQueries("");
+  }, [inSummary]);
+
   const level1 = uniqueArray3(ss?.map((s) => s.alphabet));
   const level2 = uniqueArray3(ss?.map((s) => s.subject));
   const level3 = uniqueArray3(ss?.map((s) => s.sub_subject));
@@ -99,7 +129,11 @@ export const SingleNarrationSummariesForEdit = ({
 
   const handleChange = (key, newValue) => {
     setSummary({ ...summary, [key]: newValue });
-    onInputChange({ ...summary, [key]: newValue });
+    // onInputChange({ ...summary, [key]: newValue });
+  };
+
+  const handleSurahChange = (data) => {
+    setSummary({ ...summary, verse: { ...summary.verse, ...data } });
   };
 
   const handleVerseChange = (key, newValue) => {
@@ -108,13 +142,15 @@ export const SingleNarrationSummariesForEdit = ({
   };
 
   const handleDelete = () => {
-    deleteSummary({
-      narrationId: narration?.id,
-      summaryId: summary?.id,
-    });
+    if (!summary?.id && handleCancelNewItem) handleCancelNewItem();
+    else
+      deleteSummary({
+        narrationId: narration?.id,
+        summaryId: summary?.id,
+      });
   };
-
   const handleBlur = (key, newValue) => {
+    if (!newValue) return;
     let keyForPost = "";
     switch (key) {
       case "subject":
@@ -131,10 +167,16 @@ export const SingleNarrationSummariesForEdit = ({
         narrationId: narration?.id,
         summaryId: summary?.id,
         data: { [keyForPost]: newValue, quran_verse: 0 },
+        dataForMutate: { [key]: newValue, quran_verse: 0 },
       });
     else {
       addSummary({
         narrationId: narration?.id,
+        dataForMutate: {
+          [key]: newValue,
+          quran_verse: 0,
+          narration: narration?.id,
+        },
         data: {
           [keyForPost]: newValue,
           quran_verse: 0,
@@ -150,19 +192,30 @@ export const SingleNarrationSummariesForEdit = ({
       data: { quran_verse: verse.id },
     });
   };
+  useEffect(() => {
+    if (
+      verse.id &&
+      narration?.id &&
+      summary?.id &&
+      summary?.verse?.surah_name &&
+      summary?.verse?.verse_no > 0
+    )
+      handleVerseBlur();
+  }, [verse]);
 
   // useEffect(() => setSelectedSurah(getSurah(selectedSurah)), [narration]);
-  useEffect(() => {
-    // const ss = getSurah(inSummary.verse);
-    // setSummary({ ...inSummary, verse: ss });
-    setSummary(inSummary);
-  }, [inSummary]);
+  // useEffect(() => {
+  // const ss = getSurah(inSummary.verse);
+  // setSummary({ ...inSummary, verse: ss });
+  //   setSummary(inSummary);
+  // }, [inSummary]);
   // useEffect(() => setSelectedVerse(1), [inSummary?.verse?.surah_name]);
   // useEffect(() => {
   //   if (verse?.id) {
   //     handleVerseBlur();
   //   }
   // }, [verse?.id]);
+  console.log(selectedVerse);
   return (
     <div className="flex gap-2 items-start">
       <AiFillDelete
@@ -181,13 +234,6 @@ export const SingleNarrationSummariesForEdit = ({
         }}
         className="grid gap-4 grid-cols-7 grid-rows-2"
       >
-        {/* <InputWithState
-          value={summary.alphabet}
-          setValue={(newValue) => handleChange("alphabet", newValue)}
-          onBlur={() => handleBlur("alphabet", summary.alphabet)}
-          type="text"
-          placeholder="سطح 1"
-        /> */}
         <InputWithSuggestion
           suggestions={level1?.sort()}
           className="w-full"
@@ -199,13 +245,7 @@ export const SingleNarrationSummariesForEdit = ({
           placeholder="سطح 1"
           onBlur={(e) => handleBlur("alphabet", e.target.value)}
         />
-        {/* <InputWithState
-          value={summary.subject}
-          setValue={(newValue) => handleChange("subject", newValue)}
-          onBlur={() => handleBlur("subject", summary.subject)}
-          type="text"
-          placeholder="سطح 2"
-        /> */}
+
         <InputWithSuggestion
           suggestions={level2?.sort()}
           className="w-full"
@@ -217,13 +257,7 @@ export const SingleNarrationSummariesForEdit = ({
           placeholder="سطح 2"
           onBlur={(e) => handleBlur("subject", e.target.value)}
         />
-        {/* <InputWithState
-          value={summary.sub_subject}
-          setValue={(newValue) => handleChange("sub_subject", newValue)}
-          onBlur={() => handleBlur("sub_subject", summary.sub_subject)}
-          type="text"
-          placeholder="توضیح من"
-        /> */}
+
         <InputWithSuggestion
           suggestions={level3?.sort()}
           className="w-full"
@@ -258,8 +292,12 @@ export const SingleNarrationSummariesForEdit = ({
             selected={summary?.verse}
             setSelected={(newValue) => {
               // setSelectedSurah(newValue);
-              handleVerseChange("surah_name", newValue?.surah_name);
-              handleVerseChange("surah_no", newValue?.surah_no);
+              handleSurahChange({
+                surah_name: newValue?.surah_name,
+                surah_no: newValue?.surah_no,
+              });
+              // handleVerseChange();
+              // handleVerseBlur();
             }}
             items={sortedSurah?.map((surah) => ({
               ...surah,
@@ -294,12 +332,14 @@ export const SingleNarrationSummariesForEdit = ({
   );
 };
 
-export const NarrationSummaryEditForm = ({ narration }) => {
-  let { data: surah } = useGetSurah();
+export const NarrationSummaryEditForm = ({ summaries, narration }) => {
+  const { data: ss } = useGetNarrationFilterOptions();
   const queryClient = useQueryClient();
+  let { data: surah } = useGetSurah();
   surah = surah || [];
 
-  const emptySummary = {
+  const [showEmpty, setShowEmpty] = useState(false);
+  const emptySummary0 = {
     alphabet: "",
     subject: "",
     sub_subject: "",
@@ -311,46 +351,21 @@ export const NarrationSummaryEditForm = ({ narration }) => {
     verse_no: "",
     verse_content: "",
   };
-  const [updatedNarration, setUpdatedNarration] = useState({});
+
+  const [emptySummary, setEmptySummary] = useState(emptySummary0);
+
   useEffect(() => {
-    const cst = narration?.content_summary_tree?.map((c) => {
-      const s = surah?.find((item) => item.surah_name === c?.verse?.surah_name);
-      if (s) {
-        return {
-          ...c,
-          verse: {
-            ...c.verse,
-            no_of_verses: s.no_of_verses,
-            surahWithNo: s.surah_no + "- " + s.surah_name,
-          },
-        };
-      } else return c;
-    });
+    setShowEmpty(false);
+    setEmptySummary(emptySummary0);
+    queryClient.invalidateQueries("filterOptions");
+  }, [summaries]);
+  const handleAddInputComponent = () => setShowEmpty(true);
+  const reversed = [...summaries].reverse();
 
-    setUpdatedNarration({ ...narration, content_summary_tree: cst });
-  }, [narration]);
-
-  const handleOnInputChange = (index, newValues) => {
-    const updatedContentSummaryTree = updatedNarration.content_summary_tree;
-    updatedContentSummaryTree[index] = newValues;
-    setUpdatedNarration({
-      ...updatedNarration,
-      content_summary_tree: updatedContentSummaryTree,
-    });
+  const handleCancelNewItem = () => {
+    setShowEmpty(false);
+    setEmptySummary(emptySummary0);
   };
-  const handleAddInputComponent = () => {
-    const newSummaryTree = [...updatedNarration.content_summary_tree];
-    newSummaryTree.unshift(emptySummary);
-    setUpdatedNarration({
-      ...updatedNarration,
-      content_summary_tree: newSummaryTree,
-    });
-    // queryClient.setQueryData(["narrationIndividual", narration.id], {
-    //   ...updatedNarration,
-    //   content_summary_tree: newSummaryTree,
-    // });
-  };
-
   return (
     <ContentContainer
       actionComponent={
@@ -363,90 +378,25 @@ export const NarrationSummaryEditForm = ({ narration }) => {
       className="mb-4"
       title="خلاصه‌ها و فهرست"
     >
-      {updatedNarration?.content_summary_tree?.map((summary, index) => {
+      {showEmpty && (
+        <SingleNarrationSummariesForEdit
+          narration={narration}
+          inSummary={emptySummary}
+          handleCancelNewItem={handleCancelNewItem}
+          ss={ss}
+        />
+      )}
+      {reversed.map((summary, index) => {
         return (
           <SingleNarrationSummariesForEdit
             key={index}
             narration={narration}
             inSummary={summary}
-            onInputChange={(newValues) => handleOnInputChange(index, newValues)}
+            ss={ss}
+            // onInputChange={(newValues) => handleOnInputChange(index, newValues)}
           />
         );
       })}
     </ContentContainer>
   );
 };
-
-// export const NarrationSubjectEditForm = ({ narration }) => {
-//   const [updatedNarration, setUpdatedNarration] = useState({});
-//   const newSubject = useRef();
-
-//   let { data: subject } = useGetSubjects();
-//   subject = subject?.subjects || [];
-
-//   const { mutate } = useAddNarrationSubject();
-//   const { mutate: deleteSubject } = useDeleteNarrationSubject();
-
-//   const handleAdd = (fieldValue) => {
-//     mutate({
-//       narrationId: narration?.id,
-//       data: { subject: fieldValue, narration: narration?.id },
-//     });
-//   };
-
-//   const handleDelete = (subjectId) =>
-//     deleteSubject({ narrationId: narration?.id, subjectId });
-
-//   useEffect(() => {
-//     setUpdatedNarration(narration);
-//   }, [narration]);
-
-//   return (
-//     <ContentContainer className="mb-4" title="موضوعات مرتبط با حدیث">
-//       <div className="flex items-center">
-//         <InputWithSuggestion
-//           style={{
-//             borderTopLeftRadius: 0,
-//             borderBottomLeftRadius: 0,
-//             width: "250px",
-//           }}
-//           reference={newSubject}
-//           placeholder="موضوع اضافه کنید"
-//           suggestions={subject}
-//           onPressEnter={() => {
-//             handleAdd(newSubject.current?.value);
-//             newSubject.current.value = "";
-//           }}
-//         />
-//         <div
-//           className="flex hover:opacity-[0.75] cursor-pointer items-center justify-center w-10 h-10"
-//           style={{
-//             backgroundColor: "var(--primary-color)",
-//             color: "white",
-//             fontSize: "30px",
-//             fontWeight: 400,
-//             borderTopLeftRadius: 8,
-//             borderBottomLeftRadius: 8,
-//           }}
-//           onClick={() => {
-//             handleAdd(newSubject.current?.value);
-//             newSubject.current.value = "";
-//           }}
-//         >
-//           <AiOutlinePlus />
-//         </div>
-//       </div>
-//       <div className="mt-6 flex gap-4 items-start">
-//         {updatedNarration?.subjects?.map((subject, index) => {
-//           return (
-//             <Tag
-//               onClose={() => handleDelete(subject.id)}
-//               key={index}
-//               tag={subject.subject}
-//             />
-//           );
-//         })}
-//       </div>
-//     </ContentContainer>
-//   );
-// };

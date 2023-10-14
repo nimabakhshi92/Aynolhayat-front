@@ -209,8 +209,10 @@ export const useModifyNarrationSummary = () => {
   const queryClient = useQueryClient();
   return useMutation(modifyNarrationSummary, {
     onMutate: async (inputs) => {
-      const { narrationId, summaryId, data } = inputs;
+      const { narrationId, summaryId, data, dataForMutate } = inputs;
+      console.log("before cancel queries");
       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
+      console.log("after cancel queries");
       const previousData = queryClient.getQueryData([
         "narrationIndividual",
         narrationId,
@@ -218,11 +220,21 @@ export const useModifyNarrationSummary = () => {
       queryClient.setQueryData(
         ["narrationIndividual", narrationId],
         (oldData) => {
-          return {
+          console.log(oldData);
+          console.log({
             ...oldData,
             content_summary_tree: oldData.content_summary_tree.map((s) => {
               if (s.id !== summaryId) return s;
               else return { ...s, ...data };
+            }),
+          });
+          return {
+            ...oldData,
+            content_summary_tree: oldData.content_summary_tree.map((s) => {
+              console.log(s.id, summaryId);
+
+              if (s.id !== summaryId) return s;
+              else return { ...s, ...dataForMutate };
             }),
           };
         }
@@ -260,7 +272,7 @@ export const useAddNarrationSummary = () => {
   const queryClient = useQueryClient();
   return useMutation(addNarrationSummary, {
     onMutate: async (inputs) => {
-      const { narrationId, data } = inputs;
+      const { narrationId, data, dataForMutate } = inputs;
       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
       const previousData = queryClient.getQueryData([
         "narrationIndividual",
@@ -271,7 +283,10 @@ export const useAddNarrationSummary = () => {
         (oldData) => {
           return {
             ...oldData,
-            content_summary_tree: [...oldData.content_summary_tree, data],
+            content_summary_tree: [
+              ...oldData.content_summary_tree,
+              dataForMutate,
+            ],
           };
         }
       );
