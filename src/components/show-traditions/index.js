@@ -33,7 +33,7 @@ export default function ShowTraditions() {
     <div className="p-4 grid gap-6 grid-cols-[10fr_20fr]">
       <FilterModal data={data} className="block" />
       {/* <SortTraditions /> */}
-      <Traditions section={section} data={filterData(data)} className="" />
+      {/* <Traditions section={section} data={filterData(data)} className="" /> */}
       {/* <div onClick={onShowModalHandler} className={classes.filter}>
         <Filter />
       </div> */}

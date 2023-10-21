@@ -53,3 +53,27 @@ a {
 .section-center {
   padding: 0 1.8rem;
 }
+.rct-icons-fa4 .rct-icon-expand-close::before {
+  content: "\f053" !important;
+}
+.react-checkbox-tree ol ol {
+  padding-right: 24px !important;
+}
+.rct-text {
+  align-items: start !important;
+}
+.rct-checkbox {
+  display: none;
+}
+.rct-node-icon {
+  /* display: none; */
+}
+.rct-node-expanded {
+  background-color: #eefff8 !important;
+}
+.rct-node-expanded .rct-title {
+  color: var(--primary-color) !important;
+}
+.rct-node-clickable {
+  width: 100%;
+}
