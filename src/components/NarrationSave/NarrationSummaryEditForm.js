@@ -36,8 +36,8 @@ export const SingleNarrationSummariesForEdit = ({
     alphabet: "",
     subject: "",
     sub_subject: "",
-    // subject_1: "",
-    // subject_2: "",
+    subject_3: "",
+    subject_4: "",
     expression: "",
     summary: "",
     verse: {
@@ -97,6 +97,8 @@ export const SingleNarrationSummariesForEdit = ({
   const level1 = uniqueArray3(ss?.map((s) => s.alphabet));
   const level2 = uniqueArray3(ss?.map((s) => s.subject));
   const level3 = uniqueArray3(ss?.map((s) => s.sub_subject));
+  const level4 = uniqueArray3(ss?.map((s) => s.subject_3));
+  const level5 = uniqueArray3(ss?.map((s) => s.subject_4));
   const { mutate } = useModifyNarrationSummary();
   const { mutate: addSummary } = useAddNarrationSummary();
   const { mutate: deleteSummary } = useDeleteNarrationSummary();
@@ -207,6 +209,7 @@ export const SingleNarrationSummariesForEdit = ({
 
         <InputWithSuggestion
           suggestions={level2?.sort()}
+          parentClassName="col-span-1"
           className="w-full"
           onPressEnter={(e) => handleBlur("subject", e.target.value)}
           onChange={(e) => {
@@ -219,15 +222,41 @@ export const SingleNarrationSummariesForEdit = ({
 
         <InputWithSuggestion
           suggestions={level3?.sort()}
-          parentClassName=" col-span-5"
+          parentClassName=" col-span-2"
           className="w-full"
           onPressEnter={(e) => handleBlur("sub_subject", e.target.value)}
           onChange={(e) => {
             handleChange("sub_subject", e.target.value);
           }}
           value={summary.sub_subject}
-          placeholder="توضیح من"
+          placeholder="سطح 3"
           onBlur={(e) => handleBlur("sub_subject", e.target.value)}
+        />
+
+        <InputWithSuggestion
+          suggestions={level4?.sort()}
+          parentClassName=" col-span-3"
+          className="w-full"
+          onPressEnter={(e) => handleBlur("subject_3", e.target.value)}
+          onChange={(e) => {
+            handleChange("subject_3", e.target.value);
+          }}
+          value={summary.subject_3}
+          placeholder="سطح 4"
+          onBlur={(e) => handleBlur("subject_3", e.target.value)}
+        />
+
+        <InputWithSuggestion
+          suggestions={level5?.sort()}
+          parentClassName=" col-span-7"
+          className="w-full"
+          onPressEnter={(e) => handleBlur("subject_4", e.target.value)}
+          onChange={(e) => {
+            handleChange("subject_4", e.target.value);
+          }}
+          value={summary.subject_4}
+          placeholder="سطح 5"
+          onBlur={(e) => handleBlur("subject_4", e.target.value)}
         />
 
         <InputWithState
@@ -308,8 +337,8 @@ export const NarrationSummaryEditForm = ({ summaries, narration }) => {
     alphabet: "",
     subject: "",
     sub_subject: "",
-    // subject_1: "",
-    // subject_2: "",
+    subject_3: "",
+    subject_4: "",
     expression: "",
     summary: "",
     surah_no: "",
