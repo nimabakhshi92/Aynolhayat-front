@@ -4,7 +4,141 @@ import { MdOutlineArrowForwardIos } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedNode } from "../../features/summaryTree/summaryTreeSlice";
 
-export const SurahSummaryTree = ({ data, section, selectedNode }) => {
+import CheckboxTree from "react-checkbox-tree";
+import "react-checkbox-tree/lib/react-checkbox-tree.css";
+import Input from "../ui/input";
+
+export function SurahSummaryTree({ data, section, selectedNode }) {
+  const dispatch = useDispatch();
+  const [checked, setChecked] = useState([]);
+  const [expanded, setExpanded] = useState([]);
+  const [filterText, setFilterText] = useState("");
+  const [clicked, setClicked] = useState({});
+  const [c, setC] = useState([]);
+  const [filteredNodes, setFilteredNodes] = useState([]);
+  useEffect(() => {
+    let newc = data.map((level1, index1) => {
+      return {
+        value: index1 + "l1" + level1.surah_no,
+        label: level1.surah_no + "-" + level1.surah_name,
+        children: level1.verses?.map((level2, index2) => {
+          return {
+            value:
+              index1 +
+              "l1" +
+              index2 +
+              "l2" +
+              level2.verse_no +
+              "-" +
+              level2.verse_content,
+            label: level2.verse_no + "-" + level2.verse_content,
+            children: level2.sub_subjects?.map((level3, index3) => {
+              return {
+                value:
+                  index1 + "l1" + index2 + "l2" + index3 + "l3" + level3.title,
+                label: level3.title,
+                className:
+                  index1 +
+                    "l1" +
+                    index2 +
+                    "l2" +
+                    index3 +
+                    "l3" +
+                    level3.title ===
+                  clicked.value
+                    ? "b-red"
+                    : null,
+              };
+            }),
+          };
+        }),
+      };
+    });
+    setC(newc);
+  }, [data, clicked]);
+
+  useEffect(() => {
+    if (!filterText) {
+      setFilteredNodes(c);
+      return;
+    }
+    setFilteredNodes(c.reduce(filterNodes, []));
+  }, [filterText, c]);
+  const onClick = (value) => {
+    setClicked(value);
+    dispatch(
+      setSelectedNode({ node: { ...selectedNode, [section]: value.value } })
+    );
+  };
+  const positionEndIdx = (value) => {
+    if (!value) return;
+    let idx;
+    idx = value?.indexOf("l4");
+    if (idx > -1) return idx + 2;
+    idx = value?.indexOf("l3");
+    if (idx > -1) return idx + 2;
+    idx = value?.indexOf("l2");
+    if (idx > -1) return idx + 2;
+    idx = value?.indexOf("l1");
+    if (idx > -1) return idx + 2;
+    return 0;
+  };
+
+  const extractPosition = (value) => {
+    return value?.slice(0, positionEndIdx(value));
+  };
+  useEffect(() => {
+    const clickedValue = clicked.value;
+    const newExpanded = expanded.filter((e) =>
+      extractPosition(clickedValue).includes(extractPosition(e))
+    );
+    setExpanded(newExpanded);
+  }, [clicked]);
+
+  const filterNodes = (filtered, node) => {
+    const children = (node.children || []).reduce(filterNodes, []);
+
+    if (
+      node.label.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase()) >
+        -1 ||
+      children.length
+    ) {
+      filtered.push({ ...node, children });
+    }
+
+    return filtered;
+  };
+  return (
+    <div className={classes.alphabet}>
+      <p className={classes.alphabet_title}>فهرست مطالب</p>
+      <div>
+        <Input
+          className="w-full mb-2"
+          style={{ height: "48px" }}
+          type="search"
+          placeholder="جستجو در فهرست"
+          value={filterText}
+          onChange={(e) => setFilterText(e.target.value)}
+        />
+        <CheckboxTree
+          nodes={filteredNodes}
+          checked={checked}
+          expanded={expanded}
+          expandOnClick
+          onCheck={(checkedData) => {
+            setChecked(checkedData);
+          }}
+          onClick={onClick}
+          onExpand={(expandedData) => {
+            setExpanded(expandedData);
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+export const SurahSummaryTreeOld = ({ data, section, selectedNode }) => {
   const [subjectVisibility, setSubjectVisibility] = useState([]);
   const dispatch = useDispatch();
 

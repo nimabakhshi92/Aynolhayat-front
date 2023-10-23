@@ -17,6 +17,7 @@ export default function Traditions({ data, section }) {
     { id: 2, title: "پرتکرارترین", icon: <FiPrinter /> },
     { id: 3, title: "قدیمی ترین", icon: <BsFiletypePdf /> },
   ];
+  console.log(data);
   return (
     <div className={classes.container}>
       {data?.map((i, index) => (
@@ -24,36 +25,70 @@ export default function Traditions({ data, section }) {
           <div className={classes.header_container}>
             {section === "surah" ? (
               <p>
-                {i.verse_no}- {i.verse_content}
+                {i.verse_no} - {i.verse_content}
               </p>
             ) : (
               <p>{i.title}</p>
             )}
             <DotsDropdown items={dropdown} />
           </div>
-          {i.sub_subjects.map((subItem, subIndex) => (
+          {(i?.sub_subjects || []).map((subItem, subIndex) => (
             <div key={subIndex} className={classes.content_container}>
               <div className={classes.content_container__title}>
                 <img src={noteIcon} alt="icon" />
                 <span>{subItem.title}</span>
               </div>
-              {subItem.content.map((contentItem, contentIndex) => (
-                <Fragment key={contentIndex}>
-                  <div className="grid gap-6 grid-cols-2">
-                    <p>{contentItem.expression}</p>
-                    <p>{contentItem.summary}</p>
-                  </div>
-                  {contentIndex === subItem.content.length - 1 ? null : (
-                    <div className="flex justify-center">
-                      <img
-                        className={classes.shape_green}
-                        src={shape_green}
-                        alt="shape-green"
-                      />
-                    </div>
-                  )}
-                </Fragment>
-              ))}
+              {subItem?.subjects_3.map((subject_3) => {
+                return (
+                  <>
+                    {subject_3.title && (
+                      <div
+                        className={classes.content_container__title}
+                        style={{ paddingRight: "32px" }}
+                      >
+                        <img src={noteIcon} alt="icon" />
+                        <span>{subject_3.title}</span>
+                      </div>
+                    )}
+                    {subject_3.subjects_4.map((subject_4) => {
+                      return (
+                        <>
+                          {subject_4.title && (
+                            <div
+                              className={classes.content_container__title}
+                              style={{ paddingRight: "64px" }}
+                            >
+                              <img src={noteIcon} alt="icon" />
+                              <span>{subject_4.title}</span>
+                            </div>
+                          )}
+                          {(subject_4?.content || []).map(
+                            (contentItem, contentIndex) => (
+                              <Fragment key={contentIndex}>
+                                <div className="grid gap-6 grid-cols-2">
+                                  <p>{contentItem.expression}</p>
+                                  <p>{contentItem.summary}</p>
+                                </div>
+                                {contentIndex ===
+                                (subItem.content || []).length - 1 ? null : (
+                                  <div className="flex justify-center">
+                                    <img
+                                      className={classes.shape_green}
+                                      src={shape_green}
+                                      alt="shape-green"
+                                    />
+                                  </div>
+                                )}
+                              </Fragment>
+                            )
+                          )}
+                        </>
+                      );
+                    })}
+                  </>
+                );
+              })}
+
               <img
                 src={shape_gold}
                 alt={`shape-gold`}

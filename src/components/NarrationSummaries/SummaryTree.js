@@ -7,65 +7,88 @@ import { setSelectedNode } from "../../features/summaryTree/summaryTreeSlice";
 // import "./styles.css";
 import CheckboxTree from "react-checkbox-tree";
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Input from "../ui/input";
-export function SummaryTree({ data, section }) {
+import { extractPosition } from "../../utils/manipulation";
+export function SummaryTree({ data, section, selectedNode }) {
+  const dispatch = useDispatch();
   const [checked, setChecked] = useState([]);
   const [expanded, setExpanded] = useState([]);
   const [filterText, setFilterText] = useState("");
   const [filteredNodes, setFilteredNodes] = useState([]);
+  const [clicked, setClicked] = useState({});
+  const [c, setC] = useState([]);
+  useEffect(() => {
+    let newc = data.map((level1, index1) => {
+      return {
+        value: index1 + "l1" + level1.alphabet,
+        label: level1.alphabet,
+        // className:
+        //   index1 + "l1" + level1.alphabet == clicked.value ? "b-red" : null,
 
-  let c = data.map((level1, index1) => {
-    return {
-      value: index1 + "l1" + level1.alphabet,
-      label: level1.alphabet,
-      children: level1.subjects?.map((level2, index2) => {
-        return {
-          value: index1 + "l1" + index2 + "l2" + level2.title,
-          label: level2.title,
-          children: level2.sub_subjects?.map((level3, index3) => {
-            return {
-              value:
-                index1 + "l1" + index2 + "l2" + index3 + "l3" + level3.title,
-              label: level3.title,
-              children: level2.subjects_3?.map((level4, index4) => {
-                return {
-                  value:
-                    index1 +
+        children: level1.subjects?.map((level2, index2) => {
+          return {
+            value: index1 + "l1" + index2 + "l2" + level2.title,
+            label: level2.title,
+            // className:
+            //   index1 + "l1" + index2 + "l2" + level2.title === clicked.value
+            //     ? "b-red"
+            //     : null,
+            children: level2.sub_subjects?.map((level3, index3) => {
+              return {
+                value:
+                  index1 + "l1" + index2 + "l2" + index3 + "l3" + level3.title,
+                label: level3.title,
+                className:
+                  index1 +
                     "l1" +
                     index2 +
                     "l2" +
                     index3 +
                     "l3" +
-                    index4 +
-                    "l4" +
-                    level4.title,
-                  label: level4.title,
-                  children: level4.subjects_4?.map((level5, index5) => {
-                    return {
-                      value:
-                        index1 +
-                        "l1" +
-                        index2 +
-                        "l2" +
-                        index3 +
-                        "l3" +
-                        index4 +
-                        "l4" +
-                        index5 +
-                        "l5" +
-                        level5.title,
-                      label: level5.title,
-                    };
-                  }),
-                };
-              }),
-            };
-          }),
-        };
-      }),
-    };
-  });
+                    level3.title ===
+                  clicked.value
+                    ? "b-red"
+                    : null,
+                children: level2.subjects_3?.map((level4, index4) => {
+                  return {
+                    value:
+                      index1 +
+                      "l1" +
+                      index2 +
+                      "l2" +
+                      index3 +
+                      "l3" +
+                      index4 +
+                      "l4" +
+                      level4.title,
+                    label: level4.title,
+                    children: level4.subjects_4?.map((level5, index5) => {
+                      return {
+                        value:
+                          index1 +
+                          "l1" +
+                          index2 +
+                          "l2" +
+                          index3 +
+                          "l3" +
+                          index4 +
+                          "l4" +
+                          index5 +
+                          "l5" +
+                          level5.title,
+                        label: level5.title,
+                      };
+                    }),
+                  };
+                }),
+              };
+            }),
+          };
+        }),
+      };
+    });
+    setC(newc);
+  }, [data, clicked]);
 
   useEffect(() => {
     if (!filterText) {
@@ -73,37 +96,20 @@ export function SummaryTree({ data, section }) {
       return;
     }
     setFilteredNodes(c.reduce(filterNodes, []));
-  }, [filterText, data]);
-  const [clicked, setClicked] = useState({});
+  }, [filterText, c]);
   const onClick = (value) => {
     setClicked(value);
+    dispatch(
+      setSelectedNode({ node: { ...selectedNode, [section]: value.value } })
+    );
   };
 
-  const positionEndIdx = (value) => {
-    if (!value) return;
-    console.log(value);
-    let idx;
-    idx = value?.indexOf("l4");
-    if (idx > -1) return idx + 2;
-    idx = value?.indexOf("l3");
-    if (idx > -1) return idx + 2;
-    idx = value?.indexOf("l2");
-    if (idx > -1) return idx + 2;
-    idx = value?.indexOf("l1");
-    if (idx > -1) return idx + 2;
-    return 0;
-  };
-
-  const extractPosition = (value) => {
-    return value?.slice(0, positionEndIdx(value));
-  };
   useEffect(() => {
     const clickedValue = clicked.value;
-    console.log(expanded);
-    const newExpanded = expanded.filter((e) =>
+    const filteredExpanded = expanded.filter((e) =>
       extractPosition(clickedValue).includes(extractPosition(e))
     );
-    setExpanded(newExpanded);
+    setExpanded(filteredExpanded);
   }, [clicked]);
 
   const filterNodes = (filtered, node) => {
