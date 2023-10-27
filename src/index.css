@@ -101,3 +101,25 @@ a {
 .rct-node-clickable:focus {
   background: transparent !important;
 }
+.arabic-text {
+  color: blue;
+  position: relative;
+}
+
+.arabic-text::before,
+.arabic-text::after {
+  content: attr(data-text);
+  color: red;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.arabic-text {
+  font-size: 18px;
+  color: blue;
+  direction: rtl; /* Right-to-left text direction for Arabic */
+}
+
+.diacritic {
+  color: red;
+}

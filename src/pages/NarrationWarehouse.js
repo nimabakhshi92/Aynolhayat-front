@@ -17,8 +17,142 @@ import apiUrls from "../api/urls";
 import { useNavigate } from "react-router-dom";
 import { customApiCall } from "../utils/axios";
 import Button from "../components/ui/buttons/primary-button";
-import { BiCloset } from "react-icons/bi";
+import { BiCloset, BiNote } from "react-icons/bi";
 import { useSelector } from "react-redux";
+import { FaComment, FaRegStickyNote } from "react-icons/fa";
+import { CustomModal, CustomModal2 } from "../components/general/CustomModal";
+
+const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
+
+// function colorizeTashkeel(string, oneColor = "red", footnotes) {
+//   let dollar = false;
+//   let atSign = false;
+//   let index = -1;
+//   const [showModal, setShowModal] = useState(false);
+//   return (
+//     <>
+//       <CustomModal
+//         modalOpen={showModal}
+//         setModalOpen={setShowModal}
+//         height="21.6rem"
+//         className="relative"
+//       >
+//         <p>salam</p>
+//       </CustomModal>
+//       <span style={{ color: "blue" }}>
+//         {[...string].map((char) => {
+//           if (char === "$") {
+//             dollar = !dollar;
+//           } else if (char === "@") {
+//             atSign = !atSign;
+//             index += 1;
+//             if (atSign)
+//               return (
+//                 <span className="relative inline-block w-1">
+//                   <FaRegStickyNote
+//                     className="absolute "
+//                     style={{
+//                       color: "#00000090",
+//                       transform: "translate(10px,-27px)",
+//                       cursor: "pointer",
+//                     }}
+//                     onMouseEnter={() => {}}
+//                   />
+//                 </span>
+//               );
+//             // atSign = !atSign;
+//           } else
+//             return /[\u064B-\u0652]/.test(char) ? (
+//               <span style={{ color: oneColor }}>&#8203;{`${char}`}</span>
+//             ) : (
+//               <span
+//                 style={{
+//                   color: dollar ? "#1ec718" : "#102cc9",
+//                   // backgroundColor: atSign && "#ff000030",
+//                   // cursor: atSign && "pointer",
+//                 }}
+//               >
+//                 {char}
+//               </span>
+//             );
+//         })}
+//       </span>
+//     </>
+//   );
+// }
+
+function ArabicTextComponent({ children, footnotes }) {
+  let dollar = false;
+  let atSign = false;
+  let index = -1;
+  const [showModal, setShowModal] = useState(false);
+  const [footnote, setFootnote] = useState("");
+
+  return (
+    <>
+      <CustomModal2
+        open={showModal}
+        setOpen={setShowModal}
+        height="21.6rem"
+        className="relative"
+        style={{
+          border: "1px solid gray",
+          top: "30vh",
+          padding: "16px",
+        }}
+        title="پاورقی"
+        text={footnote}
+      ></CustomModal2>
+      <span style={{ color: "blue" }}>
+        {[...children].map((char) => {
+          if (char === "$") {
+            dollar = !dollar;
+          } else if (char === "@") {
+            atSign = !atSign;
+            if (atSign) {
+              index += 1;
+              const footnoteExplanation = footnotes[index]?.explanation;
+              return (
+                <span className="relative inline-block w-1">
+                  <FaRegStickyNote
+                    className="absolute "
+                    style={{
+                      color: "#00000090",
+                      transform: "translate(10px,-27px)",
+                      cursor: "pointer",
+                    }}
+                    onMouseEnter={() => {
+                      console.log(index);
+                      console.log(footnotes);
+                      console.log(footnotes[index]);
+                      setFootnote(footnoteExplanation);
+                      setShowModal(true);
+                    }}
+                    onClick={() => setShowModal(true)}
+                  />
+                </span>
+              );
+            } // atSign = !atSign;
+          } else
+            return /[\u064B-\u0652]/.test(char) ? (
+              <span style={{ color: "red" }}>&#8203;{`${char}`}</span>
+            ) : (
+              <span
+                style={{
+                  color: dollar ? "#1ec718" : "#102cc9",
+                  // backgroundColor: atSign && "#ff000030",
+                  // cursor: atSign && "pointer",
+                }}
+              >
+                {char}
+              </span>
+            );
+        })}
+      </span>
+    </>
+  );
+}
+
 const SingleNarration = ({ narration, onDelete, onEdit }) => {
   const [short, setShort] = useState(true);
   const { user } = useSelector((store) => store.user);
@@ -87,9 +221,12 @@ const SingleNarration = ({ narration, onDelete, onEdit }) => {
         </div>
       )}
       <p>
-        <span>
-          {short ? narration.content.substr(0, 1000) : narration.content}
-        </span>
+        <ArabicTextComponent
+          children={
+            short ? narration.content.substr(0, 1000) : narration.content
+          }
+          footnotes={narration.footnotes}
+        />
         {short && narration.content.length > 1000 && (
           <span
             onClick={() => setShort(false)}
