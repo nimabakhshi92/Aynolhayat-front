@@ -19,8 +19,9 @@ import { customApiCall } from "../utils/axios";
 import Button from "../components/ui/buttons/primary-button";
 import { BiCloset, BiNote } from "react-icons/bi";
 import { useSelector } from "react-redux";
-import { FaComment, FaRegStickyNote } from "react-icons/fa";
+import { FaComment, FaRegCommentDots, FaRegStickyNote } from "react-icons/fa";
 import { CustomModal, CustomModal2 } from "../components/general/CustomModal";
+import { BsChatLeftText } from "react-icons/bs";
 
 const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -87,9 +88,19 @@ function ArabicTextComponent({ children, footnotes }) {
   let index = -1;
   const [showModal, setShowModal] = useState(false);
   const [footnote, setFootnote] = useState("");
-
+  const singleLangParts = children
+    .split("ظظظ")
+    ?.filter(
+      (singleLangText) => singleLangText.replaceAll(" ", "")?.length > 0
+    );
   return (
-    <>
+    <span
+      style={
+        {
+          // wordBreak: "keep-all",
+        }
+      }
+    >
       <CustomModal2
         open={showModal}
         setOpen={setShowModal}
@@ -103,53 +114,88 @@ function ArabicTextComponent({ children, footnotes }) {
         title="پاورقی"
         text={footnote}
       ></CustomModal2>
-      <span style={{ color: "blue" }}>
-        {[...children].map((char) => {
-          if (char === "$") {
-            dollar = !dollar;
-          } else if (char === "@") {
-            atSign = !atSign;
-            if (atSign) {
-              index += 1;
-              const footnoteExplanation = footnotes[index]?.explanation;
-              return (
-                <span className="relative inline-block w-1">
-                  <FaRegStickyNote
-                    className="absolute "
+      {singleLangParts?.map((singleLangText, index) => {
+        const isTranslation = index % 2 !== 0;
+        const isLastPart = index !== Math.floor(singleLangParts?.length) - 1;
+        return (
+          <>
+            <div className={"inline-block"}>
+              {singleLangText?.split(" ").map((word) => {
+                return (
+                  <span
                     style={{
-                      color: "#00000090",
-                      transform: "translate(10px,-27px)",
-                      cursor: "pointer",
+                      display: "inline-block",
+                      marginLeft: "4px",
                     }}
-                    onMouseEnter={() => {
-                      console.log(index);
-                      console.log(footnotes);
-                      console.log(footnotes[index]);
-                      setFootnote(footnoteExplanation);
-                      setShowModal(true);
-                    }}
-                    onClick={() => setShowModal(true)}
-                  />
-                </span>
-              );
-            } // atSign = !atSign;
-          } else
-            return /[\u064B-\u0652]/.test(char) ? (
-              <span style={{ color: "red" }}>&#8203;{`${char}`}</span>
-            ) : (
-              <span
+                  >
+                    <span
+                      style={{
+                        color: isTranslation ? "black" : "#102cc9",
+                        fontSize: isTranslation ? "1rem" : "1.4rem",
+                      }}
+                    >
+                      {[...word].map((char) => {
+                        if (char === "$") {
+                          dollar = !dollar;
+                        } else if (char === "@") {
+                          atSign = !atSign;
+                          if (atSign) {
+                            index += 1;
+                            const footnoteExplanation =
+                              footnotes[index]?.explanation;
+                            return (
+                              <span className="relative inline-block w-1">
+                                <BsChatLeftText
+                                  className="absolute "
+                                  style={{
+                                    color: "#000000",
+                                    transform: "translate(10px,-27px)",
+                                    cursor: "pointer",
+                                  }}
+                                  onMouseEnter={() => {
+                                    setFootnote(footnoteExplanation);
+                                    setShowModal(true);
+                                  }}
+                                  onClick={() => setShowModal(true)}
+                                />
+                              </span>
+                            );
+                          } // atSign = !atSign;
+                        } else
+                          return /[\u064B-\u0652]/.test(char) ? (
+                            <span style={{ color: "red" }}>&#8203;{char}</span>
+                          ) : (
+                            <span
+                              style={{
+                                color: dollar && "#0e8708",
+                                // backgroundColor: atSign && "#ff000030",
+                                // cursor: atSign && "pointer",
+                              }}
+                            >
+                              {char}
+                            </span>
+                          );
+                      })}
+                    </span>
+                  </span>
+                );
+              })}
+            </div>
+
+            {isTranslation && isLastPart && (
+              <div
                 style={{
-                  color: dollar ? "#1ec718" : "#102cc9",
-                  // backgroundColor: atSign && "#ff000030",
-                  // cursor: atSign && "pointer",
+                  width: "75%",
+                  margin: "16px auto",
+                  height: "0px",
+                  backgroundColor: "gray",
                 }}
-              >
-                {char}
-              </span>
-            );
-        })}
-      </span>
-    </>
+              ></div>
+            )}
+          </>
+        );
+      })}
+    </span>
   );
 }
 
@@ -220,6 +266,14 @@ const SingleNarration = ({ narration, onDelete, onEdit }) => {
           </div>
         </div>
       )}
+      <p
+        style={{
+          color: "brown",
+          fontSize: "1rem",
+        }}
+      >
+        {narration.narrator}
+      </p>
       <p>
         <ArabicTextComponent
           children={

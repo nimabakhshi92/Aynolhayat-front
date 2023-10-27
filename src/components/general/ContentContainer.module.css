@@ -14,11 +14,11 @@
   font-size: 1.2rem;
   border-bottom: 1px solid #e8e8e8;
   background-color: white;
-  padding: 3.2rem;
+  padding: 1.6rem;
 }
 
 .content_container p {
-  padding: 1rem 1.6rem;
+  padding: 0.4rem 0rem;
 }
 
 .content_container__title {
