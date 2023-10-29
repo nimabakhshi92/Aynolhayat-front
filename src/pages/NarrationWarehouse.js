@@ -84,8 +84,8 @@ const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
 function ArabicTextComponent({ children, footnotes }) {
   let dollar = false;
-  let atSign = false;
-  let index = -1;
+  let atSign = true;
+  let noteIndex = -1;
   const [showModal, setShowModal] = useState(false);
   const [footnote, setFootnote] = useState("");
   const singleLangParts = children
@@ -138,11 +138,13 @@ function ArabicTextComponent({ children, footnotes }) {
                         if (char === "$") {
                           dollar = !dollar;
                         } else if (char === "@") {
+                          console.log(noteIndex);
                           atSign = !atSign;
                           if (atSign) {
-                            index += 1;
+                            noteIndex += 1;
                             const footnoteExplanation =
-                              footnotes[index]?.explanation;
+                              footnotes[noteIndex]?.explanation;
+                            console.log(footnoteExplanation);
                             return (
                               <span className="relative inline-block w-1">
                                 <BsChatLeftText
