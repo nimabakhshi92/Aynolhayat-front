@@ -12,11 +12,11 @@ import {
   setSelectedNode,
 } from "../../../features/summaryTree/summaryTreeSlice";
 
-export default function FilterModal({ className, data }) {
+export default function FilterModal({ className, data, style }) {
   const { section, selectedNode } = useSelector((store) => store.summaryTree);
   const dispatch = useDispatch();
   return (
-    <section className={className}>
+    <section className={className} style={style}>
       <div className={classes.button_container}>
         <Button
           onClickHandler={() => {

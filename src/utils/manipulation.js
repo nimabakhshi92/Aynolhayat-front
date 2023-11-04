@@ -30,6 +30,48 @@ export const extractTreeIndex = (value) => {
     .map((i) => Number(i));
 };
 
+export const extractTreeWords = (value, data, section, subSection1) => {
+  if (!value || !data || !section) return [];
+
+  const subSection2 = section !== "surah" ? "subjects" : "verses";
+  const subTitle = section !== "surah" ? "title" : "verse_no";
+  const treeIndex = extractTreeIndex(value);
+  const [lvl1, lvl2, lvl3, lvl4, lvl5] = treeIndex;
+
+  const treeWords = [];
+  if (lvl1 >= 0) treeWords.push(data[lvl1][subSection1]);
+  if (lvl2 >= 0) treeWords.push(data[lvl1][subSection2][lvl2][subTitle]);
+  if (lvl3 >= 0)
+    treeWords.push(data[lvl1][subSection2][lvl2].sub_subjects[lvl3].title);
+  if (lvl4 >= 0)
+    treeWords.push(
+      data[lvl1][subSection2][lvl2].sub_subjects[lvl3].subjects_3[lvl4].title
+    );
+  return treeWords;
+};
 export const extractText = (value) => {
   return value?.slice(positionEndIdx(value));
+};
+
+export const makeTreeOptions = (treeWords, section) => {
+  const treeOption = {};
+  const treeKeyNarration = [
+    "alphabet",
+    "subject",
+    "sub_subject",
+    "subject_3",
+    "subject_4",
+  ];
+  const treeKeySurah = [
+    "surah_name",
+    "verse_no",
+    "sub_subject",
+    "subject_3",
+    "subject_4",
+  ];
+  const treeKey = section !== "surah" ? treeKeyNarration : treeKeySurah;
+  treeWords.forEach((word, index) => {
+    if (word) treeOption[treeKey[index]] = word;
+  });
+  return treeOption;
 };

@@ -3,10 +3,7 @@ import {
   useGetNarrationFilterOptions,
   useGetNarrationList,
   useGetSubjects,
-  useGetSummaryTree,
 } from "../api/hooks/allHooks";
-import noteIcon from "../assets/images/shapes/Icon-Note.svg";
-import shape_green from "../assets/images/shapes/shape-green.svg";
 import { Pagination } from "../components/Pagination";
 import { ContentContainer } from "../components/general/ContentContainer";
 import Dropdown, { DropdownSingleSelect } from "../components/ui/dropdown";
@@ -25,8 +22,6 @@ import { useSelector } from "react-redux";
 import { FaComment, FaRegCommentDots, FaRegStickyNote } from "react-icons/fa";
 import { CustomModal, CustomModal2 } from "../components/general/CustomModal";
 import { BsChatLeftText } from "react-icons/bs";
-import FilterModal from "../components/show-traditions/filter-modal";
-import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
 
 const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -204,7 +199,7 @@ function ArabicTextComponent({ children, footnotes }) {
   );
 }
 
-const SingleNarration = ({ narration, onDelete, onEdit, showSummary }) => {
+const SingleNarration = ({ narration, onDelete, onEdit }) => {
   const [short, setShort] = useState(true);
   const { user } = useSelector((store) => store.user);
 
@@ -271,100 +266,56 @@ const SingleNarration = ({ narration, onDelete, onEdit, showSummary }) => {
           </div>
         </div>
       )}
-      {!showSummary && (
-        <>
-          <p
+      <p
+        style={{
+          color: "brown",
+          fontSize: "1rem",
+        }}
+      >
+        {narration.narrator}
+      </p>
+      <p>
+        <ArabicTextComponent
+          children={
+            short ? narration.content.substr(0, 1000) : narration.content
+          }
+          footnotes={narration.footnotes}
+        />
+        {short && narration.content.length > 1000 && (
+          <span
+            onClick={() => setShort(false)}
             style={{
-              color: "brown",
-              fontSize: "1rem",
+              cursor: "pointer",
+              color: "var(--secondary-blue-color)",
+              fontSize: "14px",
             }}
           >
-            {narration.narrator}
-          </p>
-          <p>
-            <ArabicTextComponent
-              children={
-                short ? narration.content.substr(0, 1000) : narration.content
-              }
-              footnotes={narration.footnotes}
-            />
-            {short && narration.content.length > 1000 && (
-              <span
-                onClick={() => setShort(false)}
-                style={{
-                  cursor: "pointer",
-                  color: "var(--secondary-blue-color)",
-                  fontSize: "14px",
-                }}
-              >
-                ... نمایش کامل
-              </span>
-            )}
-            {!short && narration.content.length > 1000 && (
-              <span
-                onClick={() => setShort(true)}
-                style={{
-                  cursor: "pointer",
-                  color: "var(--secondary-blue-color)",
-                  fontSize: "14px",
-                }}
-              >
-                ... نمایش کمتر
-              </span>
-            )}
-          </p>
-        </>
-      )}
-
-      {showSummary &&
-        (narration?.content_summary_tree || []).map((contentItem, subIndex) => (
-          <>
-            {subIndex !== 0 && (
-              <img
-                className="h-2 block w-full my-2"
-                src={shape_green}
-                alt="shape-green"
-              />
-            )}
-            <div className="flex items-start justify-between w-full ">
-              <p className="w-[48%]">{contentItem.summary}</p>
-              <p className="w-[48%]">{contentItem.expression}</p>
-            </div>
-          </>
-        ))}
+            ... نمایش کامل
+          </span>
+        )}
+        {!short && narration.content.length > 1000 && (
+          <span
+            onClick={() => setShort(true)}
+            style={{
+              cursor: "pointer",
+              color: "var(--secondary-blue-color)",
+              fontSize: "14px",
+            }}
+          >
+            ... نمایش کمتر
+          </span>
+        )}
+      </p>
     </ContentContainer>
   );
 };
 
-// export default function SingleNarrationJustSummary({ data, section }) {
-//   return (
-//     <div>
-//       {(narration?.content_summary_tree || []).map((subItem, subIndex) => (
-//         <>
-//           <p>{contentItem.expression}</p>
-//           <p>{contentItem.summary}</p>
-//         </>
-//       ))}
-//     </div>
-//   );
-// }
-
 export const NarrationWarehouse = () => {
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(1);
-  const [showSummary, setShowSummary] = useState(false);
   const queryClient = useQueryClient();
   const searchTerm = useRef();
   const searchSubject = useRef();
-  const { section, selectedNode } = useSelector((store) => store.summaryTree);
-
-  const { data } = useGetSummaryTree(section);
-  const treeWords = extractTreeWords(
-    selectedNode[section],
-    data,
-    section,
-    section !== "surah" ? "alphabet" : "surah_name"
-  );
   // const [searchSubject, setSearchSubject] = useState("");
   const emptyOptions = {
     alphabet: null,
@@ -391,12 +342,9 @@ export const NarrationWarehouse = () => {
   };
   const [selectedOptions, setSelectedOptions] = useState(emptyOptions);
   const { data: options } = useGetNarrationFilterOptions();
-  const treeOptions = makeTreeOptions(treeWords, section);
-
   const { data: narrationList, isLoading } = useGetNarrationList(selectedPage, {
     ...selectedOptions,
     ...serachOptions,
-    ...treeOptions,
   });
 
   const handleSelect = (newValue, category) => {
@@ -424,7 +372,6 @@ export const NarrationWarehouse = () => {
     { id: 3, title: "قدیمی ترین" },
   ];
   const [a, setA] = useState({ id: 1, title: "پربازدیدترین" });
-
   return (
     <>
       <section
@@ -451,9 +398,8 @@ export const NarrationWarehouse = () => {
           onChange={() => queryClient.refetchQueries()}
         />
       </section>
-
       <div className="mt-1 grid grid-cols-[300px_auto] gap-4  ">
-        {/* <article
+        <article
           style={{
             backgroundColor: "white",
             height: "fit-content",
@@ -479,8 +425,7 @@ export const NarrationWarehouse = () => {
               />
             );
           })}
-        </article> */}
-        <FilterModal data={data} className="block" />
+        </article>
 
         <article
           style={{
@@ -514,20 +459,6 @@ export const NarrationWarehouse = () => {
                   &nbsp;
                   <span>حدیث یافت شد </span>
                 </div>
-                <div className="flex gap-2">
-                  <span
-                    className="cursor-pointer"
-                    onClick={() => setShowSummary(false)}
-                  >
-                    نمایش متن
-                  </span>
-                  <span
-                    className="cursor-pointer"
-                    onClick={() => setShowSummary(true)}
-                  >
-                    نمایش خلاصه
-                  </span>
-                </div>
                 <div className="flex gap-3 items-center">
                   <p>مرتب سازی :</p>
                   <div className="w-50">
@@ -548,7 +479,6 @@ export const NarrationWarehouse = () => {
                     onEdit={() => navigate(`${narration?.id}`)}
                     onDelete={(pass) => handleDelete(narration?.id, pass)}
                     narration={narration}
-                    showSummary={showSummary}
                   />
                 ))}
               </section>

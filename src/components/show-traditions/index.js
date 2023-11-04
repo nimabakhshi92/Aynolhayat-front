@@ -44,14 +44,11 @@ export default function ShowTraditions() {
 
     if (!node) return data.length > 0 ? data[0][subSection] : [];
     const [lvl1, lvl2, lvl3, lvl4, lvl5] = treeIndex;
-    console.log(node);
-    console.log(treeIndex);
-    console.log(lvl1, lvl2, lvl3, lvl4, lvl5);
+
     const filteredData = data
       .filter((_item1, index1) => index1 === lvl1 || lvl1 === undefined)
       .map((item1) => {
         if (lvl2 === undefined) return item1;
-        console.log(item1[subSection]);
         const filteredItem1Subjects = item1[subSection]
           .filter((_item2, index2) => index2 === lvl2)
           .map((item2) => {
@@ -64,11 +61,9 @@ export default function ShowTraditions() {
               });
             return { ...item2, sub_subjects: filteredSubSubjects };
           });
-        console.log(filteredItem1Subjects);
 
         return { ...item1, [subSection]: filteredItem1Subjects };
       });
-    console.log(filteredData);
     if (filteredData?.length > 0) return filteredData[0][subSection];
     return [];
   }

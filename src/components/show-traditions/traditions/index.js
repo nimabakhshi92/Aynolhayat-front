@@ -17,7 +17,6 @@ export default function Traditions({ data, section }) {
     { id: 2, title: "پرتکرارترین", icon: <FiPrinter /> },
     { id: 3, title: "قدیمی ترین", icon: <BsFiletypePdf /> },
   ];
-  console.log(data);
   return (
     <div className={classes.container}>
       {data?.map((i, index) => (

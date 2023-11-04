@@ -210,9 +210,7 @@ export const useModifyNarrationSummary = () => {
   return useMutation(modifyNarrationSummary, {
     onMutate: async (inputs) => {
       const { narrationId, summaryId, data, dataForMutate } = inputs;
-      console.log("before cancel queries");
       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
-      console.log("after cancel queries");
       const previousData = queryClient.getQueryData([
         "narrationIndividual",
         narrationId,
@@ -220,19 +218,9 @@ export const useModifyNarrationSummary = () => {
       queryClient.setQueryData(
         ["narrationIndividual", narrationId],
         (oldData) => {
-          console.log(oldData);
-          console.log({
-            ...oldData,
-            content_summary_tree: oldData.content_summary_tree.map((s) => {
-              if (s.id !== summaryId) return s;
-              else return { ...s, ...data };
-            }),
-          });
           return {
             ...oldData,
             content_summary_tree: oldData.content_summary_tree.map((s) => {
-              console.log(s.id, summaryId);
-
               if (s.id !== summaryId) return s;
               else return { ...s, ...dataForMutate };
             }),

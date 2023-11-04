@@ -51,7 +51,6 @@ export const NarrationEditForm = ({ narration }) => {
       });
   };
   const handleSubmit = (e) => {
-    console.log(updatedNarration);
     if (
       !updatedNarration.imam ||
       !updatedNarration.book ||
