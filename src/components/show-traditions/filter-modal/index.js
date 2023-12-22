@@ -17,7 +17,7 @@ export default function FilterModal({ className, data, style }) {
   const dispatch = useDispatch();
   return (
     <section className={className} style={style}>
-      <div className={classes.button_container}>
+      <div className={classes.button_container} style={{ width: "100%" }}>
         <Button
           onClickHandler={() => {
             dispatch(setSection({ section: "narration" }));
@@ -39,6 +39,28 @@ export default function FilterModal({ className, data, style }) {
           سوره ها
         </Button>
       </div>
+      {section === "surah" ? (
+        <SurahSummaryTree
+          section={section}
+          selectedNode={selectedNode}
+          data={data || []}
+        />
+      ) : (
+        <SummaryTree
+          selectedNode={selectedNode}
+          section={section}
+          data={data || []}
+        />
+      )}
+    </section>
+  );
+}
+
+export function FilterModalLT({ className, data, style }) {
+  const { section, selectedNode } = useSelector((store) => store.summaryTree);
+  const dispatch = useDispatch();
+  return (
+    <section className={className} style={style}>
       {section === "surah" ? (
         <SurahSummaryTree
           section={section}

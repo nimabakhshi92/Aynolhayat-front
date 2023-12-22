@@ -9,10 +9,12 @@
 
 :root {
   --primary-color: #0bab64;
+  --primary-color-light: #0bab6450;
   --secondary-brown-color: #d69f69;
   --secondary-blue-color: #0085ff;
   --secondary-whaite-color: #eefff8;
   --blue-100: #f7fafc;
+
   --neutral-color-700: #2f3542;
   --neutral-color-600: #57606f;
   --neutral-color-500: #747d8c;
@@ -23,9 +25,12 @@
   --error-color: #ff0000;
 }
 html {
-  /* font-size: 62.5%; */
+  font-size: 62.5%;
   font-family: IRANSansWeb, serif;
   line-height: 2;
+}
+body {
+  font-size: 1.6rem;
 }
 *,
 ::before,
@@ -33,6 +38,10 @@ html {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
 }
 
 button {
@@ -64,6 +73,7 @@ a {
 }
 .react-checkbox-tree ol ol {
   padding-right: 24px !important;
+  padding-left: 0 !important;
 }
 .rct-text {
   align-items: start !important;

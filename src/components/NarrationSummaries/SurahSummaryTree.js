@@ -110,17 +110,22 @@ export function SurahSummaryTree({ data, section, selectedNode }) {
   };
   return (
     <div className={classes.alphabet}>
-      <p className={classes.alphabet_title}>فهرست مطالب</p>
+      {/* <p className={classes.alphabet_title}>فهرست مطالب</p> */}
       <div>
         <Input
-          className="w-full mb-2"
-          style={{ height: "48px" }}
+          className="w-full my-2"
+          style={{
+            height: "48px",
+          }}
           type="search"
           placeholder="جستجو در فهرست"
           value={filterText}
           onChange={(e) => setFilterText(e.target.value)}
         />
         <CheckboxTree
+          style={{
+            overflow: "scroll",
+          }}
           nodes={filteredNodes}
           checked={checked}
           expanded={expanded}

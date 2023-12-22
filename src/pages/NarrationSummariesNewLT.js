@@ -25,8 +25,12 @@ import { useSelector } from "react-redux";
 import { FaComment, FaRegCommentDots, FaRegStickyNote } from "react-icons/fa";
 import { CustomModal, CustomModal2 } from "../components/general/CustomModal";
 import { BsChatLeftText } from "react-icons/bs";
-import FilterModal from "../components/show-traditions/filter-modal";
+import FilterModal, {
+  FilterModalLT,
+} from "../components/show-traditions/filter-modal";
 import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
+import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
+import NarrationSummaries, { NarrationSummariesLT } from "./NarrationSummaries";
 
 const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -284,11 +288,11 @@ const SingleNarration = ({ narration, onDelete, onEdit, showSummary }) => {
           <p>
             <ArabicTextComponent
               children={
-                short ? narration.content.substr(0, 1000) : narration.content
+                short ? narration.content.substr(0, 500) : narration.content
               }
               footnotes={narration.footnotes}
             />
-            {short && narration.content.length > 1000 && (
+            {short && narration.content.length > 500 && (
               <span
                 onClick={() => setShort(false)}
                 style={{
@@ -300,7 +304,7 @@ const SingleNarration = ({ narration, onDelete, onEdit, showSummary }) => {
                 ... نمایش کامل
               </span>
             )}
-            {!short && narration.content.length > 1000 && (
+            {!short && narration.content.length > 500 && (
               <span
                 onClick={() => setShort(true)}
                 style={{
@@ -568,7 +572,7 @@ export const NarrationWarehouseOld = () => {
   );
 };
 
-export const NarrationWarehouse = () => {
+export const NarrationSummariesNewLT = () => {
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(1);
   const [showSummary, setShowSummary] = useState(false);
@@ -645,125 +649,23 @@ export const NarrationWarehouse = () => {
   const [a, setA] = useState({ id: 1, title: "پربازدیدترین" });
 
   return (
-    <div className="flex pt-2" style={{ gap: "8px", flexDirection: "row" }}>
-      <FilterModal
-        data={data}
-        className="w-90 "
-        style={{
-          zIndex: "10",
-          height: "30vh",
-          position: "sticky",
-          top: "8px",
-        }}
-      />
-
-      <div className="mt-1 " style={{ width: "100%", marginRight: "38rem" }}>
-        <section
-          className="grid grid-cols-[1fr_1fr] gap-4 py-2 -px-4"
+    <div className=" pr-8" style={{}}>
+      <NarrationSummaryNavbar />
+      <div className="mr-12">
+        <FilterModalLT
+          data={data}
+          className="w-90 "
           style={{
-            position: "sticky",
-            top: "90px",
-            zIndex: 100,
-            backgroundColor: "var(--blue-100)",
+            zIndex: "10",
+            height: "calc(100vh - 6rem)",
+            position: "fixed",
+            top: "15rem",
           }}
-        >
-          <Input
-            className="search"
-            type="search"
-            reference={searchTerm}
-            placeholder="جستجو در متن احادیث"
-            onChange={() => queryClient.refetchQueries()}
-          />
-          <InputWithSuggestion
-            className="w-full"
-            reference={searchSubject}
-            placeholder="جستجوی موضوعی"
-            suggestions={subject}
-            onChange={() => queryClient.refetchQueries()}
-          />
-        </section>
+        />
 
-        <article
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            minHeight: "80vh",
-            position: "relative",
-          }}
-        >
-          {isLoading && (
-            <CircularProgress
-              className="absolute top-1/2 left-1/2 "
-              color="success"
-            />
-          )}
-          {!isLoading && (
-            <>
-              <div
-                className="p-4 px-10 mb-4 flex items-center justify-between"
-                style={{
-                  boxShadow: "-3px 8px 16px -3px #00000026",
-                  borderRadius: "8px",
-                  backgroundColor: "white",
-                  fontSize: "16px",
-                  color: "var(--neutral-color-500)",
-                }}
-              >
-                <div className="">
-                  <span>{narrationList?.number_of_records || 0}</span>
-                  &nbsp;
-                  <span>حدیث یافت شد </span>
-                </div>
-                <div className="flex gap-2">
-                  <span
-                    className="cursor-pointer"
-                    onClick={() => setShowSummary(false)}
-                  >
-                    نمایش متن
-                  </span>
-                  <span
-                    className="cursor-pointer"
-                    onClick={() => setShowSummary(true)}
-                  >
-                    نمایش خلاصه
-                  </span>
-                </div>
-                <div className="flex gap-3 items-center">
-                  <p>مرتب سازی :</p>
-                  <div className="w-50">
-                    <Dropdown
-                      className="h-8 "
-                      dataKey="title"
-                      selected={a}
-                      setSelected={setA}
-                      items={dropdown}
-                    />
-                  </div>
-                </div>
-              </div>
-              <section className="h-full" style={{}}>
-                {narrationList?.results?.map((narration, index) => (
-                  <SingleNarration
-                    key={index}
-                    onEdit={() => navigate(`${narration?.id}`)}
-                    onDelete={(pass) => handleDelete(narration?.id, pass)}
-                    narration={narration}
-                    showSummary={showSummary}
-                  />
-                ))}
-              </section>
-              {narrationList?.last > 0 && (
-                <Pagination
-                  className="mt-8"
-                  noOfPages={narrationList.last}
-                  selected={selectedPage}
-                  setSelected={setSelectedPage}
-                />
-              )}
-            </>
-          )}
-        </article>
+        <div className="mt-15 " style={{ marginRight: "38rem" }}>
+          <NarrationSummariesLT />
+        </div>
       </div>
     </div>
   );

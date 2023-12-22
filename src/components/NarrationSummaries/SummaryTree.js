@@ -127,10 +127,10 @@ export function SummaryTree({ data, section, selectedNode }) {
   };
   return (
     <div className={classes.alphabet}>
-      <p className={classes.alphabet_title}>فهرست مطالب</p>
+      {/* <p className={classes.alphabet_title}>فهرست مطالب</p> */}
       <div>
         <Input
-          className="w-full mb-2"
+          className="w-full my-2"
           style={{ height: "48px" }}
           type="search"
           placeholder="جستجو در فهرست"
@@ -138,6 +138,10 @@ export function SummaryTree({ data, section, selectedNode }) {
           onChange={(e) => setFilterText(e.target.value)}
         />
         <CheckboxTree
+          style={{
+            overflow: "scroll",
+            paddingBottom: "70px",
+          }}
           nodes={filteredNodes}
           checked={checked}
           expanded={expanded}

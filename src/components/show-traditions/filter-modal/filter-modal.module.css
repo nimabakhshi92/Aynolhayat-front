@@ -7,13 +7,16 @@
   box-shadow: 0 8px 16px -3px rgba(0, 0, 0, 0.15);
   padding: 1.6rem 0;
   background-color: white;
+  height: 6rem;
 }
 
 .alphabet {
   background-color: #ffffff;
   margin-top: 14px;
   overflow-y: scroll;
-  height: 400px;
+  /* height: 400px; */
+  height: calc(100vh - 18rem);
+
   padding: 0 16px;
 }
 
@@ -21,7 +24,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   padding: 1.2rem 0.6rem;
   color: var(--neutral-color-600);
   border-bottom: 1px solid var(--neutral-color-200);
@@ -32,7 +35,7 @@
 }
 
 .alphabet_title {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   padding: 0.4rem 0.6rem;
   color: var(--neutral-color-600);
   /* border-bottom: 1px solid var(--neutral-color-200); */
@@ -40,7 +43,7 @@
 
 .alphabet_open {
   color: var(--primary-color) !important;
-  font-size: 1.2rem !important;
+  font-size: 1.4rem !important;
   border: 0 !important;
   background-color: #eefff8 !important;
 }
@@ -69,7 +72,7 @@
 }
 
 .arrow {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   transform: rotateZ(90deg);
   color: var(--neutral-color-400);
   margin: 0 1.6rem;
@@ -86,14 +89,14 @@
 
   .alphabet_container,
   .alphabet_title {
-    font-size: 1.2rem !important;
+    font-size: 1.4rem !important;
   }
 
   .subject {
-    font-size: 1.2rem !important;
+    font-size: 1.4rem !important;
   }
 
   .alphabet {
-    height: 800px;
+    /* height: 800px; */
   }
 }

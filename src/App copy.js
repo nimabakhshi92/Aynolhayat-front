@@ -8,7 +8,7 @@ import Modal from "./components/ui/modal";
 import NarrationSummaries from "./pages/NarrationSummaries";
 import { store } from "./store";
 import { ProtectedRoute } from "./pages/ProtectedRoute";
-import { SharedLayout, SharedLayoutLT } from "./pages/SharedLayout";
+import { SharedLayout } from "./pages/SharedLayout";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { NarrationSave } from "./pages/NarrationSave";
 import "react-toastify/dist/ReactToastify.css";
@@ -18,7 +18,6 @@ import { useLocation } from "react-router-dom";
 import { NarrationWarehouse } from "./pages/NarrationWarehouse";
 import { NarrationEdit } from "./pages/NarrationEdit";
 import { NarrationSummariesNew } from "./pages/NarrationSummariesNew";
-import { NarrationSummariesNewLT } from "./pages/NarrationSummariesNewLT";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,14 +52,11 @@ function App() {
               path="/"
               element={
                 <ProtectedRoute>
-                  <SharedLayoutLT />
+                  <SharedLayout />
                 </ProtectedRoute>
               }
             >
-              <Route index element={<NarrationSummariesNewLT />}></Route>
-              <Route path="saved/" element={<div>saved</div>}></Route>
-              <Route path="search/" element={<div>search</div>}></Route>
-              {/* <Route index element={<NarrationWarehouse />}></Route>
+              <Route index element={<NarrationWarehouse />}></Route>
               <Route path=":narrationId" element={<NarrationEdit />}></Route>
               <Route path="save narration/" element={<NarrationEdit />}></Route>
               <Route
@@ -71,7 +67,7 @@ function App() {
                 path="edit narration/:narrationId"
                 element={<NarrationEdit />}
               ></Route>
-              <Route path="summary" element={<NarrationSummariesNew />}></Route> */}
+              <Route path="summary" element={<NarrationSummariesNew />}></Route>
             </Route>
           </Routes>
         </BrowserRouter>
