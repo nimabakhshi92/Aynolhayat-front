@@ -14,14 +14,17 @@ export const customRequestErrorHandler = ({ error, callbacks, thunkAPI }) => {
 export const customApiCall = {
   post: async function ({ url, data, headers = {}, useToken = true }) {
     const user = getUserFromLocalStorage();
-    if (user && useToken) headers["Authorization"] = `Bearer ${user.access}`;
+    if (user && useToken)
+      headers["Authorization"] = `Bearer ${user.access || user.access_token}`;
+
     let config = { headers };
     const resp = await axios.post(url, data, config);
     return resp.data;
   },
   patch: async function ({ url, data, headers = {}, useToken = true }) {
     const user = getUserFromLocalStorage();
-    if (user && useToken) headers["Authorization"] = `Bearer ${user.access}`;
+    if (user && useToken)
+      headers["Authorization"] = `Bearer ${user.access || user.access_token}`;
 
     let config = { headers };
     const resp = await axios.patch(url, data, config);
@@ -29,7 +32,8 @@ export const customApiCall = {
   },
   delete: async function ({ url, headers = {}, useToken = true }) {
     const user = getUserFromLocalStorage();
-    if (user && useToken) headers["Authorization"] = `Bearer ${user.access}`;
+    if (user && useToken)
+      headers["Authorization"] = `Bearer ${user.access || user.access_token}`;
 
     let config = { headers };
     const resp = await axios.delete(url, config);
@@ -38,8 +42,9 @@ export const customApiCall = {
   get: async function ({ url, headers = {}, useToken = true }) {
     const user = getUserFromLocalStorage();
     if (user && useToken) {
-      headers["Authorization"] = `Bearer ${user.access}`;
+      headers["Authorization"] = `Bearer ${user.access || user.access_token}`;
     }
+
     let config = { headers };
     const resp = await axios.get(url, config);
     return resp.data;

@@ -26,7 +26,7 @@ export const refreshTokenThunk = async (user, thunkAPI) => {
   try {
     var FormData = require("form-data");
     var data = new FormData();
-    data.append("refresh", user.refresh);
+    data.append("refresh", user.refresh || user.refresh_token);
 
     const resp = await customApiCall.post({
       url: apiUrls.user.refreshToken,

@@ -15,7 +15,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { NarrationWarehouse } from "./pages/NarrationWarehouse";
+import {
+  NarrationWarehouse,
+  NarrationWarehouseLT,
+} from "./pages/NarrationWarehouse";
 import { NarrationEdit } from "./pages/NarrationEdit";
 import { NarrationSummariesNew } from "./pages/NarrationSummariesNew";
 import { NarrationSummariesNewLT } from "./pages/NarrationSummariesNewLT";
@@ -57,7 +60,8 @@ function App() {
                 </ProtectedRoute>
               }
             >
-              <Route index element={<NarrationSummariesNewLT />}></Route>
+              {/* <Route path="s/" element={<NarrationSummariesNewLT />}></Route> */}
+              <Route index element={<NarrationWarehouseLT />}></Route>
               <Route path="saved/" element={<div>saved</div>}></Route>
               <Route path="search/" element={<div>search</div>}></Route>
               {/* <Route index element={<NarrationWarehouse />}></Route>

@@ -1,6 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useGetSummaryTree } from "../../../api/hooks/allHooks";
-import { SummaryTree } from "../../NarrationSummaries/SummaryTree";
+import {
+  MySummaryTree,
+  SummaryTree,
+} from "../../NarrationSummaries/SummaryTree";
 import { SurahSummaryTree } from "../../NarrationSummaries/SurahSummaryTree";
 import Button from "../../ui/buttons/primary-button";
 
@@ -68,7 +71,12 @@ export function FilterModalLT({ className, data, style }) {
           data={data || []}
         />
       ) : (
-        <SummaryTree
+        // <SummaryTree
+        //   selectedNode={selectedNode}
+        //   section={section}
+        //   data={data || []}
+        // />
+        <MySummaryTree
           selectedNode={selectedNode}
           section={section}
           data={data || []}

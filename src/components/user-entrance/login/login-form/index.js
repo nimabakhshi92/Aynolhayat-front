@@ -1,7 +1,7 @@
 import Button from "../../../ui/buttons/primary-button";
 import InputContainer from "../../input-container";
 import ForgetPassword from "../forget-password";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import EntranceForm from "../../entrance-form";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +14,7 @@ export default function LoginForm() {
   const passwordRef = useRef();
   const dispatch = useDispatch();
   const { user, isLoading } = useSelector((store) => store.user);
+  const [next, setNext] = useState(false);
   const onClickHandler = (e) => {
     e.preventDefault();
     if (!emailRef.current?.value | !passwordRef.current?.value) {
@@ -25,9 +26,10 @@ export default function LoginForm() {
       password: passwordRef.current?.value,
     };
     dispatch(loginUser(values));
+    setNext(true);
   };
 
-  if (user) return <Navigate to={"/"} />;
+  if (user && next) return <Navigate to={"/"} />;
 
   return (
     <EntranceForm>

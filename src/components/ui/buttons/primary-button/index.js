@@ -12,7 +12,7 @@ export default function Button({
     <button
       style={style}
       type={type}
-      className={`btn btn-${variant} ${className}`}
+      className={`btn p-2 py-1 rounded btn-${variant} ${className}`}
       onClick={onClickHandler}
     >
       {children}
