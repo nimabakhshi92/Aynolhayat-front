@@ -4,7 +4,10 @@ import {
   MySummaryTree,
   SummaryTree,
 } from "../../NarrationSummaries/SummaryTree";
-import { SurahSummaryTree } from "../../NarrationSummaries/SurahSummaryTree";
+import {
+  MySurahSummaryTree,
+  SurahSummaryTree,
+} from "../../NarrationSummaries/SurahSummaryTree";
 import Button from "../../ui/buttons/primary-button";
 
 import classes from "./filter-modal.module.css";
@@ -65,7 +68,7 @@ export function FilterModalLT({ className, data, style }) {
   return (
     <section className={className} style={style}>
       {section === "surah" ? (
-        <SurahSummaryTree
+        <MySurahSummaryTree
           section={section}
           selectedNode={selectedNode}
           data={data || []}

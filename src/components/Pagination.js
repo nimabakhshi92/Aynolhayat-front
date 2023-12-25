@@ -18,7 +18,7 @@ export const Pagination = ({ className, noOfPages, selected, setSelected }) => {
                 i === selected ? "var(--primary-color)" : "white",
               color: i === selected ? "white" : "var(--neutral-color-600)",
               cursor: "pointer",
-              padding: "4px 8px",
+              padding: "2px 12px",
               borderRadius: "7px",
             }}
             onClick={() => {

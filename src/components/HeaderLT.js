@@ -9,6 +9,9 @@ export const HeaderLT = () => {
       className="p-3 px-12 bg-white h-15 fixed w-full top-0 right-0"
       style={{
         zIndex: 98,
+        backgroundColor: "#ffffff",
+        // backdropFilter: "blur(15px)",
+
         // background:
         //   "radial-gradient(circle, rgba(65,222,59,0.7) 0%, rgba(0,171,0,0.7) 50%, rgba(52,217,47,0.7) 100%)",
         // color: "white",

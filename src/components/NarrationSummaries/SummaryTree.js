@@ -224,7 +224,7 @@ export const SummaryTreeOld = ({ data, section, selectedNode }) => {
 };
 const getBGColor = (level) => (level === 1 ? "#eefff850" : "#eefff8");
 
-const TreeItem = ({
+export const TreeItem = ({
   children,
   level,
   label,
@@ -397,6 +397,19 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
     });
     setC(newc);
   }, [data, clicked]);
+
+  useEffect(() => {
+    if (c?.length > 0 && !selectedNode[section]) {
+      dispatch(
+        setSelectedNode({
+          node: {
+            ...selectedNode,
+            [section]: c[0].children[0].children[0].value,
+          },
+        })
+      );
+    }
+  }, [c, selectedNode]);
 
   useEffect(() => {
     if (!filterText) {

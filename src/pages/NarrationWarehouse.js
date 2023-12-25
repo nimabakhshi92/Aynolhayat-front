@@ -140,7 +140,7 @@ function ArabicTextComponent({ children, footnotes, className }) {
                     <span
                       style={{
                         color: isTranslation ? "black" : "#102cc9",
-                        fontSize: isTranslation ? "1rem" : "1.4rem",
+                        fontSize: isTranslation ? "1.3rem" : "1.5rem",
                       }}
                     >
                       {[...word].map((char) => {
@@ -213,6 +213,10 @@ const SingleNarration = ({
   onDelete,
   onEdit,
   showSummary = false,
+  lvl1,
+  lvl2,
+  lvl3,
+  section,
 }) => {
   const [isSummary, setIsShowSummary] = useState(true);
 
@@ -223,7 +227,8 @@ const SingleNarration = ({
   const pass = useRef();
   return (
     <ContentContainer
-      title={`${narration.book.name}`}
+      // title={`${narration.book.name}`}
+      title={`${narration.imam.name} می فرمایند:`}
       actionComponent={
         <div className="flex gap-4 items-center">
           {user?.id === 1 ? (
@@ -237,13 +242,19 @@ const SingleNarration = ({
           ) : null}
 
           <span>
-            {narration.book_vol_no ? `جلد ${narration.book_vol_no}` : ""}
-            &nbsp;
-            {narration.book_page_no ? `/  صفحه ${narration.book_page_no}` : ""}
+            <span>{narration.book.name}</span>
+            <span>{" - "}</span>
+            <span>
+              {narration.book_vol_no ? `جلد ${narration.book_vol_no}` : ""}
+              &nbsp;
+              {narration.book_page_no
+                ? `-  صفحه ${narration.book_page_no}`
+                : ""}
+            </span>
           </span>
         </div>
       }
-      className="mb-4 relative"
+      className="mb-4 relative min-h-30"
     >
       {open && (
         <div
@@ -341,43 +352,71 @@ const SingleNarration = ({
 
       {showSummary && isSummary && (
         <>
-          <Button
-            className="absolute top-14 left-4"
-            onClickHandler={() => setIsShowSummary(false)}
-            variant="secondary"
-          >
-            نمایش متن
-          </Button>
+          <div className="w-full relative h-10">
+            <span style={{ fontSize: "1.4rem", marginRight: "12px" }}>
+              خلاصه قسمت های مرتبط با موضوع حدیث:
+            </span>
+            <Button
+              className="absolute left-4"
+              onClickHandler={() => setIsShowSummary(false)}
+              variant="secondary"
+            >
+              نمایش متن کامل
+            </Button>
+          </div>
           <div>
-            {(narration?.content_summary_tree || []).map(
-              (contentItem, subIndex) => (
-                <>
-                  {subIndex !== 0 && (
-                    <img
-                      className="h-2 block w-full my-2"
-                      src={shape_green}
-                      alt="shape-green"
-                    />
-                  )}
-                  {contentItem.subject_3 && (
-                    <div className="flex gap-2 my-2" style={{}}>
-                      <img src={noteIcon} alt="icon" />
-                      <span>{contentItem.subject_3}</span>
+            {(narration?.content_summary_tree || [])
+              .filter((contentItem) => {
+                if (section !== "surah")
+                  return (
+                    contentItem.alphabet === lvl1 &&
+                    contentItem.subject === lvl2 &&
+                    contentItem.sub_subject === lvl3
+                  );
+                else
+                  return (
+                    contentItem.verse?.surah_name === lvl1 &&
+                    contentItem.verse?.verse_no === lvl2 &&
+                    contentItem.sub_subject === lvl3
+                  );
+              })
+              .map((contentItem, subIndex) => {
+                return (
+                  <>
+                    {subIndex !== 0 && (
+                      <img
+                        className="h-2 block w-full my-2"
+                        src={shape_green}
+                        alt="shape-green"
+                      />
+                    )}
+                    {contentItem.subject_3 && (
+                      <div
+                        className="flex gap-2"
+                        style={{
+                          color: "var(--primary-color)",
+                          fontSize: "1.4rem",
+                        }}
+                      >
+                        <img src={noteIcon} alt="icon" />
+                        <span>{contentItem.subject_3}</span>
+                      </div>
+                    )}
+
+                    <div className="flex items-start justify-between w-full mr-3">
+                      <p className="w-[48%]" style={{ fontSize: "1.3rem" }}>
+                        {contentItem.expression}
+                      </p>
+                      <ArabicTextComponent
+                        className="block w-[48%]"
+                        children={contentItem.summary}
+                      />
+
+                      {/* <p className="w-[48%]">{contentItem.summary}</p> */}
                     </div>
-                  )}
-
-                  <div className="flex items-start justify-between w-full mr-3">
-                    <p className="w-[48%]">{contentItem.expression}</p>
-                    <ArabicTextComponent
-                      className="block w-[48%]"
-                      children={contentItem.summary}
-                    />
-
-                    {/* <p className="w-[48%]">{contentItem.summary}</p> */}
-                  </div>
-                </>
-              )
-            )}
+                  </>
+                );
+              })}
           </div>
         </>
       )}
@@ -893,6 +932,73 @@ export const NarrationWarehouseLT = () => {
     { id: 3, title: "قدیمی ترین" },
   ];
   const [a, setA] = useState({ id: 1, title: "پربازدیدترین" });
+  const [c, setC] = useState([]);
+
+  // useEffect(() => {
+  //   let newc = data.map((level1, index1) => {
+  //     return {
+  //       value: index1 + "l1" + level1.alphabet,
+  //       label: level1.alphabet,
+  //       children: level1.subjects?.map((level2, index2) => {
+  //         return {
+  //           value: index1 + "l1" + index2 + "l2" + level2.title,
+  //           label: level2.title,
+  //           children: level2.sub_subjects?.map((level3, index3) => {
+  //             return {
+  //               value:
+  //                 index1 + "l1" + index2 + "l2" + index3 + "l3" + level3.title,
+  //               label: level3.title,
+  //               className:
+  //                 index1 +
+  //                   "l1" +
+  //                   index2 +
+  //                   "l2" +
+  //                   index3 +
+  //                   "l3" +
+  //                   level3.title ===
+  //                 clicked.value
+  //                   ? "b-red"
+  //                   : null,
+  //               children: level2.subjects_3?.map((level4, index4) => {
+  //                 return {
+  //                   value:
+  //                     index1 +
+  //                     "l1" +
+  //                     index2 +
+  //                     "l2" +
+  //                     index3 +
+  //                     "l3" +
+  //                     index4 +
+  //                     "l4" +
+  //                     level4.title,
+  //                   label: level4.title,
+  //                   children: level4.subjects_4?.map((level5, index5) => {
+  //                     return {
+  //                       value:
+  //                         index1 +
+  //                         "l1" +
+  //                         index2 +
+  //                         "l2" +
+  //                         index3 +
+  //                         "l3" +
+  //                         index4 +
+  //                         "l4" +
+  //                         index5 +
+  //                         "l5" +
+  //                         level5.title,
+  //                       label: level5.title,
+  //                     };
+  //                   }),
+  //                 };
+  //               }),
+  //             };
+  //           }),
+  //         };
+  //       }),
+  //     };
+  //   });
+  //   setC(newc);
+  // }, [data]);
 
   return (
     <div className=" pr-8" style={{}}>
@@ -927,6 +1033,39 @@ export const NarrationWarehouseLT = () => {
             )}
             {!isLoading && (
               <>
+                <div style={{ color: "var(--primary-color)" }}>
+                  <span>{treeWords[0]}</span>
+                  {treeWords[1] && (
+                    <span>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          color: "gray",
+                          margin: "0 12px",
+                          transform: "translateY(2px)",
+                        }}
+                      >
+                        {" >> "}
+                      </span>
+                      <span>{treeWords[1]}</span>
+                    </span>
+                  )}
+                  {treeWords[2] && (
+                    <span>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          color: "gray",
+                          margin: "0 12px",
+                          transform: "translateY(2px)",
+                        }}
+                      >
+                        {" >> "}
+                      </span>
+                      <span>{treeWords[2]}</span>
+                    </span>
+                  )}
+                </div>
                 {/* <div
                   className="p-4 px-10 mb-4 flex items-center justify-between"
                   style={{
@@ -977,10 +1116,14 @@ export const NarrationWarehouseLT = () => {
                       onDelete={(pass) => handleDelete(narration?.id, pass)}
                       narration={narration}
                       showSummary={true}
+                      lvl1={treeWords[0]}
+                      lvl2={treeWords[1]}
+                      lvl3={treeWords[2]}
+                      section={section}
                     />
                   ))}
                 </section>
-                {narrationList?.last > 0 && (
+                {narrationList?.last > 1 && (
                   <Pagination
                     className="mt-8"
                     noOfPages={narrationList.last}
