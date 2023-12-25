@@ -1,14 +1,14 @@
 import classes from "../show-traditions/filter-modal/filter-modal.module.css";
 import { Fragment, useState, useEffect, useRef } from "react";
 import { MdOutlineArrowForwardIos } from "react-icons/md";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setSelectedNode } from "../../features/summaryTree/summaryTreeSlice";
 
 // import "./styles.css";
 import CheckboxTree from "react-checkbox-tree";
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
 import Input from "../ui/input";
-import { extractPosition } from "../../utils/manipulation";
+import { extractPosition, extractTreeIndex } from "../../utils/manipulation";
 import { BiChevronLeft, BiFileBlank } from "react-icons/bi";
 
 export function SummaryTree({ data, section, selectedNode }) {
@@ -224,9 +224,21 @@ export const SummaryTreeOld = ({ data, section, selectedNode }) => {
 };
 const getBGColor = (level) => (level === 1 ? "#eefff850" : "#eefff8");
 
-const TreeItem = ({ children, level, label, className, onClick, onHover }) => {
-  const [showChildren, setShowChildren] = useState(false);
+const TreeItem = ({
+  children,
+  level,
+  label,
+  className,
+  onClick,
+  open,
+  flag,
+}) => {
+  const [showChildren, setShowChildren] = useState(open);
   const ref = useRef();
+
+  useEffect(() => {
+    setShowChildren(open);
+  }, [flag]);
 
   return (
     <li
@@ -238,7 +250,6 @@ const TreeItem = ({ children, level, label, className, onClick, onHover }) => {
           setShowChildren(!showChildren);
         if (onClick) onClick();
       }}
-      onHover={onHover}
       style={{
         // transition: "all 0.3s linear",
         paddingRight: "7%",
@@ -247,16 +258,39 @@ const TreeItem = ({ children, level, label, className, onClick, onHover }) => {
         cursor: !children && "pointer",
       }}
     >
-      <div className="flex justify-start items-center ">
+      <div
+        className={`flex justify-start ${
+          children ? "items-start" : "items-start"
+        }`}
+      >
         {children && (
           <BiChevronLeft
             style={{
               transition: "all 0.2s linear",
               transform: showChildren ? "rotate(-90deg)" : "",
+              width: "32px",
+              height: "32px",
             }}
           />
         )}
-        {!children && <BiFileBlank />}
+        {!children && (
+          <div
+            style={{
+              width: "22px",
+              height: "22px",
+              display: "block",
+            }}
+          >
+            <BiFileBlank
+              style={{
+                width: "22px",
+                height: "22px",
+                marginTop: "4px",
+                display: "block",
+              }}
+            />
+          </div>
+        )}
 
         <span
           className={` ${className}`}
@@ -270,10 +304,10 @@ const TreeItem = ({ children, level, label, className, onClick, onHover }) => {
       <div
         ref={ref}
         style={{
-          // transition: `max-height 2s linear`,
+          transition: `max-height 1s linear`,
           // display: showChildren ? "block" : "none",
           // width: showChildren ? "100%" : "0%",
-          maxHeight: showChildren ? "600px" : 0,
+          maxHeight: showChildren ? "800px" : 0,
           overflow: "hidden",
         }}
       >
@@ -377,13 +411,14 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
       setSelectedNode({ node: { ...selectedNode, [section]: value.value } })
     );
   };
-
+  const [flag, setFlag] = useState(false);
   useEffect(() => {
     const clickedValue = clicked.value;
     const filteredExpanded = expanded.filter((e) =>
       extractPosition(clickedValue).includes(extractPosition(e))
     );
     setExpanded(filteredExpanded);
+    setFlag(!flag);
   }, [clicked]);
 
   const filterNodes = (filtered, node) => {
@@ -399,28 +434,27 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
 
     return filtered;
   };
-  console.log("checked", checked);
-  console.log("expanded", expanded);
-  console.log("filterText", filterText);
-  console.log("filteredNodes", filteredNodes);
-  console.log("clicked", clicked);
-  console.log("c", c);
 
-  // nodes={filteredNodes}
-  // checked={checked}
-  // expanded={expanded}
-  // expandOnClick
-  // onCheck={(checkedData) => {
-  //   setChecked(checkedData);
-  // }}
-  // onClick={onClick}
-  // onExpand={(expandedData) => {
-  //   setExpanded(expandedData);
-  // }}
+  const isOpen = (value) => {
+    if (!value || !selectedNode[section]) return false;
+    const valueTreeIndex = extractTreeIndex(value);
+    const [lvl1, lvl2, lvl3] = valueTreeIndex;
 
-  console.log(filteredNodes);
+    const selectedNodeValue = selectedNode[section];
+    const nodeTreeIndex = extractTreeIndex(selectedNodeValue);
+    const [lvl1Node, lvl2Node, lvl3Node] = nodeTreeIndex;
+
+    if (lvl1 === lvl1Node && lvl2 === undefined && lvl3 === undefined)
+      return true;
+    if (lvl1 === lvl1Node && lvl2 === lvl2Node && lvl3 === undefined)
+      return true;
+    if (lvl1 === lvl1Node && lvl2 === lvl2Node && lvl3 === lvl3Node)
+      return true;
+    return false;
+  };
   return (
     <div className={classes.alphabet}>
+      <p style={{ fontSize: 18 }}>فهرست موضوعات</p>
       <Input
         className="w-full my-2"
         style={{ height: "48px" }}
@@ -433,11 +467,21 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
       <ul>
         {filteredNodes?.map((node) => {
           return (
-            <TreeItem label={node.label} level={1}>
+            <TreeItem
+              label={node.label}
+              level={1}
+              open={isOpen(node.value)}
+              flag={flag}
+            >
               <ul>
                 {node.children?.map((child) => {
                   return (
-                    <TreeItem label={child.label} level={2}>
+                    <TreeItem
+                      label={child.label}
+                      level={2}
+                      open={isOpen(child.value)}
+                      flag={flag}
+                    >
                       <ul>
                         {child?.children?.map((item) => {
                           return (
@@ -445,6 +489,8 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
                               label={item.label}
                               level={3}
                               onClick={() => onClick(item)}
+                              open={isOpen(item.value)}
+                              flag={flag}
                             />
                           );
                         })}
