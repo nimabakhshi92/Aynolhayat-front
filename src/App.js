@@ -52,6 +52,16 @@ function App() {
           <Routes>
             <Route path="login" element={<Login />}></Route>
             <Route path="signup" element={<SingUp />}></Route>
+            <Route path=":narrationId" element={<NarrationEdit />}></Route>
+            <Route path="save narration/" element={<NarrationEdit />}></Route>
+            <Route
+              path="save narration/:narrationId"
+              element={<NarrationEdit />}
+            ></Route>
+            <Route
+              path="edit narration/:narrationId"
+              element={<NarrationEdit />}
+            ></Route>
             <Route
               path="/"
               element={
@@ -61,21 +71,11 @@ function App() {
               }
             >
               {/* <Route path="s/" element={<NarrationSummariesNewLT />}></Route> */}
+              {/* <Route index element={<NarrationWarehouse />}></Route> */}
               <Route index element={<NarrationWarehouseLT />}></Route>
               <Route path="saved/" element={<div>saved</div>}></Route>
               <Route path="search/" element={<div>search</div>}></Route>
-              {/* <Route index element={<NarrationWarehouse />}></Route>
-              <Route path=":narrationId" element={<NarrationEdit />}></Route>
-              <Route path="save narration/" element={<NarrationEdit />}></Route>
-              <Route
-                path="save narration/:narrationId"
-                element={<NarrationEdit />}
-              ></Route>
-              <Route
-                path="edit narration/:narrationId"
-                element={<NarrationEdit />}
-              ></Route>
-              <Route path="summary" element={<NarrationSummariesNew />}></Route> */}
+              {/* <Route path="summary" element={<NarrationSummariesNew />}></Route> */}
             </Route>
           </Routes>
         </BrowserRouter>

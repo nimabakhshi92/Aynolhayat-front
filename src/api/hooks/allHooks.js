@@ -35,9 +35,9 @@ const use2GeneralGetHook = (cacheName, url) => {
 // ==========================
 // Common Hooks
 // ==========================
-export const useGetSummaryTree = (section) => {
+export const useGetSummaryTree = (section, user) => {
   const url = apiUrls.narrationSummaries.list(section);
-  return use2GeneralGetHook(["summaryTree", section], url);
+  return use2GeneralGetHook(["summaryTree", section, user], url);
 };
 export const useGetImam = () => {
   const url = apiUrls.Imam.list;

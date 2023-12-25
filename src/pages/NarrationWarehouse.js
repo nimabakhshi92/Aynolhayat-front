@@ -30,6 +30,7 @@ import FilterModal, {
 } from "../components/show-traditions/filter-modal";
 import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
 import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
+import { getUserFromLocalStorage } from "../utils/localStorage";
 
 const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -865,8 +866,8 @@ export const NarrationWarehouseLT = () => {
   const searchTerm = useRef();
   const searchSubject = useRef();
   const { section, selectedNode } = useSelector((store) => store.summaryTree);
-
-  const { data } = useGetSummaryTree(section);
+  const { user } = useSelector((store) => store.user);
+  const { data } = useGetSummaryTree(section, user);
   const treeWords = extractTreeWords(
     selectedNode[section],
     data,
