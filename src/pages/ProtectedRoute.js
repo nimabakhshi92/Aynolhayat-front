@@ -15,7 +15,6 @@ export const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     // var user2 = getUserFromLocalStorage();
     const loogIn = async () => {
-      console.log("user2", user);
       if (!user) {
         console.log("!user");
         const values = {

@@ -5,7 +5,11 @@ import {
   removeUserFromLocalStorage,
 } from "../../utils/localStorage";
 import { toast } from "react-toastify";
-import { loginUserThunk, refreshTokenThunk } from "./userThunk";
+import {
+  loginUserThunk,
+  refreshTokenThunk,
+  signupUserThunk,
+} from "./userThunk";
 import i18next from "i18next";
 
 const initialState = {
@@ -14,6 +18,7 @@ const initialState = {
   refreshIsLoading: false,
 };
 export const loginUser = createAsyncThunk("user/login", loginUserThunk);
+export const signupUser = createAsyncThunk("user/signupUser", signupUserThunk);
 export const refreshToken = createAsyncThunk("user/refresh", refreshTokenThunk);
 
 const userSlice = createSlice({
@@ -40,6 +45,30 @@ const userSlice = createSlice({
         state.isLoading = false;
         toast.error(payload);
       })
+      .addCase(signupUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(signupUser.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.user = {
+          ...payload,
+          refresh: payload.token.refresh_token,
+          access: payload.token.token,
+          expires_at: payload.token.expires_at,
+        };
+        addUserToLocalStorage({
+          ...payload,
+          refresh: payload.token.refresh_token,
+          access: payload.token.token,
+          expires_at: payload.token.expires_at,
+        });
+        // toast.success("خوش آمدید");
+      })
+      .addCase(signupUser.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        toast.error(payload);
+      })
+
       .addCase(refreshToken.pending, (state) => {
         state.refreshIsLoading = true;
       })

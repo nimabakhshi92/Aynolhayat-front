@@ -22,6 +22,7 @@ import {
 import { NarrationEdit } from "./pages/NarrationEdit";
 import { NarrationSummariesNew } from "./pages/NarrationSummariesNew";
 import { NarrationSummariesNewLT } from "./pages/NarrationSummariesNewLT";
+import { NarrationSearch } from "./pages/NarrationSearch";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -74,7 +75,7 @@ function App() {
               {/* <Route index element={<NarrationWarehouse />}></Route> */}
               <Route index element={<NarrationWarehouseLT />}></Route>
               <Route path="saved/" element={<div>saved</div>}></Route>
-              <Route path="search/" element={<div>search</div>}></Route>
+              <Route path="search/" element={<NarrationSearch />}></Route>
               {/* <Route path="summary" element={<NarrationSummariesNew />}></Route> */}
             </Route>
           </Routes>

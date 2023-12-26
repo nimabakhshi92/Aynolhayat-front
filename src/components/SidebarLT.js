@@ -2,39 +2,8 @@ import { Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BiCylinder, BiHeart, BiSave, BiSearch } from "react-icons/bi";
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { getUserFromLocalStorage } from "../utils/localStorage";
-
-const navItemsDefault = [
-  {
-    icon: <BiCylinder />,
-    name: "allNarrations",
-    displayText: "همه احادیث",
-    to: "/",
-    isActive: true,
-  },
-  {
-    icon: <BiHeart />,
-    name: "saved",
-    displayText: "مورد علاقه ها",
-    to: "saved",
-    isActive: false,
-  },
-  {
-    icon: <BiSearch />,
-    name: "search",
-    displayText: "جست و جو",
-    to: "search",
-    isActive: false,
-  },
-  {
-    icon: <BiSave />,
-    name: "save",
-    displayText: "ذخیره حدیث",
-    to: "save narration",
-    isActive: false,
-  },
-];
 
 const NavIcon = ({ iconName, isActive, ...props }) => {
   if (iconName === "search")
@@ -72,6 +41,46 @@ const NavIcon = ({ iconName, isActive, ...props }) => {
 };
 
 export const SidebarLT = () => {
+  const { pathname } = useLocation();
+  const pageName = pathname.includes("search")
+    ? "search"
+    : pathname.includes("saved")
+    ? "saved"
+    : pathname.includes("save")
+    ? "save"
+    : "";
+
+  const navItemsDefault = [
+    {
+      icon: <BiCylinder />,
+      name: "allNarrations",
+      displayText: "همه احادیث",
+      to: "/",
+      isActive: pageName === "",
+    },
+    {
+      icon: <BiHeart />,
+      name: "saved",
+      displayText: "مورد علاقه ها",
+      to: "saved",
+      isActive: pageName === "saved",
+    },
+    {
+      icon: <BiSearch />,
+      name: "search",
+      displayText: "جست و جو",
+      to: "search",
+      isActive: pageName === "search",
+    },
+    {
+      icon: <BiSave />,
+      name: "save",
+      displayText: "ذخیره حدیث",
+      to: "save narration",
+      isActive: pageName === "save",
+    },
+  ];
+
   const [navItems, setNavItems] = useState(navItemsDefault);
   var isNotInit = localStorage.getItem("isNotInit");
   const [open, setOpen] = useState(isNotInit !== "true");

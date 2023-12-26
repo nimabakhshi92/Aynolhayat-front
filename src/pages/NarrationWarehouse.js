@@ -141,7 +141,7 @@ function ArabicTextComponent({ children, footnotes, className }) {
                     <span
                       style={{
                         color: isTranslation ? "black" : "#102cc9",
-                        fontSize: isTranslation ? "1.3rem" : "1.5rem",
+                        fontSize: isTranslation ? "1.4rem" : "1.6rem",
                       }}
                     >
                       {[...word].map((char) => {
@@ -173,7 +173,14 @@ function ArabicTextComponent({ children, footnotes, className }) {
                           } // atSign = !atSign;
                         } else
                           return /[\u064B-\u0652]/.test(char) ? (
-                            <span style={{ color: "red" }}>&#8203;{char}</span>
+                            <span
+                              style={{
+                                color: "red",
+                                userSelect: "none",
+                              }}
+                            >
+                              &#8203;{char}
+                            </span>
                           ) : (
                             <span
                               style={{
@@ -209,7 +216,7 @@ function ArabicTextComponent({ children, footnotes, className }) {
   );
 }
 
-const SingleNarration = ({
+export const SingleNarration = ({
   narration,
   onDelete,
   onEdit,
@@ -219,7 +226,7 @@ const SingleNarration = ({
   lvl3,
   section,
 }) => {
-  const [isSummary, setIsShowSummary] = useState(true);
+  const [isSummary, setIsShowSummary] = useState(showSummary);
 
   const [short, setShort] = useState(true);
   const { user } = useSelector((store) => store.user);
@@ -300,7 +307,7 @@ const SingleNarration = ({
             <p
               style={{
                 color: "brown",
-                fontSize: "1rem",
+                fontSize: "1.3rem",
                 maxWidth: "calc(100% - 100px)",
               }}
             >
@@ -405,7 +412,7 @@ const SingleNarration = ({
                     )}
 
                     <div className="flex items-start justify-between w-full mr-3">
-                      <p className="w-[48%]" style={{ fontSize: "1.3rem" }}>
+                      <p className="w-[48%]" style={{ fontSize: "1.4rem" }}>
                         {contentItem.expression}
                       </p>
                       <ArabicTextComponent

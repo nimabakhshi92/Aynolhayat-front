@@ -1,9 +1,17 @@
 import { Stack } from "@mui/material";
 import Button from "./ui/buttons/primary-button";
 import { useNavigate } from "react-router-dom";
+import { BiExit, BiLogIn, BiLogOut } from "react-icons/bi";
+import { useDispatch, useSelector } from "react-redux";
+import { removeUserFromLocalStorage } from "../utils/localStorage";
+import { logout } from "../features/user/userSlice";
+import { ReactComponent as Logo } from "../assets/images/logo.svg";
+import LogoPng from "../assets/images/logo.png";
 
 export const HeaderLT = () => {
   const navigate = useNavigate();
+  const { user } = useSelector((store) => store.user);
+  const dispatch = useDispatch();
   return (
     <header
       className="p-3 px-12 bg-white h-15 fixed w-full top-0 right-0"
@@ -21,24 +29,59 @@ export const HeaderLT = () => {
     >
       <Stack
         justifyContent="space-between"
-        alignItems="center"
+        alignItems="flex-start"
         flexDirection="row"
       >
-        <h1> عین الحیاه</h1>
+        <img
+          src={LogoPng}
+          style={{
+            width: "96px",
+            height: "64px",
+            position: "relative",
+            top: "-17px",
+          }}
+        />
+        {/* <Logo
+          style={{
+            width: "64px",
+            height: "64px",
+            position: "relative",
+            top: "-10px",
+          }}
+        /> */}
+        {/* <h1> عین الحیاه</h1> */}
         {/* <div className="w-9 h-9 flex justify-center items-center rounded-[50%] bg-[green]">
           N
               </div> */}
-        {/* <Button
-          onClickHandler={() => navigate("/login")}
+        <Button
+          onClickHandler={() => {
+            dispatch(logout());
+
+            navigate("/login");
+          }}
           variant="secondary"
           style={{
             border: "1px solid #aaa",
-            padding: "2px",
+            padding: "2px 4px",
             borderRadius: "6px",
+            // color: "gray",
+            // width: "100px",
           }}
         >
-          ورود / ثبت نام
-        </Button> */}
+          {user && user?.id !== 2 ? (
+            <span className="flex items-center gap-2">
+              <span>خروج</span>
+              <BiLogOut />
+            </span>
+          ) : (
+            <>
+              <span className="flex items-center gap-2">
+                <span>ورود | ثبت نام</span>
+                <BiLogIn />
+              </span>
+            </>
+          )}
+        </Button>
         {/* <span
           style={{
             border: "1px solid #aaa",
