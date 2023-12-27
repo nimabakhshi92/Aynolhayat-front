@@ -37,7 +37,7 @@ export const ContentContainer = ({
       <div
         className={classes.content_container}
         style={{
-          fontSize: getFont(1.8) + "rem",
+          fontSize: getFont(1.2) + "rem",
         }}
       >
         {children}

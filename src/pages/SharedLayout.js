@@ -26,7 +26,7 @@ export const SharedLayout = () => {
 export const SharedLayoutLT = () => {
   const { user } = useSelector((store) => store.user);
   const a = document.body;
-  a.style.fontSize = isSuperAdmin(user) ? "230%" : "160%";
+  a.style.fontSize = isSuperAdmin(user) ? "190%" : "160%";
   return (
     <main
       style={{
