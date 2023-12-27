@@ -20,13 +20,6 @@ export function SummaryTree({ data, section, selectedNode }) {
   const [clicked, setClicked] = useState({});
   const [c, setC] = useState([]);
 
-  console.log("checked", checked);
-  console.log("expanded", expanded);
-  console.log("filterText", filterText);
-  console.log("filteredNodes", filteredNodes);
-  console.log("clicked", clicked);
-  console.log("c", c);
-
   useEffect(() => {
     let newc = data.map((level1, index1) => {
       return {
@@ -232,9 +225,11 @@ export const TreeItem = ({
   onClick,
   open,
   flag,
+  selected,
 }) => {
   const [showChildren, setShowChildren] = useState(open);
   const ref = useRef();
+  const [bgColor, setBgColor] = useState(null);
 
   useEffect(() => {
     setShowChildren(open);
@@ -250,11 +245,17 @@ export const TreeItem = ({
           setShowChildren(!showChildren);
         if (onClick) onClick();
       }}
+      onMouseEnter={() => setBgColor("#deffe8")}
+      onMouseLeave={() => setBgColor(null)}
       style={{
         // transition: "all 0.3s linear",
         paddingRight: "7%",
         color: showChildren && "var(--primary-color)",
-        backgroundColor: children && showChildren && getBGColor(level),
+        backgroundColor: selected
+          ? "#beffc8"
+          : !showChildren
+          ? bgColor
+          : children && showChildren && getBGColor(level),
         cursor: !children && "pointer",
       }}
     >
@@ -264,14 +265,21 @@ export const TreeItem = ({
         }`}
       >
         {children && (
-          <BiChevronLeft
+          <div
             style={{
-              transition: "all 0.2s linear",
-              transform: showChildren ? "rotate(-90deg)" : "",
               width: "32px",
               height: "32px",
             }}
-          />
+          >
+            <BiChevronLeft
+              style={{
+                transition: "all 0.2s linear",
+                transform: showChildren ? "rotate(-90deg)" : "",
+                width: "32px",
+                height: "32px",
+              }}
+            />
+          </div>
         )}
         {!children && (
           <div
@@ -504,6 +512,7 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
                               onClick={() => onClick(item)}
                               open={isOpen(item.value)}
                               flag={flag}
+                              selected={selectedNode[section] === item.value}
                             />
                           );
                         })}

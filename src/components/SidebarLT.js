@@ -4,6 +4,7 @@ import { BiCylinder, BiHeart, BiSave, BiSearch } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 import { getUserFromLocalStorage } from "../utils/localStorage";
+import { isAdmin } from "../utils/acl";
 
 const NavIcon = ({ iconName, isActive, ...props }) => {
   if (iconName === "search")
@@ -124,7 +125,7 @@ export const SidebarLT = () => {
         gap="16px"
       >
         {navItems.map((item, index) => {
-          if (item.name !== "save" || user?.id === 1)
+          if (item.name !== "save" || isAdmin(user))
             return (
               <NavLink
                 key={index}

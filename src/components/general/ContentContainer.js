@@ -1,3 +1,4 @@
+import { getFont } from "../../utils/acl";
 import DotsDropdown from "../ui/dots-dropdown";
 import classes from "./ContentContainer.module.css";
 
@@ -17,13 +18,30 @@ export const ContentContainer = ({
       }}
       className={`${className}`}
     >
-      <div className={classes.header_container}>
-        <div className={classes.content_container__title}>
+      <div
+        className={classes.header_container}
+        style={{
+          fontSize: getFont(1.4) + "rem",
+        }}
+      >
+        <div
+          className={classes.content_container__title}
+          style={{
+            fontSize: getFont(1.2) + "rem",
+          }}
+        >
           <span>{title}</span>
         </div>
         {actionComponent}
       </div>
-      <div className={classes.content_container}>{children}</div>
+      <div
+        className={classes.content_container}
+        style={{
+          fontSize: getFont(1.8) + "rem",
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 };

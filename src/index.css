@@ -6,6 +6,7 @@
   font-family: IRANSansWeb;
   src: url("./assets/fonts/IRANSansWeb(FaNum).woff");
 }
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2&family=Gulzar&family=Rubik&display=swap");
 
 :root {
   --primary-color: #0bab64;
@@ -26,7 +27,11 @@
 }
 html {
   font-size: 62.5%;
-  font-family: IRANSansWeb, serif;
+  /* font-family: IRANSansWeb, serif; */
+  /* font-family: "Rubik", sans-serif; */
+  /* font-family: "Gulzar", serif; */
+  font-family: "Baloo Bhaijaan 2", sans-serif;
+
   line-height: 2;
   background-color: var(--blue-100);
 }

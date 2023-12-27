@@ -60,6 +60,11 @@ function App() {
               element={<NarrationEdit />}
             ></Route>
             <Route
+              path="search/:narrationId"
+              element={<NarrationEdit />}
+            ></Route>
+
+            <Route
               path="edit narration/:narrationId"
               element={<NarrationEdit />}
             ></Route>

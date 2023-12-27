@@ -26,17 +26,19 @@ import { NarrationSubjectEditForm } from "../components/NarrationSave/NarrationS
 import { useQueryClient } from "react-query";
 import { NarrationSummaryEditForm } from "../components/NarrationSave/NarrationSummaryEditForm";
 import { NarrationFootnoteEditForm } from "../components/NarrationSave/NarrationFootnoteEditForm";
+import { isAdmin, isSuperAdmin } from "../utils/acl";
 
 export const NarrationEdit = () => {
   const { narrationId } = useParams();
   const { user } = useSelector((store) => store.user);
+
   const navigate = useNavigate();
 
   const { data: narration, isLoading } = useGetNarrationIndividual(
     narrationId || 0
   );
 
-  if (!(user?.id === 1)) return <Navigate to={"/"} />;
+  if (!isAdmin(user)) return <Navigate to={"/"} />;
   return (
     <section className="mt-8">
       <NarrationEditForm narration={narration} />

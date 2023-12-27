@@ -255,9 +255,9 @@ export const NarrationSearch = () => {
   const treeOptions = makeTreeOptions(treeWords, section);
 
   const { data: narrationList, isLoading } = useGetNarrationList(selectedPage, {
-    ...selectedOptions,
+    // ...selectedOptions,
     ...serachOptions,
-    ...treeOptions,
+    // ...treeOptions,
   });
   const handleSelect = (newValue, category) => {
     setSelectedOptions({ ...selectedOptions, [category]: newValue });

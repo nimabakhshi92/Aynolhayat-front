@@ -374,6 +374,7 @@ export const MySurahSummaryTree = ({ data, section, selectedNode }) => {
                               onClick={() => onClick(item)}
                               open={isOpen(item.value)}
                               flag={flag}
+                              selected={selectedNode[section] === item.value}
                             />
                           );
                         })}

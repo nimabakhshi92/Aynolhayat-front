@@ -31,6 +31,7 @@ import FilterModal, {
 import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
 import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { getUserFromLocalStorage } from "../utils/localStorage";
+import { getFont, isAdmin, isSuperAdmin } from "../utils/acl";
 
 const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -92,6 +93,7 @@ const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 // }
 
 function ArabicTextComponent({ children, footnotes, className }) {
+  const { user } = useSelector((store) => store.user);
   let dollar = false;
   let atSign = true;
   let noteIndex = -1;
@@ -141,7 +143,14 @@ function ArabicTextComponent({ children, footnotes, className }) {
                     <span
                       style={{
                         color: isTranslation ? "black" : "#102cc9",
-                        fontSize: isTranslation ? "1.4rem" : "1.6rem",
+                        fontSize:
+                          (isTranslation
+                            ? isSuperAdmin(user)
+                              ? getFont(1.4)
+                              : 1.4
+                            : isSuperAdmin(user)
+                            ? getFont(1.6)
+                            : 1.6) + "rem",
                       }}
                     >
                       {[...word].map((char) => {
@@ -239,7 +248,7 @@ export const SingleNarration = ({
       title={`${narration.imam.name} می فرمایند:`}
       actionComponent={
         <div className="flex gap-4 items-center">
-          {user?.id === 1 ? (
+          {isAdmin(user) ? (
             <>
               <AiFillDelete
                 className="cursor-pointer"
@@ -307,7 +316,7 @@ export const SingleNarration = ({
             <p
               style={{
                 color: "brown",
-                fontSize: "1.3rem",
+                fontSize: (isSuperAdmin(user) ? getFont(1.3) : 1.3) + "rem",
                 maxWidth: "calc(100% - 100px)",
               }}
             >
@@ -336,7 +345,7 @@ export const SingleNarration = ({
                 style={{
                   cursor: "pointer",
                   color: "var(--secondary-blue-color)",
-                  fontSize: "14px",
+                  fontSize: (isSuperAdmin(user) ? getFont(1.4) : 1.4) + "rem",
                 }}
               >
                 ... نمایش کامل
@@ -348,7 +357,7 @@ export const SingleNarration = ({
                 style={{
                   cursor: "pointer",
                   color: "var(--secondary-blue-color)",
-                  fontSize: "14px",
+                  fontSize: (isSuperAdmin(user) ? getFont(1.4) : 1.4) + "rem",
                 }}
               >
                 ... نمایش کمتر
@@ -361,7 +370,12 @@ export const SingleNarration = ({
       {showSummary && isSummary && (
         <>
           <div className="w-full relative h-10">
-            <span style={{ fontSize: "1.4rem", marginRight: "12px" }}>
+            <span
+              style={{
+                fontSize: (isSuperAdmin(user) ? getFont(1.4) : 1.4) + "rem",
+                marginRight: "12px",
+              }}
+            >
               خلاصه قسمت های مرتبط با موضوع حدیث:
             </span>
             <Button
@@ -403,7 +417,8 @@ export const SingleNarration = ({
                         className="flex gap-2"
                         style={{
                           color: "var(--primary-color)",
-                          fontSize: "1.4rem",
+                          fontSize:
+                            (isSuperAdmin(user) ? getFont(1.4) : 1.4) + "rem",
                         }}
                       >
                         <img src={noteIcon} alt="icon" />
@@ -412,7 +427,13 @@ export const SingleNarration = ({
                     )}
 
                     <div className="flex items-start justify-between w-full mr-3">
-                      <p className="w-[48%]" style={{ fontSize: "1.4rem" }}>
+                      <p
+                        className="w-[48%]"
+                        style={{
+                          fontSize:
+                            (isSuperAdmin(user) ? getFont(1.4) : 1.4) + "rem",
+                        }}
+                      >
                         {contentItem.expression}
                       </p>
                       <ArabicTextComponent
@@ -445,425 +466,427 @@ export const SingleNarration = ({
 //   );
 // }
 
-export const NarrationWarehouseOld = () => {
-  const navigate = useNavigate();
-  const [selectedPage, setSelectedPage] = useState(1);
-  const [showSummary, setShowSummary] = useState(false);
-  const queryClient = useQueryClient();
-  const searchTerm = useRef();
-  const searchSubject = useRef();
-  const { section, selectedNode } = useSelector((store) => store.summaryTree);
+// export const NarrationWarehouseOld = () => {
+//   const navigate = useNavigate();
+//   const [selectedPage, setSelectedPage] = useState(1);
+//   const [showSummary, setShowSummary] = useState(false);
+//   const queryClient = useQueryClient();
+//   const searchTerm = useRef();
+//   const searchSubject = useRef();
+//   const { section, selectedNode } = useSelector((store) => store.summaryTree);
 
-  const { data } = useGetSummaryTree(section);
-  const treeWords = extractTreeWords(
-    selectedNode[section],
-    data,
-    section,
-    section !== "surah" ? "alphabet" : "surah_name"
-  );
-  // const [searchSubject, setSearchSubject] = useState("");
-  const emptyOptions = {
-    alphabet: null,
-    subject: null,
-    sub_subject: null,
-    narration_name: null,
-    imam_name: null,
-    surah_name: null,
-    verse_no: null,
-  };
-  const displayOptions = {
-    alphabet: "الفبا",
-    subject: "موضوع",
-    sub_subject: "زیرموضوع",
-    narration_name: "نام حدیث",
-    imam_name: "نام امام",
-    surah_name: "نام سوره",
-    verse_no: "شماره آیه",
-  };
+//   const { data } = useGetSummaryTree(section);
+//   const treeWords = extractTreeWords(
+//     selectedNode[section],
+//     data,
+//     section,
+//     section !== "surah" ? "alphabet" : "surah_name"
+//   );
+//   // const [searchSubject, setSearchSubject] = useState("");
+//   const emptyOptions = {
+//     alphabet: null,
+//     subject: null,
+//     sub_subject: null,
+//     narration_name: null,
+//     imam_name: null,
+//     surah_name: null,
+//     verse_no: null,
+//   };
+//   const displayOptions = {
+//     alphabet: "الفبا",
+//     subject: "موضوع",
+//     sub_subject: "زیرموضوع",
+//     narration_name: "نام حدیث",
+//     imam_name: "نام امام",
+//     surah_name: "نام سوره",
+//     verse_no: "شماره آیه",
+//   };
 
-  const serachOptions = {
-    subjects_search: searchSubject?.current?.value || "",
-    texts_search: searchTerm?.current?.value || "",
-  };
-  const [selectedOptions, setSelectedOptions] = useState(emptyOptions);
-  const { data: options } = useGetNarrationFilterOptions();
-  const treeOptions = makeTreeOptions(treeWords, section);
+//   const serachOptions = {
+//     subjects_search: searchSubject?.current?.value || "",
+//     texts_search: searchTerm?.current?.value || "",
+//   };
+//   const [selectedOptions, setSelectedOptions] = useState(emptyOptions);
+//   const { data: options } = useGetNarrationFilterOptions();
+//   const treeOptions = makeTreeOptions(treeWords, section);
 
-  const { data: narrationList, isLoading } = useGetNarrationList(selectedPage, {
-    ...selectedOptions,
-    ...serachOptions,
-    ...treeOptions,
-  });
+//   const { data: narrationList, isLoading } = useGetNarrationList(selectedPage, {
+//     ...selectedOptions,
+//     ...serachOptions,
+//     ...treeOptions,
+//   });
 
-  const handleSelect = (newValue, category) => {
-    setSelectedOptions({ ...selectedOptions, [category]: newValue });
-  };
+//   const handleSelect = (newValue, category) => {
+//     setSelectedOptions({ ...selectedOptions, [category]: newValue });
+//   };
 
-  const handleDelete = async (narrationId, pass) => {
-    if (Number(pass) !== 1348) return;
-    const url = apiUrls.narration.get(narrationId);
-    const resp = await customApiCall.delete({ url });
-    queryClient.refetchQueries();
-  };
+//   const handleDelete = async (narrationId, pass) => {
+//     if (Number(pass) !== 1348) return;
+//     const url = apiUrls.narration.get(narrationId);
+//     const resp = await customApiCall.delete({ url });
+//     queryClient.refetchQueries();
+//   };
 
-  const sort = (array) => {
-    if (!array) return array;
-    const newArray = [...array];
-    newArray.sort();
-    return newArray;
-  };
-  let { data: subject } = useGetSubjects();
-  subject = subject?.subjects || [];
-  const dropdown = [
-    { id: 1, title: "پربازدیدترین" },
-    { id: 2, title: "پرتکرارترین" },
-    { id: 3, title: "قدیمی ترین" },
-  ];
-  const [a, setA] = useState({ id: 1, title: "پربازدیدترین" });
+//   const sort = (array) => {
+//     if (!array) return array;
+//     const newArray = [...array];
+//     newArray.sort();
+//     return newArray;
+//   };
+//   let { data: subject } = useGetSubjects();
+//   subject = subject?.subjects || [];
+//   const dropdown = [
+//     { id: 1, title: "پربازدیدترین" },
+//     { id: 2, title: "پرتکرارترین" },
+//     { id: 3, title: "قدیمی ترین" },
+//   ];
+//   const [a, setA] = useState({ id: 1, title: "پربازدیدترین" });
 
-  return (
-    <>
-      <section
-        className="grid grid-cols-[1fr_1fr] gap-4 py-2 -px-4"
-        style={{
-          position: "sticky",
-          top: "90px",
-          zIndex: 100,
-          backgroundColor: "var(--blue-100)",
-        }}
-      >
-        <Input
-          className="search"
-          type="search"
-          reference={searchTerm}
-          placeholder="جستجو در متن احادیث"
-          onChange={() => queryClient.refetchQueries()}
-        />
-        <InputWithSuggestion
-          className="w-full"
-          reference={searchSubject}
-          placeholder="جستجوی موضوعی"
-          suggestions={subject}
-          onChange={() => queryClient.refetchQueries()}
-        />
-      </section>
+//   return (
+//     <>
+//       <section
+//         className="grid grid-cols-[1fr_1fr] gap-4 py-2 -px-4"
+//         style={{
+//           position: "sticky",
+//           top: "90px",
+//           zIndex: 100,
+//           backgroundColor: "var(--blue-100)",
+//         }}
+//       >
+//         <Input
+//           className="search"
+//           type="search"
+//           reference={searchTerm}
+//           placeholder="جستجو در متن احادیث"
+//           onChange={() => queryClient.refetchQueries()}
+//         />
+//         <InputWithSuggestion
+//           className="w-full"
+//           reference={searchSubject}
+//           placeholder="جستجوی موضوعی"
+//           suggestions={subject}
+//           onChange={() => queryClient.refetchQueries()}
+//         />
+//       </section>
 
-      <div className="mt-1 grid grid-cols-[300px_auto] gap-4  ">
-        {/* <article
-          style={{
-            backgroundColor: "white",
-            height: "fit-content",
-            minHeight: "400px",
-            paddingBottom: "32px",
-            borderRadius: "8px",
-            overflow: "hidden",
-            minHeight: "75vh",
-            position: "sticky",
-            top: "140px",
-          }}
-        >
-          {Object.keys(emptyOptions).map((category, index) => {
-            return (
-              <DropdownSingleSelect
-                key={index}
-                items={sort([
-                  ...new Set(options?.map((option) => option[category])),
-                ])}
-                label={displayOptions[category]}
-                selected={selectedOptions[category]}
-                setSelected={(newValue) => handleSelect(newValue, category)}
-              />
-            );
-          })}
-        </article> */}
-        <FilterModal data={data} className="block" />
+//       <div className="mt-1 grid grid-cols-[300px_auto] gap-4  ">
+//         {/* <article
+//           style={{
+//             backgroundColor: "white",
+//             height: "fit-content",
+//             minHeight: "400px",
+//             paddingBottom: "32px",
+//             borderRadius: "8px",
+//             overflow: "hidden",
+//             minHeight: "75vh",
+//             position: "sticky",
+//             top: "140px",
+//           }}
+//         >
+//           {Object.keys(emptyOptions).map((category, index) => {
+//             return (
+//               <DropdownSingleSelect
+//                 key={index}
+//                 items={sort([
+//                   ...new Set(options?.map((option) => option[category])),
+//                 ])}
+//                 label={displayOptions[category]}
+//                 selected={selectedOptions[category]}
+//                 setSelected={(newValue) => handleSelect(newValue, category)}
+//               />
+//             );
+//           })}
+//         </article> */}
+//         <FilterModal data={data} className="block" />
 
-        <article
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            minHeight: "80vh",
-            position: "relative",
-          }}
-        >
-          {isLoading && (
-            <CircularProgress
-              className="absolute top-1/2 left-1/2 "
-              color="success"
-            />
-          )}
-          {!isLoading && (
-            <>
-              <div
-                className="p-4 px-10 mb-4 flex items-center justify-between"
-                style={{
-                  boxShadow: "-3px 8px 16px -3px #00000026",
-                  borderRadius: "8px",
-                  backgroundColor: "white",
-                  fontSize: "16px",
-                  color: "var(--neutral-color-500)",
-                }}
-              >
-                <div className="">
-                  <span>{narrationList?.number_of_records || 0}</span>
-                  &nbsp;
-                  <span>حدیث یافت شد </span>
-                </div>
-                <div className="flex gap-2">
-                  <span
-                    className="cursor-pointer"
-                    onClick={() => setShowSummary(false)}
-                  >
-                    نمایش متن
-                  </span>
-                  <span
-                    className="cursor-pointer"
-                    onClick={() => setShowSummary(true)}
-                  >
-                    نمایش خلاصه
-                  </span>
-                </div>
-                <div className="flex gap-3 items-center">
-                  <p>مرتب سازی :</p>
-                  <div className="w-50">
-                    <Dropdown
-                      className="h-8 "
-                      dataKey="title"
-                      selected={a}
-                      setSelected={setA}
-                      items={dropdown}
-                    />
-                  </div>
-                </div>
-              </div>
-              <section className="h-full" style={{}}>
-                {narrationList?.results?.map((narration, index) => (
-                  <SingleNarration
-                    key={index}
-                    onEdit={() => navigate(`${narration?.id}`)}
-                    onDelete={(pass) => handleDelete(narration?.id, pass)}
-                    narration={narration}
-                    showSummary={showSummary}
-                  />
-                ))}
-              </section>
-              {narrationList?.last > 0 && (
-                <Pagination
-                  className="mt-8"
-                  noOfPages={narrationList.last}
-                  selected={selectedPage}
-                  setSelected={setSelectedPage}
-                />
-              )}
-            </>
-          )}
-        </article>
-      </div>
-    </>
-  );
-};
+//         <article
+//           style={{
+//             display: "flex",
+//             flexDirection: "column",
+//             justifyContent: "space-between",
+//             minHeight: "80vh",
+//             position: "relative",
+//           }}
+//         >
+//           {isLoading && (
+//             <CircularProgress
+//               className="absolute top-1/2 left-1/2 "
+//               color="success"
+//             />
+//           )}
+//           {!isLoading && (
+//             <>
+//               <div
+//                 className="p-4 px-10 mb-4 flex items-center justify-between"
+//                 style={{
+//                   boxShadow: "-3px 8px 16px -3px #00000026",
+//                   borderRadius: "8px",
+//                   backgroundColor: "white",
+//                   fontSize: (isSuperAdmin(user) ? getFont(1.6) : 1.6) + "rem",
 
-export const NarrationWarehouse = () => {
-  const navigate = useNavigate();
-  const [selectedPage, setSelectedPage] = useState(1);
-  const [showSummary, setShowSummary] = useState(false);
-  const queryClient = useQueryClient();
-  const searchTerm = useRef();
-  const searchSubject = useRef();
-  const { section, selectedNode } = useSelector((store) => store.summaryTree);
+//                   color: "var(--neutral-color-500)",
+//                 }}
+//               >
+//                 <div className="">
+//                   <span>{narrationList?.number_of_records || 0}</span>
+//                   &nbsp;
+//                   <span>حدیث یافت شد </span>
+//                 </div>
+//                 <div className="flex gap-2">
+//                   <span
+//                     className="cursor-pointer"
+//                     onClick={() => setShowSummary(false)}
+//                   >
+//                     نمایش متن
+//                   </span>
+//                   <span
+//                     className="cursor-pointer"
+//                     onClick={() => setShowSummary(true)}
+//                   >
+//                     نمایش خلاصه
+//                   </span>
+//                 </div>
+//                 <div className="flex gap-3 items-center">
+//                   <p>مرتب سازی :</p>
+//                   <div className="w-50">
+//                     <Dropdown
+//                       className="h-8 "
+//                       dataKey="title"
+//                       selected={a}
+//                       setSelected={setA}
+//                       items={dropdown}
+//                     />
+//                   </div>
+//                 </div>
+//               </div>
+//               <section className="h-full" style={{}}>
+//                 {narrationList?.results?.map((narration, index) => (
+//                   <SingleNarration
+//                     key={index}
+//                     onEdit={() => navigate(`${narration?.id}`)}
+//                     onDelete={(pass) => handleDelete(narration?.id, pass)}
+//                     narration={narration}
+//                     showSummary={showSummary}
+//                   />
+//                 ))}
+//               </section>
+//               {narrationList?.last > 0 && (
+//                 <Pagination
+//                   className="mt-8"
+//                   noOfPages={narrationList.last}
+//                   selected={selectedPage}
+//                   setSelected={setSelectedPage}
+//                 />
+//               )}
+//             </>
+//           )}
+//         </article>
+//       </div>
+//     </>
+//   );
+// };
 
-  const { data } = useGetSummaryTree(section);
-  const treeWords = extractTreeWords(
-    selectedNode[section],
-    data,
-    section,
-    section !== "surah" ? "alphabet" : "surah_name"
-  );
-  // const [searchSubject, setSearchSubject] = useState("");
-  const emptyOptions = {
-    alphabet: null,
-    subject: null,
-    sub_subject: null,
-    narration_name: null,
-    imam_name: null,
-    surah_name: null,
-    verse_no: null,
-  };
-  const displayOptions = {
-    alphabet: "الفبا",
-    subject: "موضوع",
-    sub_subject: "زیرموضوع",
-    narration_name: "نام حدیث",
-    imam_name: "نام امام",
-    surah_name: "نام سوره",
-    verse_no: "شماره آیه",
-  };
+// export const NarrationWarehouse = () => {
+//   const navigate = useNavigate();
+//   const [selectedPage, setSelectedPage] = useState(1);
+//   const [showSummary, setShowSummary] = useState(false);
+//   const queryClient = useQueryClient();
+//   const searchTerm = useRef();
+//   const searchSubject = useRef();
+//   const { section, selectedNode } = useSelector((store) => store.summaryTree);
 
-  const serachOptions = {
-    subjects_search: searchSubject?.current?.value || "",
-    texts_search: searchTerm?.current?.value || "",
-  };
-  const [selectedOptions, setSelectedOptions] = useState(emptyOptions);
-  const { data: options } = useGetNarrationFilterOptions();
-  const treeOptions = makeTreeOptions(treeWords, section);
+//   const { data } = useGetSummaryTree(section);
+//   const treeWords = extractTreeWords(
+//     selectedNode[section],
+//     data,
+//     section,
+//     section !== "surah" ? "alphabet" : "surah_name"
+//   );
+//   // const [searchSubject, setSearchSubject] = useState("");
+//   const emptyOptions = {
+//     alphabet: null,
+//     subject: null,
+//     sub_subject: null,
+//     narration_name: null,
+//     imam_name: null,
+//     surah_name: null,
+//     verse_no: null,
+//   };
+//   const displayOptions = {
+//     alphabet: "الفبا",
+//     subject: "موضوع",
+//     sub_subject: "زیرموضوع",
+//     narration_name: "نام حدیث",
+//     imam_name: "نام امام",
+//     surah_name: "نام سوره",
+//     verse_no: "شماره آیه",
+//   };
 
-  const { data: narrationList, isLoading } = useGetNarrationList(selectedPage, {
-    ...selectedOptions,
-    ...serachOptions,
-    ...treeOptions,
-  });
+//   const serachOptions = {
+//     subjects_search: searchSubject?.current?.value || "",
+//     texts_search: searchTerm?.current?.value || "",
+//   };
+//   const [selectedOptions, setSelectedOptions] = useState(emptyOptions);
+//   const { data: options } = useGetNarrationFilterOptions();
+//   const treeOptions = makeTreeOptions(treeWords, section);
 
-  const handleSelect = (newValue, category) => {
-    setSelectedOptions({ ...selectedOptions, [category]: newValue });
-  };
+//   const { data: narrationList, isLoading } = useGetNarrationList(selectedPage, {
+//     ...selectedOptions,
+//     ...serachOptions,
+//     ...treeOptions,
+//   });
 
-  const handleDelete = async (narrationId, pass) => {
-    if (Number(pass) !== 1348) return;
-    const url = apiUrls.narration.get(narrationId);
-    const resp = await customApiCall.delete({ url });
-    queryClient.refetchQueries();
-  };
+//   const handleSelect = (newValue, category) => {
+//     setSelectedOptions({ ...selectedOptions, [category]: newValue });
+//   };
 
-  const sort = (array) => {
-    if (!array) return array;
-    const newArray = [...array];
-    newArray.sort();
-    return newArray;
-  };
-  let { data: subject } = useGetSubjects();
-  subject = subject?.subjects || [];
-  const dropdown = [
-    { id: 1, title: "پربازدیدترین" },
-    { id: 2, title: "پرتکرارترین" },
-    { id: 3, title: "قدیمی ترین" },
-  ];
-  const [a, setA] = useState({ id: 1, title: "پربازدیدترین" });
+//   const handleDelete = async (narrationId, pass) => {
+//     if (Number(pass) !== 1348) return;
+//     const url = apiUrls.narration.get(narrationId);
+//     const resp = await customApiCall.delete({ url });
+//     queryClient.refetchQueries();
+//   };
 
-  return (
-    <div className="flex pt-2" style={{ gap: "8px", flexDirection: "row" }}>
-      <FilterModal
-        data={data}
-        className="w-90 "
-        style={{
-          zIndex: "10",
-          height: "30vh",
-          position: "sticky",
-          top: "8px",
-        }}
-      />
+//   const sort = (array) => {
+//     if (!array) return array;
+//     const newArray = [...array];
+//     newArray.sort();
+//     return newArray;
+//   };
+//   let { data: subject } = useGetSubjects();
+//   subject = subject?.subjects || [];
+//   const dropdown = [
+//     { id: 1, title: "پربازدیدترین" },
+//     { id: 2, title: "پرتکرارترین" },
+//     { id: 3, title: "قدیمی ترین" },
+//   ];
+//   const [a, setA] = useState({ id: 1, title: "پربازدیدترین" });
 
-      <div className="mt-1 " style={{ width: "100%", marginRight: "38rem" }}>
-        <section
-          className="grid grid-cols-[1fr_1fr] gap-4 py-2 -px-4"
-          style={{
-            position: "sticky",
-            top: "90px",
-            zIndex: 100,
-            backgroundColor: "var(--blue-100)",
-          }}
-        >
-          <Input
-            className="search"
-            type="search"
-            reference={searchTerm}
-            placeholder="جستجو در متن احادیث"
-            onChange={() => queryClient.refetchQueries()}
-          />
-          <InputWithSuggestion
-            className="w-full"
-            reference={searchSubject}
-            placeholder="جستجوی موضوعی"
-            suggestions={subject}
-            onChange={() => queryClient.refetchQueries()}
-          />
-        </section>
+//   return (
+//     <div className="flex pt-2" style={{ gap: "8px", flexDirection: "row" }}>
+//       <FilterModal
+//         data={data}
+//         className="w-90 "
+//         style={{
+//           zIndex: "10",
+//           height: "30vh",
+//           position: "sticky",
+//           top: "8px",
+//         }}
+//       />
 
-        <article
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            minHeight: "80vh",
-            position: "relative",
-          }}
-        >
-          {isLoading && (
-            <CircularProgress
-              className="absolute top-1/2 left-1/2 "
-              color="success"
-            />
-          )}
-          {!isLoading && (
-            <>
-              <div
-                className="p-4 px-10 mb-4 flex items-center justify-between"
-                style={{
-                  boxShadow: "-3px 8px 16px -3px #00000026",
-                  borderRadius: "8px",
-                  backgroundColor: "white",
-                  fontSize: "16px",
-                  color: "var(--neutral-color-500)",
-                }}
-              >
-                <div className="">
-                  <span>{narrationList?.number_of_records || 0}</span>
-                  &nbsp;
-                  <span>حدیث یافت شد </span>
-                </div>
-                <div className="flex gap-2">
-                  <span
-                    className="cursor-pointer"
-                    onClick={() => setShowSummary(false)}
-                  >
-                    نمایش متن
-                  </span>
-                  <span
-                    className="cursor-pointer"
-                    onClick={() => setShowSummary(true)}
-                  >
-                    نمایش خلاصه
-                  </span>
-                </div>
-                <div className="flex gap-3 items-center">
-                  <p>مرتب سازی :</p>
-                  <div className="w-50">
-                    <Dropdown
-                      className="h-8 "
-                      dataKey="title"
-                      selected={a}
-                      setSelected={setA}
-                      items={dropdown}
-                    />
-                  </div>
-                </div>
-              </div>
-              <section className="h-full" style={{}}>
-                {narrationList?.results?.map((narration, index) => (
-                  <SingleNarration
-                    key={index}
-                    onEdit={() => navigate(`${narration?.id}`)}
-                    onDelete={(pass) => handleDelete(narration?.id, pass)}
-                    narration={narration}
-                    showSummary={showSummary}
-                  />
-                ))}
-              </section>
-              {narrationList?.last > 0 && (
-                <Pagination
-                  className="mt-8"
-                  noOfPages={narrationList.last}
-                  selected={selectedPage}
-                  setSelected={setSelectedPage}
-                />
-              )}
-            </>
-          )}
-        </article>
-      </div>
-    </div>
-  );
-};
+//       <div className="mt-1 " style={{ width: "100%", marginRight: "38rem" }}>
+//         <section
+//           className="grid grid-cols-[1fr_1fr] gap-4 py-2 -px-4"
+//           style={{
+//             position: "sticky",
+//             top: "90px",
+//             zIndex: 100,
+//             backgroundColor: "var(--blue-100)",
+//           }}
+//         >
+//           <Input
+//             className="search"
+//             type="search"
+//             reference={searchTerm}
+//             placeholder="جستجو در متن احادیث"
+//             onChange={() => queryClient.refetchQueries()}
+//           />
+//           <InputWithSuggestion
+//             className="w-full"
+//             reference={searchSubject}
+//             placeholder="جستجوی موضوعی"
+//             suggestions={subject}
+//             onChange={() => queryClient.refetchQueries()}
+//           />
+//         </section>
+
+//         <article
+//           style={{
+//             display: "flex",
+//             flexDirection: "column",
+//             justifyContent: "space-between",
+//             minHeight: "80vh",
+//             position: "relative",
+//           }}
+//         >
+//           {isLoading && (
+//             <CircularProgress
+//               className="absolute top-1/2 left-1/2 "
+//               color="success"
+//             />
+//           )}
+//           {!isLoading && (
+//             <>
+//               <div
+//                 className="p-4 px-10 mb-4 flex items-center justify-between"
+//                 style={{
+//                   boxShadow: "-3px 8px 16px -3px #00000026",
+//                   borderRadius: "8px",
+//                   backgroundColor: "white",
+//                   fontSize: (isSuperAdmin(user) ? getFont(1.6) : 1.6) + "rem",
+
+//                   color: "var(--neutral-color-500)",
+//                 }}
+//               >
+//                 <div className="">
+//                   <span>{narrationList?.number_of_records || 0}</span>
+//                   &nbsp;
+//                   <span>حدیث یافت شد </span>
+//                 </div>
+//                 <div className="flex gap-2">
+//                   <span
+//                     className="cursor-pointer"
+//                     onClick={() => setShowSummary(false)}
+//                   >
+//                     نمایش متن
+//                   </span>
+//                   <span
+//                     className="cursor-pointer"
+//                     onClick={() => setShowSummary(true)}
+//                   >
+//                     نمایش خلاصه
+//                   </span>
+//                 </div>
+//                 <div className="flex gap-3 items-center">
+//                   <p>مرتب سازی :</p>
+//                   <div className="w-50">
+//                     <Dropdown
+//                       className="h-8 "
+//                       dataKey="title"
+//                       selected={a}
+//                       setSelected={setA}
+//                       items={dropdown}
+//                     />
+//                   </div>
+//                 </div>
+//               </div>
+//               <section className="h-full" style={{}}>
+//                 {narrationList?.results?.map((narration, index) => (
+//                   <SingleNarration
+//                     key={index}
+//                     onEdit={() => navigate(`${narration?.id}`)}
+//                     onDelete={(pass) => handleDelete(narration?.id, pass)}
+//                     narration={narration}
+//                     showSummary={showSummary}
+//                   />
+//                 ))}
+//               </section>
+//               {narrationList?.last > 0 && (
+//                 <Pagination
+//                   className="mt-8"
+//                   noOfPages={narrationList.last}
+//                   selected={selectedPage}
+//                   setSelected={setSelectedPage}
+//                 />
+//               )}
+//             </>
+//           )}
+//         </article>
+//       </div>
+//     </div>
+//   );
+// };
 
 export const NarrationWarehouseLT = () => {
   const navigate = useNavigate();
@@ -874,7 +897,10 @@ export const NarrationWarehouseLT = () => {
   const searchSubject = useRef();
   const { section, selectedNode } = useSelector((store) => store.summaryTree);
   const { user } = useSelector((store) => store.user);
-  const { data } = useGetSummaryTree(section, user);
+  const { data: rawData } = useGetSummaryTree(section, user);
+  const data = rawData?.filter((e) => {
+    return section === "surah" || e.alphabet !== "بیان";
+  });
   const treeWords = extractTreeWords(
     selectedNode[section],
     data,
