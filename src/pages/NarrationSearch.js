@@ -333,6 +333,7 @@ export const NarrationSearch = () => {
                   setFlag(!flag);
                   console.log(serachOptions);
                   setSearchStarted(true);
+                  setSelectedPage(1);
                   queryClient.refetchQueries();
                 }}
                 variant="primary"

@@ -1,6 +1,7 @@
 .btn {
   font-family: inherit;
   cursor: pointer;
+  font-size: 1.6rem;
 }
 .btn-primary {
   background-color: var(--primary-color);
