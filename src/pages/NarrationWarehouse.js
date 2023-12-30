@@ -397,6 +397,7 @@ export const SingleNarration = ({
                   );
                 else
                   return (
+                    contentItem.alphabet === "بیان" &&
                     contentItem.verse?.surah_name === lvl1 &&
                     contentItem.verse?.verse_no === lvl2
                   );
@@ -404,7 +405,7 @@ export const SingleNarration = ({
               .map((contentItem, subIndex) => {
                 const itemTitle =
                   section === "surah"
-                    ? contentItem?.sub_subject
+                    ? contentItem?.subject
                     : contentItem?.subject_3;
                 return (
                   <>
