@@ -225,28 +225,29 @@ export const MySurahSummaryTree = ({ data, section, selectedNode }) => {
               "-" +
               level2.verse_content,
             label: level2.verse_no + "-" + level2.verse_content,
-            children: level2.sub_subjects?.map((level3, index3) => {
-              return {
-                value:
-                  index1 + "l1" + index2 + "l2" + index3 + "l3" + level3.title,
-                label: level3.title,
-                className:
-                  index1 +
-                    "l1" +
-                    index2 +
-                    "l2" +
-                    index3 +
-                    "l3" +
-                    level3.title ===
-                  clicked.value
-                    ? "b-red"
-                    : null,
-              };
-            }),
+            // children: level2.sub_subjects?.map((level3, index3) => {
+            //   return {
+            //     value:
+            //       index1 + "l1" + index2 + "l2" + index3 + "l3" + level3.title,
+            //     label: level3.title,
+            //     className:
+            //       index1 +
+            //         "l1" +
+            //         index2 +
+            //         "l2" +
+            //         index3 +
+            //         "l3" +
+            //         level3.title ===
+            //       clicked.value
+            //         ? "b-red"
+            //         : null,
+            //   };
+            // }),
           };
         }),
       };
     });
+
     setC(newc);
   }, [data, clicked]);
 
@@ -288,7 +289,7 @@ export const MySurahSummaryTree = ({ data, section, selectedNode }) => {
         setSelectedNode({
           node: {
             ...selectedNode,
-            [section]: c[0].children[0].children[0].value,
+            [section]: c[0].children[0].value,
           },
         })
       );
@@ -364,8 +365,10 @@ export const MySurahSummaryTree = ({ data, section, selectedNode }) => {
                       level={2}
                       open={isOpen(child.value)}
                       flag={flag}
+                      onClick={() => onClick(child)}
+                      selected={selectedNode[section] === child.value}
                     >
-                      <ul>
+                      {/* <ul>
                         {child?.children?.map((item) => {
                           return (
                             <TreeItem
@@ -378,7 +381,7 @@ export const MySurahSummaryTree = ({ data, section, selectedNode }) => {
                             />
                           );
                         })}
-                      </ul>
+                      </ul> */}
                     </TreeItem>
                   );
                 })}

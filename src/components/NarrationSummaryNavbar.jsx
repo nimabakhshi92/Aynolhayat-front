@@ -46,22 +46,23 @@ export const NarrationSummaryNavbar = ({ className }) => {
           onClick={() => {
             dispatch(setSection({ section: "narration" }));
           }}
-          title="روایات"
+          title="احادیث موضوعی"
           selected={section === "narration"}
         />
+                <NavbarItem
+          onClick={() => {
+            dispatch(setSection({ section: "surah" }));
+          }}
+          title="تفسیر"
+          selected={section === "surah"}
+        />
+
         <NavbarItem
           onClick={() => {
             dispatch(setSection({ section: "verse" }));
           }}
-          title="آیات"
+          title="تفسیر موضوعی"
           selected={section === "verse"}
-        />
-        <NavbarItem
-          onClick={() => {
-            dispatch(setSection({ section: "surah" }));
-          }}
-          title="سوره ها"
-          selected={section === "surah"}
         />
       </Stack>
     </div>

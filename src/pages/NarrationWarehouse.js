@@ -398,11 +398,14 @@ export const SingleNarration = ({
                 else
                   return (
                     contentItem.verse?.surah_name === lvl1 &&
-                    contentItem.verse?.verse_no === lvl2 &&
-                    contentItem.sub_subject === lvl3
+                    contentItem.verse?.verse_no === lvl2
                   );
               })
               .map((contentItem, subIndex) => {
+                const itemTitle =
+                  section === "surah"
+                    ? contentItem?.sub_subject
+                    : contentItem?.subject_3;
                 return (
                   <>
                     {subIndex !== 0 && (
@@ -412,7 +415,7 @@ export const SingleNarration = ({
                         alt="shape-green"
                       />
                     )}
-                    {contentItem.subject_3 && (
+                    {itemTitle && (
                       <div
                         className="flex gap-2"
                         style={{
@@ -422,7 +425,7 @@ export const SingleNarration = ({
                         }}
                       >
                         <img src={noteIcon} alt="icon" />
-                        <span>{contentItem.subject_3}</span>
+                        <span>{itemTitle}</span>
                       </div>
                     )}
 
@@ -1049,19 +1052,10 @@ export const NarrationWarehouseLT = () => {
           }}
         />
         <div className="mt-15 " style={{ marginRight: "38rem" }}>
-          <article
-            className="p-4 pt-25 grid gap-6 grid-cols-[1fr]"
-            // style={{
-            //   display: "flex",
-            //   flexDirection: "column",
-            //   justifyContent: "space-between",
-            //   minHeight: "80vh",
-            //   position: "relative",
-            // }}
-          >
+          <article className="p-4 pt-25 grid gap-6 grid-cols-[1fr]">
             {isLoading && (
               <CircularProgress
-                className="absolute top-1/2 left-1/2 "
+                className="absolute top-1/2 left-1/3 "
                 color="success"
               />
             )}
