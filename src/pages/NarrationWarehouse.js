@@ -92,7 +92,7 @@ const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 //   );
 // }
 
-function ArabicTextComponent({ children, footnotes, className }) {
+function ArabicTextComponent({ children, footnotes = [], className }) {
   const { user } = useSelector((store) => store.user);
   let dollar = false;
   let atSign = true;
