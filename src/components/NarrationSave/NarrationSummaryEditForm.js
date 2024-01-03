@@ -124,7 +124,7 @@ export const SingleNarrationSummariesForEdit = ({
       });
   };
   const handleBlur = (key, newValue) => {
-    if (!newValue) return;
+    if (!newValue && key === "alphabet") return;
     let keyForPost = "";
     switch (key) {
       case "subject":
