@@ -392,6 +392,7 @@ export const SingleNarration = ({
                 if (section !== "surah")
                   return (
                     contentItem.alphabet === lvl1 &&
+                    contentItem.alphabet !== "بیان" &&
                     contentItem.subject === lvl2 &&
                     contentItem.sub_subject === lvl3
                   );
@@ -1049,7 +1050,7 @@ export const NarrationWarehouseLT = () => {
             zIndex: "10",
             height: "calc(100vh - 6rem)",
             position: "fixed",
-            top: "15rem",
+            top: "22rem",
           }}
         />
         <div className="mt-15 " style={{ marginRight: "38rem" }}>
@@ -1062,7 +1063,7 @@ export const NarrationWarehouseLT = () => {
             )}
             {!isLoading && (
               <>
-                <div style={{ color: "var(--primary-color)" }}>
+                <div style={{ color: "var(--primary-color)", zIndex: 2 }}>
                   <span>{treeWords[0]}</span>
                   {treeWords[1] && (
                     <span>

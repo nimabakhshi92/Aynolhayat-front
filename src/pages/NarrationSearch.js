@@ -298,7 +298,7 @@ export const NarrationSearch = () => {
       >
         <div className={`${searchStarted ? "w-full" : "w-3/4"}`}>
           <section
-            className={` grid ${
+            className={`relative grid ${
               searchStarted
                 ? "grid-cols-[1fr_1fr_1fr_1fr_1fr]"
                 : "grid-cols-[1fr_1fr]"
@@ -310,7 +310,7 @@ export const NarrationSearch = () => {
               }`}
               type="search"
               reference={searchTerm}
-              placeholder="جستجو در متن احادیث"
+              placeholder="جستجو در متن عربی احادیث"
               // onChange={() => queryClient.refetchQueries()}
             />
             <InputWithSuggestion

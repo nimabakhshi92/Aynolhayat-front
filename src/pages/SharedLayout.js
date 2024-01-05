@@ -4,6 +4,12 @@ import { HeaderLT } from "../components/HeaderLT";
 import { SidebarLT } from "../components/SidebarLT";
 import { getFont, isSuperAdmin } from "../utils/acl";
 import { useSelector } from "react-redux";
+import TopHeader from "../assets/images/TopHeader.jpg";
+import MainBG from "../assets/images/MainBG.png";
+import zIndex from "@mui/material/styles/zIndex";
+import { BiEnvelope } from "react-icons/bi";
+import bismilah from "../assets/images/bismilah.png";
+import { BsEnvelope, BsEnvelopeAtFill, BsEnvelopeFill } from "react-icons/bs";
 
 export const SharedLayout = () => {
   return (
@@ -33,11 +39,55 @@ export const SharedLayoutLT = () => {
         backgroundColor: "var(--blue-100)",
         // fontSize: isSuperAdmin(user) ? getFont(100) + "%" : "100%",
       }}
-      className="pb-2 min-h-[100vh]"
+      className="pb-2 min-h-[100vh] "
     >
+      {/* <div
+        class=""
+        style={{
+          backgroundImage: "url('TopHeader.jpg')",
+        }}
+      ></div> */}
+      <img
+        src={TopHeader}
+        className="block fixed top-0 w-full h-12"
+        style={{
+          zIndex: 98,
+        }}
+      />
+      <div
+        className="block fixed top-0 w-full h-12 px-12 flex items-center justify-between"
+        style={{
+          zIndex: 99,
+          color: "white",
+        }}
+      >
+        <span>سه شنبه 1402/02/12 23:34</span>
+        <img src={bismilah} />
+        <span className="flex items-center">
+          <span>Admin@aynolhayat.com</span>
+          <BsEnvelopeFill
+            color="white"
+            stroke="white"
+            fill="white"
+            className="mr-1"
+          />
+        </span>
+      </div>
+
       <HeaderLT />
       <SidebarLT />
-      <section className="section-center  ">
+
+      <img
+        src={MainBG}
+        className="block fixed w-full h-full top-0 bottom-0  right-0 left:0"
+        style={
+          {
+            // zIndex: 0,
+          }
+        }
+      />
+
+      <section className="section-center mt-32 ">
         <section className="pb-12  m-auto max-w-screen-2xl ">
           <Outlet></Outlet>
         </section>

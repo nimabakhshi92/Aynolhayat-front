@@ -4,7 +4,10 @@ import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 export const Pagination = ({ className, noOfPages, selected, setSelected }) => {
   return (
     <Paper
-      className={`flex h-10 items-center justify-start gap-2 w-fit ${className}`}
+      className={`relative flex h-10 items-center justify-start gap-2 w-fit ${className}`}
+      style={{
+        zIndex: 2,
+      }}
     >
       <BsChevronRight
         onClick={() => setSelected(selected > 1 ? selected - 1 : selected)}

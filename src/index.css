@@ -6,7 +6,7 @@
   font-family: IRANSansWeb;
   src: url("./assets/fonts/IRANSansWeb(FaNum).woff");
 }
-@import url("https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2&family=Gulzar&family=Rubik&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2&family=Gulzar&family=Harmattan&family=Noto+Sans+Arabic&family=Rubik&family=Vazirmatn&display=swap");
 
 :root {
   --primary-color: #0bab64;
@@ -27,10 +27,13 @@
 }
 html {
   font-size: 62.5%;
-  /* font-family: IRANSansWeb, serif; */
+  font-family: IRANSansWeb, serif;
   /* font-family: "Rubik", sans-serif; */
   /* font-family: "Gulzar", serif; */
-  font-family: "Baloo Bhaijaan 2", sans-serif;
+  /* font-family: "Baloo Bhaijaan 2", sans-serif; */
+  /* font-family: "Harmattan", sans-serif; */
+  /* font-family: "Noto Sans Arabic", sans-serif; */
+  /* font-family: "Vazirmatn", sans-serif; */
 
   line-height: 2;
   background-color: var(--blue-100);
@@ -155,4 +158,7 @@ a {
 
 .diacritic {
   color: red;
+}
+.main-bg {
+  background-image: url("assets/images/MainBG.png");
 }

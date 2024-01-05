@@ -357,7 +357,11 @@ export const MySurahSummaryTree = ({ data, section, selectedNode }) => {
               open={isOpen(node.value)}
               flag={flag}
             >
-              <ul>
+              <ul
+                style={{
+                  fontFamily: "Noto Sans Arabic",
+                }}
+              >
                 {node.children?.map((child) => {
                   return (
                     <TreeItem

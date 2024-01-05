@@ -5,8 +5,8 @@ import { BiExit, BiLogIn, BiLogOut } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUserFromLocalStorage } from "../utils/localStorage";
 import { logout } from "../features/user/userSlice";
-import { ReactComponent as Logo } from "../assets/images/logo.svg";
-import LogoPng from "../assets/images/logo.png";
+// import { ReactComponent as LogoSvg } from "../assets/images/Logo1.svg";
+import LogoPng from "../assets/images/LogoRevised.png";
 
 export const HeaderLT = () => {
   const navigate = useNavigate();
@@ -14,11 +14,13 @@ export const HeaderLT = () => {
   const dispatch = useDispatch();
   return (
     <header
-      className="p-3 px-12 bg-white h-15 fixed w-full top-0 right-0"
+      className="p-3 pt-6 px-12 bg-white h-20 fixed w-full top-12 right-0"
       style={{
         zIndex: 98,
         backgroundColor: "#ffffff",
         // backdropFilter: "blur(15px)",
+
+        // boxShadow: "1px 1px 3px gray ",
 
         // background:
         //   "radial-gradient(circle, rgba(65,222,59,0.7) 0%, rgba(0,171,0,0.7) 50%, rgba(52,217,47,0.7) 100%)",
@@ -41,14 +43,14 @@ export const HeaderLT = () => {
             top: "-17px",
           }}
         />
-        {/* <Logo
+        {/* <LogoSvg
           style={{
-            width: "64px",
+            width: "96px",
             height: "64px",
             position: "relative",
             top: "-10px",
-          }}
-        /> */}
+          }} */}
+        {/* /> */}
         {/* <h1> عین الحیاه</h1> */}
         {/* <div className="w-9 h-9 flex justify-center items-center rounded-[50%] bg-[green]">
           N
@@ -59,7 +61,7 @@ export const HeaderLT = () => {
 
             navigate("/login");
           }}
-          variant="secondary"
+          variant="primary"
           style={{
             border: "1px solid #aaa",
             padding: "2px 4px",

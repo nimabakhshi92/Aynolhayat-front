@@ -49,7 +49,7 @@ export const NarrationSummaryNavbar = ({ className }) => {
           title="احادیث موضوعی"
           selected={section === "narration"}
         />
-                <NavbarItem
+        <NavbarItem
           onClick={() => {
             dispatch(setSection({ section: "surah" }));
           }}

@@ -105,7 +105,7 @@ export const SidebarLT = () => {
 
   return (
     <nav
-      className="bg-white  h-full fixed top-16 right-0 "
+      className="bg-white  h-full fixed top-32 right-0 "
       style={{
         transition: "all 0.3s linear",
         // display: open ? "block" : "none",
