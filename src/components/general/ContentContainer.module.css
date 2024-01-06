@@ -11,7 +11,7 @@
 }
 
 .content_container {
-  font-size: 1.2rem;
+  font-size: 1rem;
   border-bottom: 1px solid #e8e8e8;
   background-color: white;
   padding: 1.6rem;
@@ -51,4 +51,10 @@
   padding: 1rem 2.2rem;
   border-radius: 4px;
   margin: 0 1.6rem 1.6rem;
+}
+
+@media screen and (min-width: 600px) {
+  .content_container__title {
+    font-size: 1.2rem;
+  }
 }

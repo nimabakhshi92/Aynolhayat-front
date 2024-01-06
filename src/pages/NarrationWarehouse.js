@@ -945,6 +945,8 @@ export const NarrationWarehouseLT = () => {
     ...serachOptions,
     ...treeOptions,
   });
+  console.log(narrationList);
+  console.log(selectedNode);
 
   const handleSelect = (newValue, category) => {
     setSelectedOptions({ ...selectedOptions, [category]: newValue });
@@ -1042,31 +1044,27 @@ export const NarrationWarehouseLT = () => {
   // }, [data]);
 
   return (
-    <div className=" sm:pr-8 pr-0" style={{}}>
+    <div className="sm:pr-8 pr-0">
       <NarrationSummaryNavbar />
-      {/* <div className="mr-12"> */}
-      {(!isSmallScreen || treeIsOpen) && (
-        <FilterModalLT
-          data={data}
-          className="sm:w-90 sm:mr-22 w-full top-14 sm:top-50 right-0 "
-          style={{
-            zIndex: "10",
-            // height: "calc(100vh - 6rem)",
-            // height: "100px",
-            position: "fixed",
-            // paddingBottom: "5rem",
-          }}
-        />
-      )}
+      <FilterModalLT
+        data={data}
+        className="sm:w-90 sm:mr-22 w-full top-14 sm:top-50 right-0 "
+        style={{
+          zIndex: "10",
+          // height: "calc(100vh - 6rem)",
+          position: "fixed",
+          visibility: !isSmallScreen || treeIsOpen ? "visible" : "hidden",
+        }}
+      />
       <div className=" mt-15 mr-0 sm:mr-[42rem] ">
         <article className="p-4 pt-20 grid gap-6 grid-cols-[1fr]">
-          {isLoading && (
+          {!isLoading && (
             <CircularProgress
-              className="absolute top-1/2 left-1/3 "
+              className="absolute top-1/2 sm:left-1/3 left-[44%]  "
               color="success"
             />
           )}
-          {!isLoading && (
+          {false && !isLoading && (
             <>
               <div style={{ color: "var(--primary-color)", zIndex: 2 }}>
                 <span>{treeWords[0]}</span>
@@ -1118,7 +1116,7 @@ export const NarrationWarehouseLT = () => {
               </section>
               {narrationList?.last > 1 && (
                 <Pagination
-                  className="mt-8"
+                  className="mb-8 mt-4"
                   noOfPages={narrationList.last}
                   selected={selectedPage}
                   setSelected={setSelectedPage}

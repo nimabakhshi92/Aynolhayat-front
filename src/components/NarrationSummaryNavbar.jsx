@@ -25,12 +25,9 @@ export const NarrationSummaryNavbar = ({ className }) => {
     <div
       className="fixed w-full sm:w-[unset] pt-4 right-0 sm:right-24 sm:left-8 "
       style={{
-        // backgroundColor: "var(--blue-100)",
         zIndex: 98,
         backgroundColor: "#f7fafc10",
         backdropFilter: "blur(15px)",
-
-        // boxShadow: "1px 1px 3px gray ",
       }}
     >
       <Stack

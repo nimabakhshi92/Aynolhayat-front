@@ -76,7 +76,7 @@ export const SharedLayoutLT = () => {
         className="block fixed w-full h-full top-0 bottom-0  right-0 left-0"
       />
 
-      <section className="sm:px-4 sm:mt-32 mt-16 ">
+      <section className="sm:px-4 sm:mt-32 mt-15 ">
         <section className="sm:pb-12  m-auto  ">
           {/* max-w-screen-2xl */}
           <Outlet></Outlet>

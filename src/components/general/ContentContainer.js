@@ -26,9 +26,11 @@ export const ContentContainer = ({
       >
         <div
           className={classes.content_container__title}
-          style={{
-            fontSize: getFont(1.2) + "rem",
-          }}
+          style={
+            {
+              // fontSize: getFont(1) + "rem",
+            }
+          }
         >
           <span>{title}</span>
         </div>

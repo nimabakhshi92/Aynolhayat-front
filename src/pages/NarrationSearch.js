@@ -339,7 +339,7 @@ export const NarrationSearch = () => {
                 className={`${searchStarted ? "w-full" : "w-1/3 sm:w-1/5"}`}
                 // style={{}}
               >
-                جست و جو
+                جستجو
               </Button>
             </div>
           </section>
@@ -406,7 +406,7 @@ export const NarrationSearch = () => {
             {!isLoading && (
               <>
                 <div
-                  className="p-4 px-10 mb-4 flex items-center justify-between"
+                  className="p-4 px-10 mb-4 mx-4 flex items-center justify-between"
                   style={{
                     boxShadow: "-3px 8px 16px -3px #00000026",
                     borderRadius: "8px",
