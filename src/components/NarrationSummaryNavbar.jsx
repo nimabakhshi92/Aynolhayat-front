@@ -22,7 +22,7 @@ export const NarrationSummaryNavbar = ({ className }) => {
   const { section, selectedNode } = useSelector((store) => store.summaryTree);
   return (
     <div
-      className="fixed pt-8 right-24 left-8 "
+      className="fixed pt-4 right-24 left-8 "
       style={{
         // backgroundColor: "var(--blue-100)",
         zIndex: 98,

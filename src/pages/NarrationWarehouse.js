@@ -1048,13 +1048,15 @@ export const NarrationWarehouseLT = () => {
           className="w-90 "
           style={{
             zIndex: "10",
-            height: "calc(100vh - 6rem)",
+            // height: "calc(100vh - 6rem)",
+            // height: "100px",
             position: "fixed",
-            top: "22rem",
+            top: "20rem",
+            // paddingBottom: "5rem",
           }}
         />
         <div className="mt-15 " style={{ marginRight: "38rem" }}>
-          <article className="p-4 pt-25 grid gap-6 grid-cols-[1fr]">
+          <article className="p-4 pt-20 grid gap-6 grid-cols-[1fr]">
             {isLoading && (
               <CircularProgress
                 className="absolute top-1/2 left-1/3 "
@@ -1096,49 +1098,7 @@ export const NarrationWarehouseLT = () => {
                     </span>
                   )}
                 </div>
-                {/* <div
-                  className="p-4 px-10 mb-4 flex items-center justify-between"
-                  style={{
-                    boxShadow: "-3px 8px 16px -3px #00000026",
-                    borderRadius: "8px",
-                    backgroundColor: "white",
-                    fontSize: "16px",
-                    color: "var(--neutral-color-500)",
-                  }}
-                >
-                  <div className="">
-                    <span>{narrationList?.number_of_records || 0}</span>
-                    &nbsp;
-                    <span>حدیث یافت شد </span>
-                  </div>
-                  <div className="flex gap-2">
-                    <span
-                      className="cursor-pointer"
-                      onClick={() => setShowSummary(false)}
-                    >
-                      نمایش متن
-                    </span>
-                    <span
-                      className="cursor-pointer"
-                      onClick={() => setShowSummary(true)}
-                    >
-                      نمایش خلاصه
-                    </span>
-                  </div>
-                  <div className="flex gap-3 items-center">
-                    <p>مرتب سازی :</p>
-                    <div className="w-50">
-                      <Dropdown
-                        className="h-8 "
-                        dataKey="title"
-                        selected={a}
-                        setSelected={setA}
-                        items={dropdown}
-                      />
-                    </div>
-                  </div>
-                </div> */}
-                <section className="" style={{}}>
+                <section className="-mt-6" style={{}}>
                   {narrationList?.results?.map((narration, index) => (
                     <SingleNarration
                       key={index}

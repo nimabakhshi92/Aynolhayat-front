@@ -412,7 +412,7 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
         setSelectedNode({
           node: {
             ...selectedNode,
-            [section]: c[0].children[0].children[0].value,
+            [section]: c[3].children[2].children[1].value,
           },
         })
       );

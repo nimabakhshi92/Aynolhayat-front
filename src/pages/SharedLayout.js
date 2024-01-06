@@ -61,16 +61,11 @@ export const SharedLayoutLT = () => {
           color: "white",
         }}
       >
-        <span>سه شنبه 1402/02/12 23:34</span>
+        <span>سه شنبه 1402/02/12 - 23:34:57</span>
         <img src={bismilah} />
-        <span className="flex items-center">
-          <span>Admin@aynolhayat.com</span>
-          <BsEnvelopeFill
-            color="white"
-            stroke="white"
-            fill="white"
-            className="mr-1"
-          />
+        <span className="flex items-center gap-8">
+          <span>تماس با ما</span>
+          <span>درباره ما</span>
         </span>
       </div>
 
