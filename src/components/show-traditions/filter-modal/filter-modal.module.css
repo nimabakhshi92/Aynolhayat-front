@@ -15,7 +15,7 @@
   margin-top: 14px;
   overflow-y: scroll;
   /* height: 400px; */
-  height: calc(100vh - 22rem);
+  height: calc(100vh - 12rem);
   border-radius: 6px;
   padding: 8px 16px;
 }
@@ -82,7 +82,7 @@
   transform: rotateZ(-90deg);
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 600px) {
   .button_container {
     padding: 1.3rem 1.2rem;
   }
@@ -97,6 +97,6 @@
   }
 
   .alphabet {
-    /* height: 800px; */
+    height: calc(100vh - 22rem);
   }
 }

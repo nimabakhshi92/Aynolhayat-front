@@ -23,7 +23,7 @@
 
 .content_container__title {
   display: flex;
-  margin: 1rem 1.6rem;
+  margin: 1rem 0rem;
   gap: 0.8rem;
   color: var(--neutral-color-600);
 }

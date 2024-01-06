@@ -21,7 +21,7 @@ export const ContentContainer = ({
       <div
         className={classes.header_container}
         style={{
-          fontSize: getFont(1.4) + "rem",
+          fontSize: "1.4rem",
         }}
       >
         <div

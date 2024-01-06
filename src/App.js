@@ -23,6 +23,8 @@ import { NarrationEdit } from "./pages/NarrationEdit";
 import { NarrationSummariesNew } from "./pages/NarrationSummariesNew";
 import { NarrationSummariesNewLT } from "./pages/NarrationSummariesNewLT";
 import { NarrationSearch } from "./pages/NarrationSearch";
+import { ThemeProvider } from "@mui/material";
+import { theme } from "./styles/theme";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,48 +48,50 @@ function App() {
     return null;
   }
   return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <ScrollToTop />
-          <Routes>
-            <Route path="login" element={<Login />}></Route>
-            <Route path="signup" element={<SingUp />}></Route>
-            <Route path=":narrationId" element={<NarrationEdit />}></Route>
-            <Route path="save narration/" element={<NarrationEdit />}></Route>
-            <Route
-              path="save narration/:narrationId"
-              element={<NarrationEdit />}
-            ></Route>
-            <Route
-              path="search/:narrationId"
-              element={<NarrationEdit />}
-            ></Route>
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <ScrollToTop />
+            <Routes>
+              <Route path="login" element={<Login />}></Route>
+              <Route path="signup" element={<SingUp />}></Route>
+              <Route path=":narrationId" element={<NarrationEdit />}></Route>
+              <Route path="save narration/" element={<NarrationEdit />}></Route>
+              <Route
+                path="save narration/:narrationId"
+                element={<NarrationEdit />}
+              ></Route>
+              <Route
+                path="search/:narrationId"
+                element={<NarrationEdit />}
+              ></Route>
 
-            <Route
-              path="edit narration/:narrationId"
-              element={<NarrationEdit />}
-            ></Route>
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <SharedLayoutLT />
-                </ProtectedRoute>
-              }
-            >
-              {/* <Route path="s/" element={<NarrationSummariesNewLT />}></Route> */}
-              {/* <Route index element={<NarrationWarehouse />}></Route> */}
-              <Route index element={<NarrationWarehouseLT />}></Route>
-              <Route path="saved/" element={<div>saved</div>}></Route>
-              <Route path="search/" element={<NarrationSearch />}></Route>
-              {/* <Route path="summary" element={<NarrationSummariesNew />}></Route> */}
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </QueryClientProvider>
-      <ToastContainer />
-    </Provider>
+              <Route
+                path="edit narration/:narrationId"
+                element={<NarrationEdit />}
+              ></Route>
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <SharedLayoutLT />
+                  </ProtectedRoute>
+                }
+              >
+                {/* <Route path="s/" element={<NarrationSummariesNewLT />}></Route> */}
+                {/* <Route index element={<NarrationWarehouse />}></Route> */}
+                <Route index element={<NarrationWarehouseLT />}></Route>
+                <Route path="saved/" element={<div>saved</div>}></Route>
+                <Route path="search/" element={<NarrationSearch />}></Route>
+                {/* <Route path="summary" element={<NarrationSummariesNew />}></Route> */}
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </QueryClientProvider>
+        <ToastContainer />
+      </Provider>
+    </ThemeProvider>
   );
 }
 

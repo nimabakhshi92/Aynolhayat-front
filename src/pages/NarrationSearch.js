@@ -287,7 +287,7 @@ export const NarrationSearch = () => {
   const [searchStarted, setSearchStarted] = useState(false);
   const [flag, setFlag] = useState(false);
   return (
-    <div className="mr-12">
+    <div className="sm:mr-12">
       <section
         className={`w-full flex items-center justify-center`}
         style={{
@@ -296,13 +296,13 @@ export const NarrationSearch = () => {
           minHeight: searchStarted ? "6rem" : "calc(100vh - 16rem)",
         }}
       >
-        <div className={`${searchStarted ? "w-full" : "w-3/4"}`}>
+        <div className={`px-2 ${searchStarted ? "w-full" : "sm:w-3/4"}`}>
           <section
             className={`relative grid ${
               searchStarted
                 ? "grid-cols-[1fr_1fr_1fr_1fr_1fr]"
                 : "grid-cols-[1fr_1fr]"
-            } gap-8 py-2 -px-4`}
+            } gap-4 sm:gap-8 py-2 -px-4`}
           >
             <Input
               className={`w-full ${
@@ -331,13 +331,12 @@ export const NarrationSearch = () => {
               <Button
                 onClickHandler={() => {
                   setFlag(!flag);
-                  console.log(serachOptions);
                   setSearchStarted(true);
                   setSelectedPage(1);
                   queryClient.refetchQueries();
                 }}
                 variant="primary"
-                className={`${searchStarted ? "w-full" : "w-1/5"}`}
+                className={`${searchStarted ? "w-full" : "w-1/3 sm:w-1/5"}`}
                 // style={{}}
               >
                 جست و جو
@@ -421,7 +420,7 @@ export const NarrationSearch = () => {
                     &nbsp;
                     <span>حدیث یافت شد </span>
                   </div>
-                  <div className="flex gap-3 items-center">
+                  <div className="hidden sm:flex gap-3 items-center">
                     <p>مرتب سازی :</p>
                     <div className="w-50">
                       <Dropdown
@@ -434,7 +433,7 @@ export const NarrationSearch = () => {
                     </div>
                   </div>
                 </div>
-                <section className="h-full" style={{}}>
+                <section className="h-full px-4" style={{}}>
                   {narrationList?.results?.map((narration, index) => (
                     <SingleNarration
                       key={index}

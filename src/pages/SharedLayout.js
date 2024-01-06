@@ -10,6 +10,7 @@ import zIndex from "@mui/material/styles/zIndex";
 import { BiEnvelope } from "react-icons/bi";
 import bismilah from "../assets/images/bismilah.png";
 import { BsEnvelope, BsEnvelopeAtFill, BsEnvelopeFill } from "react-icons/bs";
+import { useMediaQuery } from "@mui/material";
 
 export const SharedLayout = () => {
   return (
@@ -30,6 +31,7 @@ export const SharedLayout = () => {
 };
 
 export const SharedLayoutLT = () => {
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const { user } = useSelector((store) => store.user);
   const a = document.body;
   a.style.fontSize = isSuperAdmin(user) ? "190%" : "160%";
@@ -41,49 +43,42 @@ export const SharedLayoutLT = () => {
       }}
       className="pb-2 min-h-[100vh] "
     >
-      {/* <div
-        class=""
-        style={{
-          backgroundImage: "url('TopHeader.jpg')",
-        }}
-      ></div> */}
-      <img
-        src={TopHeader}
-        className="block fixed top-0 w-full h-12"
-        style={{
-          zIndex: 98,
-        }}
-      />
-      <div
-        className="block fixed top-0 w-full h-12 px-12 flex items-center justify-between"
-        style={{
-          zIndex: 99,
-          color: "white",
-        }}
-      >
-        <span>سه شنبه 1402/02/12 - 23:34:57</span>
-        <img src={bismilah} />
-        <span className="flex items-center gap-8">
-          <span>تماس با ما</span>
-          <span>درباره ما</span>
-        </span>
-      </div>
-
+      {!isSmallScreen && (
+        <img
+          src={TopHeader}
+          className="block fixed top-0 w-full h-12"
+          style={{
+            zIndex: 98,
+          }}
+        />
+      )}
+      {!isSmallScreen && (
+        <div
+          className="block fixed top-0 w-full h-12 px-12 flex items-center justify-between"
+          style={{
+            zIndex: 99,
+            color: "white",
+          }}
+        >
+          <span>سه شنبه 1402/02/12 - 23:34:57</span>
+          <img src={bismilah} />
+          <span className="flex items-center gap-8">
+            <span>تماس با ما</span>
+            <span>درباره ما</span>
+          </span>
+        </div>
+      )}
       <HeaderLT />
       <SidebarLT />
 
       <img
         src={MainBG}
-        className="block fixed w-full h-full top-0 bottom-0  right-0 left:0"
-        style={
-          {
-            // zIndex: 0,
-          }
-        }
+        className="block fixed w-full h-full top-0 bottom-0  right-0 left-0"
       />
 
-      <section className="section-center mt-32 ">
-        <section className="pb-12  m-auto max-w-screen-2xl ">
+      <section className="sm:px-4 sm:mt-32 mt-16 ">
+        <section className="sm:pb-12  m-auto  ">
+          {/* max-w-screen-2xl */}
           <Outlet></Outlet>
         </section>
       </section>

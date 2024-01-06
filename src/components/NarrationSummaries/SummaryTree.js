@@ -2,7 +2,10 @@ import classes from "../show-traditions/filter-modal/filter-modal.module.css";
 import { Fragment, useState, useEffect, useRef } from "react";
 import { MdOutlineArrowForwardIos } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedNode } from "../../features/summaryTree/summaryTreeSlice";
+import {
+  setSelectedNode,
+  toggleTreeIsOpen,
+} from "../../features/summaryTree/summaryTreeSlice";
 
 // import "./styles.css";
 import CheckboxTree from "react-checkbox-tree";
@@ -431,6 +434,7 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
     dispatch(
       setSelectedNode({ node: { ...selectedNode, [section]: value.value } })
     );
+    dispatch(toggleTreeIsOpen());
   };
   const [flag, setFlag] = useState(false);
   useEffect(() => {

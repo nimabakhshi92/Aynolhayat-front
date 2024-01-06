@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Stack, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BiCylinder, BiHeart, BiSave, BiSearch } from "react-icons/bi";
 import { useSelector } from "react-redux";
@@ -50,7 +50,7 @@ export const SidebarLT = () => {
     : pathname.includes("save")
     ? "save"
     : "";
-
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const navItemsDefault = [
     {
       icon: <BiCylinder />,
@@ -105,12 +105,14 @@ export const SidebarLT = () => {
 
   return (
     <nav
-      className="bg-white  h-full fixed top-32 right-0 "
+      className={`bg-white fixed right-0 ${
+        isSmallScreen ? "bottom-0" : "top-32 h-full"
+      }`}
       style={{
         transition: "all 0.3s linear",
         // display: open ? "block" : "none",
         // boxShadow: "10px",
-        width: open ? "150px" : "48px",
+        width: isSmallScreen ? "100%" : open ? "150px" : "48px",
         zIndex: 99,
         boxShadow: open ? "-10px 10px 30px gray" : "-5px 5px 10px gray",
       }}
@@ -118,10 +120,10 @@ export const SidebarLT = () => {
       onMouseLeave={() => setOpen(false)}
     >
       <Stack
-        justifyContent="flex-start"
+        justifyContent={isSmallScreen ? "center" : "flex-start"}
         alignItems="center"
-        flexDirection="column"
-        className="w-full py-2 "
+        flexDirection={isSmallScreen ? "row-reverse" : "column"}
+        className={`w-full ${!isSmallScreen ? "py-2" : "pt-[1px]"}`}
         gap="16px"
       >
         {navItems.map((item, index) => {
@@ -134,32 +136,39 @@ export const SidebarLT = () => {
                 className="block w-full"
               >
                 <Stack
-                  justifyContent="space-between"
+                  justifyContent={isSmallScreen ? "center" : "space-between"}
                   alignItems="center"
                   flexDirection="row"
                   className={`w-full h-10 px-3 ${
                     item.isActive
                       ? "bg-[#0bab6425] pl-2"
                       : "bg-[white] hover:bg-[#0bab6410] hover:scale-105"
-                  }   `}
-                  style={{ borderLeft: item.isActive && "4px solid #0bab64" }}
+                  }  ${isSmallScreen && "justify-center"} `}
+                  style={{
+                    borderLeft:
+                      !isSmallScreen && item.isActive && "4px solid #0bab64",
+                    borderBottom:
+                      isSmallScreen && item.isActive && "4px solid #0bab64",
+                  }}
                   // style={{
                   //   backgroundColor: item.isActive ? "#0bab6425" : "white",
                   // }}
                 >
-                  <span
-                    style={{
-                      transition: "all 0.3s linear",
-                      // display: open ? "inline-block" : "none",
-                      // width: open ? "100px" : "0",
-                      // height: open ? "32px" : "0",
-                      marginRight: open ? "0" : "-120px",
-                      overflow: "hidden",
-                      display: "inline-block",
-                    }}
-                  >
-                    {item.displayText}
-                  </span>
+                  {!isSmallScreen && (
+                    <span
+                      style={{
+                        transition: "all 0.3s linear",
+                        // display: open ? "inline-block" : "none",
+                        // width: open ? "100px" : "0",
+                        // height: open ? "32px" : "0",
+                        marginRight: open ? "0" : "-120px",
+                        overflow: "hidden",
+                        display: "inline-block",
+                      }}
+                    >
+                      {item.displayText}
+                    </span>
+                  )}
                   {/* <span> */}
                   <NavIcon
                     width="36px"

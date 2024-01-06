@@ -14,7 +14,7 @@ import Input from "../components/ui/input";
 import { InputWithState } from "../components/general/InputWithState";
 import InputWithSuggestion from "../components/general/InputWithSuggestion";
 import { useQueryClient } from "react-query";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, useMediaQuery } from "@mui/material";
 import { AiFillDelete, AiFillEdit, AiOutlineClose } from "react-icons/ai";
 import apiUrls from "../api/urls";
 import { useNavigate } from "react-router-dom";
@@ -247,7 +247,7 @@ export const SingleNarration = ({
       // title={`${narration.book.name}`}
       title={`${narration.imam.name} می فرمایند:`}
       actionComponent={
-        <div className="flex gap-4 items-center">
+        <div className=" gap-4 items-center hidden sm:flex">
           {isAdmin(user) ? (
             <>
               <AiFillDelete
@@ -258,7 +258,7 @@ export const SingleNarration = ({
             </>
           ) : null}
 
-          <span>
+          <span className="">
             <span>{narration.book.name}</span>
             <span>{" - "}</span>
             <span>
@@ -379,7 +379,7 @@ export const SingleNarration = ({
               خلاصه قسمت های مرتبط با موضوع حدیث:
             </span>
             <Button
-              className="absolute left-4"
+              className="absolute left-0 sm:left-2"
               onClickHandler={() => setIsShowSummary(false)}
               variant="secondary"
             >
@@ -431,9 +431,9 @@ export const SingleNarration = ({
                       </div>
                     )}
 
-                    <div className="flex items-start justify-between w-full mr-3">
+                    <div className="flex items-start flex-col sm:flex-row justify-between w-full mr-3">
                       <p
-                        className="w-[48%]"
+                        className="w-full sm:w-[48%]"
                         style={{
                           fontSize:
                             (isSuperAdmin(user) ? getFont(1.4) : 1.4) + "rem",
@@ -442,7 +442,7 @@ export const SingleNarration = ({
                         {contentItem.expression}
                       </p>
                       <ArabicTextComponent
-                        className="block w-[48%]"
+                        className="block w-full sm:w-[48%]"
                         children={contentItem.summary}
                       />
 
@@ -972,6 +972,8 @@ export const NarrationWarehouseLT = () => {
   ];
   const [a, setA] = useState({ id: 1, title: "پربازدیدترین" });
   const [c, setC] = useState([]);
+  const { treeIsOpen } = useSelector((state) => state.summaryTree);
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   // useEffect(() => {
   //   let newc = data.map((level1, index1) => {
@@ -1040,92 +1042,93 @@ export const NarrationWarehouseLT = () => {
   // }, [data]);
 
   return (
-    <div className=" pr-8" style={{}}>
+    <div className=" sm:pr-8 pr-0" style={{}}>
       <NarrationSummaryNavbar />
-      <div className="mr-12">
+      {/* <div className="mr-12"> */}
+      {(!isSmallScreen || treeIsOpen) && (
         <FilterModalLT
           data={data}
-          className="w-90 "
+          className="sm:w-90 sm:mr-22 w-full top-14 sm:top-50 right-0 "
           style={{
             zIndex: "10",
             // height: "calc(100vh - 6rem)",
             // height: "100px",
             position: "fixed",
-            top: "20rem",
             // paddingBottom: "5rem",
           }}
         />
-        <div className="mt-15 " style={{ marginRight: "38rem" }}>
-          <article className="p-4 pt-20 grid gap-6 grid-cols-[1fr]">
-            {isLoading && (
-              <CircularProgress
-                className="absolute top-1/2 left-1/3 "
-                color="success"
-              />
-            )}
-            {!isLoading && (
-              <>
-                <div style={{ color: "var(--primary-color)", zIndex: 2 }}>
-                  <span>{treeWords[0]}</span>
-                  {treeWords[1] && (
-                    <span>
-                      <span
-                        style={{
-                          display: "inline-block",
-                          color: "gray",
-                          margin: "0 12px",
-                          transform: "translateY(2px)",
-                        }}
-                      >
-                        {" >> "}
-                      </span>
-                      <span>{treeWords[1]}</span>
+      )}
+      <div className=" mt-15 mr-0 sm:mr-[42rem] ">
+        <article className="p-4 pt-20 grid gap-6 grid-cols-[1fr]">
+          {isLoading && (
+            <CircularProgress
+              className="absolute top-1/2 left-1/3 "
+              color="success"
+            />
+          )}
+          {!isLoading && (
+            <>
+              <div style={{ color: "var(--primary-color)", zIndex: 2 }}>
+                <span>{treeWords[0]}</span>
+                {treeWords[1] && (
+                  <span>
+                    <span
+                      style={{
+                        display: "inline-block",
+                        color: "gray",
+                        margin: "0 12px",
+                        transform: "translateY(2px)",
+                      }}
+                    >
+                      {" >> "}
                     </span>
-                  )}
-                  {treeWords[2] && (
-                    <span>
-                      <span
-                        style={{
-                          display: "inline-block",
-                          color: "gray",
-                          margin: "0 12px",
-                          transform: "translateY(2px)",
-                        }}
-                      >
-                        {" >> "}
-                      </span>
-                      <span>{treeWords[2]}</span>
-                    </span>
-                  )}
-                </div>
-                <section className="-mt-6" style={{}}>
-                  {narrationList?.results?.map((narration, index) => (
-                    <SingleNarration
-                      key={index}
-                      onEdit={() => navigate(`${narration?.id}`)}
-                      onDelete={(pass) => handleDelete(narration?.id, pass)}
-                      narration={narration}
-                      showSummary={true}
-                      lvl1={treeWords[0]}
-                      lvl2={treeWords[1]}
-                      lvl3={treeWords[2]}
-                      section={section}
-                    />
-                  ))}
-                </section>
-                {narrationList?.last > 1 && (
-                  <Pagination
-                    className="mt-8"
-                    noOfPages={narrationList.last}
-                    selected={selectedPage}
-                    setSelected={setSelectedPage}
-                  />
+                    <span>{treeWords[1]}</span>
+                  </span>
                 )}
-              </>
-            )}
-          </article>
-        </div>
+                {treeWords[2] && (
+                  <span>
+                    <span
+                      style={{
+                        display: "inline-block",
+                        color: "gray",
+                        margin: "0 12px",
+                        transform: "translateY(2px)",
+                      }}
+                    >
+                      {" >> "}
+                    </span>
+                    <span>{treeWords[2]}</span>
+                  </span>
+                )}
+              </div>
+              <section className="-mt-6" style={{}}>
+                {narrationList?.results?.map((narration, index) => (
+                  <SingleNarration
+                    key={index}
+                    onEdit={() => navigate(`${narration?.id}`)}
+                    onDelete={(pass) => handleDelete(narration?.id, pass)}
+                    narration={narration}
+                    showSummary={true}
+                    lvl1={treeWords[0]}
+                    lvl2={treeWords[1]}
+                    lvl3={treeWords[2]}
+                    section={section}
+                  />
+                ))}
+              </section>
+              {narrationList?.last > 1 && (
+                <Pagination
+                  className="mt-8"
+                  noOfPages={narrationList.last}
+                  selected={selectedPage}
+                  setSelected={setSelectedPage}
+                />
+              )}
+            </>
+          )}
+        </article>
       </div>
+      {/* </div> */}
     </div>
   );
 };

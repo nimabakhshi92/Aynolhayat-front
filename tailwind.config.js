@@ -233,6 +233,13 @@ module.exports = {
       },
       screens: {
         lg: "1024px",
+        xs: "0px",
+        sm: "600px",
+        md: "900px",
+        lg2: "1230px",
+        xl: "1330px",
+        xl2: "1400px",
+        "2xl": "1440px",
       },
     },
   },
