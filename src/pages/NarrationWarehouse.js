@@ -1058,13 +1058,13 @@ export const NarrationWarehouseLT = () => {
       />
       <div className=" mt-15 mr-0 sm:mr-[42rem] ">
         <article className="p-4 pt-20 grid gap-6 grid-cols-[1fr]">
-          {!isLoading && (
+          {isLoading && (
             <CircularProgress
               className="absolute top-1/2 sm:left-1/3 left-[44%]  "
               color="success"
             />
           )}
-          {false && !isLoading && (
+          {!isLoading && (
             <>
               <div style={{ color: "var(--primary-color)", zIndex: 2 }}>
                 <span>{treeWords[0]}</span>
