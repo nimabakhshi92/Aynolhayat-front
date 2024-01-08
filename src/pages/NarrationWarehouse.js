@@ -247,7 +247,7 @@ export const SingleNarration = ({
       // title={`${narration.book.name}`}
       title={`${narration.imam.name} می فرمایند:`}
       actionComponent={
-        <div className=" gap-4 items-center hidden sm:flex">
+        <div className=" gap-4 items-center flex">
           {isAdmin(user) ? (
             <>
               <AiFillDelete
