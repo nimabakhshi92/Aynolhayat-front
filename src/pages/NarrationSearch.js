@@ -446,7 +446,7 @@ export const NarrationSearch = () => {
                 </section>
                 {narrationList?.last > 0 && (
                   <Pagination
-                    className="mt-8"
+                    className=" m-4 mb-16"
                     noOfPages={narrationList.last}
                     selected={selectedPage}
                     setSelected={setSelectedPage}

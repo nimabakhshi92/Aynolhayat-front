@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { customApiCall } from "../utils/axios";
 import Button from "../components/ui/buttons/primary-button";
 import { BiCloset, BiNote } from "react-icons/bi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaComment, FaRegCommentDots, FaRegStickyNote } from "react-icons/fa";
 import { CustomModal, CustomModal2 } from "../components/general/CustomModal";
 import { BsChatLeftText } from "react-icons/bs";
@@ -32,6 +32,7 @@ import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
 import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { getUserFromLocalStorage } from "../utils/localStorage";
 import { getFont, isAdmin, isSuperAdmin } from "../utils/acl";
+import { setDataLoaded } from "../features/summaryTree/summaryTreeSlice";
 
 const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -945,8 +946,6 @@ export const NarrationWarehouseLT = () => {
     ...serachOptions,
     ...treeOptions,
   });
-  console.log(narrationList);
-  console.log(selectedNode);
 
   const handleSelect = (newValue, category) => {
     setSelectedOptions({ ...selectedOptions, [category]: newValue });
@@ -965,7 +964,7 @@ export const NarrationWarehouseLT = () => {
     newArray.sort();
     return newArray;
   };
-  let { data: subject } = useGetSubjects();
+  let { data: subject, isLoading: dataIsLoading } = useGetSubjects();
   subject = subject?.subjects || [];
   const dropdown = [
     { id: 1, title: "پربازدیدترین" },
@@ -976,7 +975,7 @@ export const NarrationWarehouseLT = () => {
   const [c, setC] = useState([]);
   const { treeIsOpen } = useSelector((state) => state.summaryTree);
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-
+  const dispatch = useDispatch();
   // useEffect(() => {
   //   let newc = data.map((level1, index1) => {
   //     return {
@@ -1042,88 +1041,103 @@ export const NarrationWarehouseLT = () => {
   //   });
   //   setC(newc);
   // }, [data]);
-
+  useEffect(() => {
+    if (data?.length > 0) dispatch(setDataLoaded(true));
+  }, [data]);
   return (
     <div className="sm:pr-8 pr-0">
       <NarrationSummaryNavbar />
       <FilterModalLT
         data={data}
-        className="sm:w-90 sm:mr-22 w-full top-14 sm:top-50 right-0 "
+        className={`${
+          !isSmallScreen || treeIsOpen ? "w-full" : "w-0"
+        }  sm:w-90 sm:mr-22 ${
+          isSmallScreen && !treeIsOpen ? "top-0" : "top-30"
+        } sm:top-50 right-0`}
         style={{
-          zIndex: "10",
+          zIndex: isSmallScreen ? "110" : 10,
           // height: "calc(100vh - 6rem)",
           position: "fixed",
-          visibility: !isSmallScreen || treeIsOpen ? "visible" : "hidden",
+          // visibility: !isSmallScreen || treeIsOpen ? "visible" : "hidden",
+          // width: !isSmallScreen || treeIsOpen ? "100%" : "0",
+          maxHeight: isSmallScreen && !treeIsOpen ? "0px" : "100vh",
+          overflow: "hidden",
+          // transition: "all 0.6s linear",
+          // top: isSmallScreen && !treeIsOpen ? "0rem" : "12rem",
         }}
       />
       <div className=" mt-15 mr-0 sm:mr-[42rem] ">
         <article className="p-4 pt-20 grid gap-6 grid-cols-[1fr]">
-          {isLoading && (
+          {(isLoading || dataIsLoading) && (
             <CircularProgress
               className="absolute top-1/2 sm:left-1/3 left-[44%]  "
               color="success"
             />
           )}
-          {!isLoading && (
-            <>
-              <div style={{ color: "var(--primary-color)", zIndex: 2 }}>
-                <span>{treeWords[0]}</span>
-                {treeWords[1] && (
-                  <span>
-                    <span
-                      style={{
-                        display: "inline-block",
-                        color: "gray",
-                        margin: "0 12px",
-                        transform: "translateY(2px)",
-                      }}
-                    >
-                      {" >> "}
+          {!isLoading &&
+            !dataIsLoading &&
+            data?.length > 0 &&
+            selectedNode.narration !== "" &&
+            narrationList?.results?.length > 0 && (
+              <>
+                <div style={{ color: "var(--primary-color)", zIndex: 2 }}>
+                  <span>{treeWords[0]}</span>
+                  {treeWords[1] && (
+                    <span>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          color: "gray",
+                          margin: "0 12px",
+                          transform: "translateY(2px)",
+                        }}
+                      >
+                        {" >> "}
+                      </span>
+                      <span>{treeWords[1]}</span>
                     </span>
-                    <span>{treeWords[1]}</span>
-                  </span>
-                )}
-                {treeWords[2] && (
-                  <span>
-                    <span
-                      style={{
-                        display: "inline-block",
-                        color: "gray",
-                        margin: "0 12px",
-                        transform: "translateY(2px)",
-                      }}
-                    >
-                      {" >> "}
+                  )}
+                  {treeWords[2] && (
+                    <span>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          color: "gray",
+                          margin: "0 12px",
+                          transform: "translateY(2px)",
+                        }}
+                      >
+                        {" >> "}
+                      </span>
+                      <span>{treeWords[2]}</span>
                     </span>
-                    <span>{treeWords[2]}</span>
-                  </span>
-                )}
-              </div>
-              <section className="-mt-6" style={{}}>
-                {narrationList?.results?.map((narration, index) => (
-                  <SingleNarration
-                    key={index}
-                    onEdit={() => navigate(`${narration?.id}`)}
-                    onDelete={(pass) => handleDelete(narration?.id, pass)}
-                    narration={narration}
-                    showSummary={true}
-                    lvl1={treeWords[0]}
-                    lvl2={treeWords[1]}
-                    lvl3={treeWords[2]}
-                    section={section}
+                  )}
+                </div>
+                <section className="-mt-6" style={{}}>
+                  {narrationList?.results?.map((narration, index) => (
+                    <SingleNarration
+                      key={index}
+                      onEdit={() => navigate(`${narration?.id}`)}
+                      onDelete={(pass) => handleDelete(narration?.id, pass)}
+                      narration={narration}
+                      showSummary={true}
+                      lvl1={treeWords[0]}
+                      lvl2={treeWords[1]}
+                      lvl3={treeWords[2]}
+                      section={section}
+                    />
+                  ))}
+                </section>
+                {narrationList?.last > 1 && (
+                  <Pagination
+                    className="mb-8 mt-4"
+                    noOfPages={narrationList.last}
+                    selected={selectedPage}
+                    setSelected={setSelectedPage}
                   />
-                ))}
-              </section>
-              {narrationList?.last > 1 && (
-                <Pagination
-                  className="mb-8 mt-4"
-                  noOfPages={narrationList.last}
-                  selected={selectedPage}
-                  setSelected={setSelectedPage}
-                />
-              )}
-            </>
-          )}
+                )}
+              </>
+            )}
         </article>
       </div>
       {/* </div> */}

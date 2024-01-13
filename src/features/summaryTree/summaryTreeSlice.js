@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 const initialState = {
   section: "narration",
   treeIsOpen: false,
+  dataLoaded: false,
   selectedNode: {
     narration: "",
     verse: "",
@@ -23,6 +24,9 @@ const summaryTreeSlice = createSlice({
     setTreeIsOpen: (state, { payload }) => {
       state.treeIsOpen = payload;
     },
+    setDataLoaded: (state, { payload }) => {
+      state.dataLoaded = payload;
+    },
     toggleTreeIsOpen: (state, { payload }) => {
       state.treeIsOpen = !state.treeIsOpen;
     },
@@ -33,5 +37,6 @@ export const {
   setSelectedNode,
   setTreeIsOpen,
   toggleTreeIsOpen,
+  setDataLoaded,
 } = summaryTreeSlice.actions;
 export default summaryTreeSlice.reducer;

@@ -13,12 +13,29 @@ import {
   setTreeIsOpen,
   toggleTreeIsOpen,
 } from "../features/summaryTree/summaryTreeSlice";
+import { useEffect } from "react";
 
 export const HeaderLT = () => {
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const navigate = useNavigate();
   const { user } = useSelector((store) => store.user);
+  const { dataLoaded } = useSelector((state) => state.summaryTree);
+
   const dispatch = useDispatch();
+  var isNotInit = localStorage.getItem("isNotInit2");
+  useEffect(() => {
+    if (dataLoaded) {
+      dispatch(setTreeIsOpen(isNotInit !== "true"));
+      // dispatch(setTreeIsOpen(true));
+
+      if (isNotInit !== "true" && isSmallScreen) {
+        setTimeout(() => {
+          localStorage.setItem("isNotInit2", "true");
+          dispatch(setTreeIsOpen(false));
+        }, 4000);
+      }
+    }
+  }, [dataLoaded]);
   return (
     <header
       className="p-3 sm:pt-6 sm:px-12 px-4 bg-white sm:h-20 pt-2 fixed w-full sm:top-12 top-0 right-0"
