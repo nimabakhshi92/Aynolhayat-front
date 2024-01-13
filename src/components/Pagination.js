@@ -4,9 +4,12 @@ import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 export const Pagination = ({ className, noOfPages, selected, setSelected }) => {
   return (
     <Paper
-      className={`relative flex h-10 items-center justify-start gap-2 w-fit max-w-full ${className}`}
+      className={`relative  flex w-fit items-center justify-start gap-2  ${className}`}
       style={{
         zIndex: 2,
+        maxWidth: "80%",
+        overflowX: "scroll",
+        padding: "4px",
       }}
     >
       <BsChevronRight
