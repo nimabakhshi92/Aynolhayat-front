@@ -390,9 +390,9 @@ export const NarrationSearch = () => {
 
           <article
             style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
+              // display: "flex",
+              // flexDirection: "column",
+              // justifyContent: "space-between",
               minHeight: "80vh",
               position: "relative",
             }}
@@ -444,17 +444,17 @@ export const NarrationSearch = () => {
                     />
                   ))}
                 </section>
-                {narrationList?.last > 0 && (
-                  <Pagination
-                    className=" m-4 mb-16"
-                    noOfPages={narrationList.last}
-                    selected={selectedPage}
-                    setSelected={setSelectedPage}
-                  />
-                )}
               </>
             )}
           </article>
+          {narrationList?.last > 0 && (
+            <Pagination
+              className=" m-4 mb-16"
+              noOfPages={narrationList.last}
+              selected={selectedPage}
+              setSelected={setSelectedPage}
+            />
+          )}
         </div>
       )}
     </div>
