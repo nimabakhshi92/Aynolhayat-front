@@ -315,10 +315,10 @@ export const TreeItem = ({
       <div
         ref={ref}
         style={{
-          transition: `max-height 1s linear`,
-          // display: showChildren ? "block" : "none",
+          // transition: `max-height 4s linear`,
+          display: showChildren ? "block" : "none",
           // width: showChildren ? "100%" : "0%",
-          maxHeight: showChildren ? "800px" : 0,
+          // maxHeight: showChildren ? "8000px" : 0,
           overflow: "hidden",
         }}
       >

@@ -278,6 +278,7 @@ export const SingleNarration = ({
   section,
 }) => {
   const [isSummary, setIsShowSummary] = useState(showSummary);
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   const [short, setShort] = useState(true);
   const { user } = useSelector((store) => store.user);
@@ -316,18 +317,6 @@ export const SingleNarration = ({
               <AiFillEdit className="cursor-pointer" onClick={onEdit} />
             </>
           ) : null}
-
-          <span className="">
-            <span>{narration.book.name}</span>
-            <span>{" - "}</span>
-            <span>
-              {narration.book_vol_no ? `جلد ${narration.book_vol_no}` : ""}
-              &nbsp;
-              {narration.book_page_no
-                ? `-  صفحه ${narration.book_page_no}`
-                : ""}
-            </span>
-          </span>
         </div>
       }
       className="mb-4 relative min-h-30"
@@ -369,23 +358,45 @@ export const SingleNarration = ({
           </div>
         </div>
       )}
+
       {!isSummary && (
         <>
           <div className="flex justify-between items-start">
-            <p
+            <div
+              className="w-full"
               style={{
-                color: "brown",
-                fontSize: (isSuperAdmin(user) ? getFont(1.3) : 1.3) + "rem",
+                fontSize:
+                  (isSuperAdmin(user) ? getFont(1.1) : 1.1) *
+                    (isSmallScreen ? 1 : 1.2) +
+                  "rem",
                 maxWidth: "calc(100% - 100px)",
               }}
             >
-              {narration.narrator}
-            </p>
+              <p className="">
+                <span>{narration.book.name}</span>
+                <span>{" - "}</span>
+                <span>
+                  {narration.book_vol_no ? `جلد ${narration.book_vol_no}` : ""}
+                  &nbsp;
+                  {narration.book_page_no
+                    ? `-  صفحه ${narration.book_page_no}`
+                    : ""}
+                </span>
+              </p>
+              <p
+                style={{
+                  color: "brown",
+                }}
+              >
+                {narration.narrator}
+              </p>
+            </div>
             {showSummary && (
               <Button
-                className="absolute top-14 left-4"
+                className="absolute left-2"
                 onClickHandler={() => setIsShowSummary(true)}
                 variant="secondary"
+                style={{ fontSize: isSmallScreen ? "10px" : "12px" }}
               >
                 نمایش خلاصه
               </Button>
@@ -432,16 +443,20 @@ export const SingleNarration = ({
           <div className="w-full relative h-10">
             <span
               style={{
-                fontSize: (isSuperAdmin(user) ? getFont(1.4) : 1.4) + "rem",
+                fontSize:
+                  (isSuperAdmin(user) ? getFont(1.2) : 1.2) *
+                    (isSmallScreen ? 1 : 1.2) +
+                  "rem",
                 marginRight: "12px",
               }}
             >
               خلاصه قسمت های مرتبط با موضوع حدیث:
             </span>
             <Button
-              className="absolute left-0 sm:left-2"
+              className="absolute left-0 "
               onClickHandler={() => setIsShowSummary(false)}
               variant="secondary"
+              style={{ fontSize: isSmallScreen ? "10px" : "12px" }}
             >
               نمایش متن کامل
             </Button>
@@ -475,9 +490,9 @@ export const SingleNarration = ({
                     </div>
                   )}
 
-                  <div className="flex items-start flex-col sm:flex-row justify-between w-full mr-3">
+                  <div className="flex items-start flex-col sm:flex-row justify-between w-full pr-3">
                     <p
-                      className="w-full sm:w-[48%]"
+                      className=" sm:w-[48%]"
                       style={{
                         fontSize:
                           (isSuperAdmin(user) ? getFont(1.4) : 1.4) + "rem",
