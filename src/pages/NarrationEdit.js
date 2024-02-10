@@ -40,7 +40,7 @@ export const NarrationEdit = () => {
 
   if (!isAdmin(user)) return <Navigate to={"/"} />;
   return (
-    <section className="mt-8">
+    <section className="mt-8 pb-4 px-2 sm:px-4 ">
       <NarrationEditForm narration={narration} />
       {narration && (
         <>

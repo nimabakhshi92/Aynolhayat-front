@@ -1,6 +1,6 @@
 import Input from "../ui/input";
 import classes from "../ui/dropdown/dropdown.module.css";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function InputWithSuggestion({
   style,
@@ -40,11 +40,12 @@ export default function InputWithSuggestion({
   const onMenuClick = async (item) => {
     if (reference) reference.current.value = item;
     if (reference && onChange) onChange();
-    if (!reference && onChange) {
+    if (!reference && onChange && onPressEnter) {
       // await onChange({ target: { value: item } });
       await onPressEnter({ target: { value: item } });
     }
   };
+  const mouseEntered = useRef(false);
   return (
     <div className={`relative ${parentClassName}`}>
       <Input
@@ -56,10 +57,18 @@ export default function InputWithSuggestion({
         placeholder={placeholder}
         onClick={() => setOpenSuggestions(true)}
         onMouseEnter={(e) => {
-          setMatchedSuggestions(matchSearch(e));
-          setOpenSuggestions(true);
+          mouseEntered.current = true;
+          setTimeout(() => {
+            if (mouseEntered.current) {
+              setOpenSuggestions(true);
+              setMatchedSuggestions(matchSearch(e));
+            }
+          }, 350);
         }}
-        onMouseLeave={() => setOpenSuggestions(false)}
+        onMouseLeave={() => {
+          mouseEntered.current = false;
+          setOpenSuggestions(false);
+        }}
         onBlur={(e) => {
           if (onBlur) onBlur(e);
         }}
@@ -69,9 +78,11 @@ export default function InputWithSuggestion({
         }}
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === "NumpadEnter") {
-            if (reference) onPressEnter();
-            else {
-              onPressEnter(event);
+            if (onPressEnter) {
+              if (reference) onPressEnter();
+              else {
+                onPressEnter(event);
+              }
             }
             event.currentTarget.blur();
           }

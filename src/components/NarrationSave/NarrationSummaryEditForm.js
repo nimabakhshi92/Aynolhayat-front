@@ -205,6 +205,7 @@ export const SingleNarrationSummariesForEdit = ({
           value={summary.alphabet}
           placeholder="سطح 1"
           onBlur={(e) => handleBlur("alphabet", e.target.value)}
+          key={"i1" + summary.id}
         />
 
         <InputWithSuggestion
@@ -218,6 +219,7 @@ export const SingleNarrationSummariesForEdit = ({
           value={summary.subject}
           placeholder="سطح 2"
           onBlur={(e) => handleBlur("subject", e.target.value)}
+          key={"i2" + summary.id}
         />
 
         <InputWithSuggestion
@@ -231,6 +233,7 @@ export const SingleNarrationSummariesForEdit = ({
           value={summary.sub_subject}
           placeholder="سطح 3"
           onBlur={(e) => handleBlur("sub_subject", e.target.value)}
+          key={"i3" + summary.id}
         />
 
         <InputWithSuggestion
@@ -244,6 +247,7 @@ export const SingleNarrationSummariesForEdit = ({
           value={summary.subject_3}
           placeholder="سطح 4"
           onBlur={(e) => handleBlur("subject_3", e.target.value)}
+          key={"i4" + summary.id}
         />
 
         <InputWithSuggestion
@@ -257,6 +261,7 @@ export const SingleNarrationSummariesForEdit = ({
           value={summary.subject_4}
           placeholder="سطح 5"
           onBlur={(e) => handleBlur("subject_4", e.target.value)}
+          key={"i5" + summary.id}
         />
 
         <InputWithState
@@ -274,6 +279,7 @@ export const SingleNarrationSummariesForEdit = ({
           onBlur={() => handleBlur("summary", summary.summary)}
           type="text"
           placeholder="عبارت عربی"
+          key={"i6" + summary.id}
         />
         <div className="relative col-span-2">
           <Dropdown
@@ -294,6 +300,7 @@ export const SingleNarrationSummariesForEdit = ({
             }))}
             dataKey="surah_name"
             placeholder="نام سوره"
+            key={"i7" + summary.id}
           />
           <AiOutlineClose
             color="var(--neutral-color-400)"
@@ -314,12 +321,14 @@ export const SingleNarrationSummariesForEdit = ({
           }}
           items={verseNos}
           placeholder="شماره آیه"
+          key={"i8" + summary.id}
         />
         <Input
           className="col-span-4"
           type="text"
           placeholder={verse?.verse_content || "متن آیه"}
           disabled={true}
+          key={"i9" + summary.id}
         />
       </div>
     </div>
@@ -378,12 +387,13 @@ export const NarrationSummaryEditForm = ({ summaries, narration }) => {
           inSummary={emptySummary}
           handleCancelNewItem={handleCancelNewItem}
           ss={ss}
+          key={-1}
         />
       )}
       {reversed.map((summary, index) => {
         return (
           <SingleNarrationSummariesForEdit
-            key={index}
+            key={index + "j" + summary.id}
             narration={narration}
             inSummary={summary}
             ss={ss}

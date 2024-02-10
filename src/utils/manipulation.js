@@ -32,21 +32,22 @@ export const extractTreeIndex = (value) => {
 
 export const extractTreeWords = (value, data, section, subSection1) => {
   if (!value || !data || !section) return [];
+  let treeWords = [];
+  try {
+    const subSection2 = section !== "surah" ? "subjects" : "verses";
+    const subTitle = section !== "surah" ? "title" : "verse_no";
+    const treeIndex = extractTreeIndex(value);
+    const [lvl1, lvl2, lvl3, lvl4, lvl5] = treeIndex;
 
-  const subSection2 = section !== "surah" ? "subjects" : "verses";
-  const subTitle = section !== "surah" ? "title" : "verse_no";
-  const treeIndex = extractTreeIndex(value);
-  const [lvl1, lvl2, lvl3, lvl4, lvl5] = treeIndex;
-
-  const treeWords = [];
-  if (lvl1 >= 0) treeWords.push(data[lvl1][subSection1]);
-  if (lvl2 >= 0) treeWords.push(data[lvl1][subSection2][lvl2][subTitle]);
-  if (lvl3 >= 0)
-    treeWords.push(data[lvl1][subSection2][lvl2].sub_subjects[lvl3].title);
-  if (lvl4 >= 0)
-    treeWords.push(
-      data[lvl1][subSection2][lvl2].sub_subjects[lvl3].subjects_3[lvl4].title
-    );
+    if (lvl1 >= 0) treeWords.push(data[lvl1][subSection1]);
+    if (lvl2 >= 0) treeWords.push(data[lvl1][subSection2][lvl2][subTitle]);
+    if (lvl3 >= 0)
+      treeWords.push(data[lvl1][subSection2][lvl2].sub_subjects[lvl3].title);
+    if (lvl4 >= 0)
+      treeWords.push(
+        data[lvl1][subSection2][lvl2].sub_subjects[lvl3].subjects_3[lvl4].title
+      );
+  } catch {}
   return treeWords;
 };
 export const extractText = (value) => {
