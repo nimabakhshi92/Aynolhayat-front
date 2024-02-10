@@ -78,7 +78,7 @@ export default function InputWithSuggestion({
         }}
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === "NumpadEnter") {
-            if (onPressEnter) {
+            if (onPressEnter && !onBlur) {
               if (reference) onPressEnter();
               else {
                 onPressEnter(event);

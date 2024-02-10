@@ -14,7 +14,7 @@ import Input from "../components/ui/input";
 import { InputWithState } from "../components/general/InputWithState";
 import InputWithSuggestion from "../components/general/InputWithSuggestion";
 import { useQueryClient } from "react-query";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, useMediaQuery } from "@mui/material";
 import { AiFillDelete, AiFillEdit, AiOutlineClose } from "react-icons/ai";
 import apiUrls from "../api/urls";
 import { useNavigate } from "react-router-dom";
@@ -211,6 +211,17 @@ function ArabicTextComponent({ children, footnotes, className }) {
 }
 
 export const NarrationSearch = () => {
+  const dropdown = [
+    { id: 1, title: "تاریخ ایجاد" },
+    { id: 2, title: "تاریخ ویرایش" },
+  ];
+  const sortTypeOptions = [
+    { id: 1, title: "نزولی" },
+    { id: 2, title: "صعودی" },
+  ];
+
+  const [selectedSortOption, setSelectedSortOption] = useState(dropdown[0]);
+  const [selectedSortType, setSelectedSortType] = useState(sortTypeOptions[0]);
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(1);
   const [showSummary, setShowSummary] = useState(false);
@@ -249,6 +260,8 @@ export const NarrationSearch = () => {
   const serachOptions = {
     subjects_search: searchSubject?.current?.value || "",
     texts_search: removeTashkel(searchTerm?.current?.value || ""),
+    sort_by: selectedSortOption?.id === 2 ? "modified" : "created",
+    sort_type: selectedSortType?.id === 2 ? "asc" : "desc",
   };
   const [selectedOptions, setSelectedOptions] = useState(emptyOptions);
   const { data: options } = useGetNarrationFilterOptions();
@@ -278,14 +291,10 @@ export const NarrationSearch = () => {
   };
   let { data: subject } = useGetSubjects();
   subject = subject?.subjects || [];
-  const dropdown = [
-    { id: 1, title: "پربازدیدترین" },
-    { id: 2, title: "پرتکرارترین" },
-    { id: 3, title: "قدیمی ترین" },
-  ];
-  const [a, setA] = useState({ id: 1, title: "پربازدیدترین" });
   const [searchStarted, setSearchStarted] = useState(false);
   const [flag, setFlag] = useState(false);
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
   return (
     <div className="sm:mr-12">
       <section
@@ -406,7 +415,7 @@ export const NarrationSearch = () => {
             {!isLoading && (
               <>
                 <div
-                  className="p-4 px-10 mb-4 mx-4 flex items-center justify-between"
+                  className="p-4  px-2 sm:px-10 mb-4 mx-4 flex items-center justify-between"
                   style={{
                     boxShadow: "-3px 8px 16px -3px #00000026",
                     borderRadius: "8px",
@@ -415,21 +424,32 @@ export const NarrationSearch = () => {
                     color: "var(--neutral-color-500)",
                   }}
                 >
-                  <div className="">
+                  <div style={{ fontSize: isSmallScreen ? "10px" : "14px" }}>
                     <span>{narrationList?.number_of_records || 0}</span>
                     &nbsp;
                     <span>حدیث یافت شد </span>
                   </div>
-                  <div className="hidden sm:flex gap-3 items-center">
-                    <p>مرتب سازی :</p>
-                    <div className="w-50">
-                      <Dropdown
-                        className="h-8 "
-                        dataKey="title"
-                        selected={a}
-                        setSelected={setA}
-                        items={dropdown}
-                      />
+                  <div className="flex gap-3 items-center">
+                    <p className="hidden sm:block">مرتب سازی :</p>
+                    <div className="flex gap-1 items-center">
+                      <div className="w-25 sm:w-35">
+                        <Dropdown
+                          className="h-8 "
+                          dataKey="title"
+                          selected={selectedSortOption}
+                          setSelected={setSelectedSortOption}
+                          items={dropdown}
+                        />
+                      </div>
+                      <div className="w-20 sm:w-30">
+                        <Dropdown
+                          className="h-8 "
+                          dataKey="title"
+                          selected={selectedSortType}
+                          setSelected={setSelectedSortType}
+                          items={sortTypeOptions}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

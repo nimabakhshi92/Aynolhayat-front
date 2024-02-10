@@ -276,6 +276,7 @@ export const SingleNarration = ({
   lvl2,
   lvl3,
   section,
+  className,
 }) => {
   const [isSummary, setIsShowSummary] = useState(showSummary);
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -310,16 +311,20 @@ export const SingleNarration = ({
         <div className=" gap-4 items-center flex">
           {isAdmin(user) ? (
             <>
-              <AiFillDelete
-                className="cursor-pointer"
-                onClick={() => setOpen(true)}
-              />
-              <AiFillEdit className="cursor-pointer" onClick={onEdit} />
+              {onDelete && (
+                <AiFillDelete
+                  className="cursor-pointer"
+                  onClick={() => setOpen(true)}
+                />
+              )}
+              {onEdit && (
+                <AiFillEdit className="cursor-pointer" onClick={onEdit} />
+              )}
             </>
           ) : null}
         </div>
       }
-      className="mb-4 relative min-h-30"
+      className={`mb-4 relative min-h-30 ${className}`}
     >
       {open && (
         <div

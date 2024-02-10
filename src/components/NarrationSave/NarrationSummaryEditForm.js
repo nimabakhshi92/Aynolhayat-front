@@ -124,7 +124,11 @@ export const SingleNarrationSummariesForEdit = ({
       });
   };
   const handleBlur = (key, newValue) => {
-    if (!newValue && key === "alphabet") return;
+    if (
+      !newValue &&
+      (key === "alphabet" || key === "subject" || key === "sub_subject")
+    )
+      return;
     let keyForPost = "";
     switch (key) {
       case "subject":
@@ -166,6 +170,14 @@ export const SingleNarrationSummariesForEdit = ({
       data: { quran_verse: verse.id },
     });
   };
+  const handleVerseRemove = () => {
+    mutate({
+      narrationId: narration?.id,
+      summaryId: summary?.id,
+      data: { quran_verse: -1 },
+    });
+  };
+
   useEffect(() => {
     if (
       verse.id &&
@@ -305,12 +317,15 @@ export const SingleNarrationSummariesForEdit = ({
           <AiOutlineClose
             color="var(--neutral-color-400)"
             className="absolute left-8 top-3 w-4 h-4 cursor-pointer"
-            onClick={() =>
+            onClick={() => {
               handleSurahChange({
                 surah_name: "",
                 surah_no: 0,
-              })
-            }
+              });
+              handleVerseRemove();
+              // setSelectedVerse(0);
+              // handleVerseChange("verse_no", 0);
+            }}
           />
         </div>
         <Dropdown

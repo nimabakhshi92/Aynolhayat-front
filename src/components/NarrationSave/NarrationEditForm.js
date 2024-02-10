@@ -16,6 +16,11 @@ import {
 import { toast } from "react-toastify";
 import Button from "../ui/buttons/primary-button";
 import { useNavigate } from "react-router-dom";
+import { customApiCall } from "../../utils/axios";
+import { CircularProgress } from "@mui/material";
+import { AiOutlineClose } from "react-icons/ai";
+import apiUrls from "../../api/urls";
+import { SingleNarration } from "../../pages/NarrationWarehouse";
 
 const emptyNarration = {
   imam: null,
@@ -28,7 +33,87 @@ const emptyNarration = {
   book_narration_no: null,
 };
 
+const SimilarNarrations = ({ narrationContent, setIsOpen, isOpen }) => {
+  const [similar, setSimilar] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const url = apiUrls.narration.similar;
+  useEffect(() => {
+    const fn = async () => {
+      setIsLoading(true);
+      try {
+        const data = { text: narrationContent };
+        const resp = await customApiCall.post({ data, url });
+        setSimilar(resp);
+      } catch {
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (isOpen) fn();
+  }, []);
+
+  return (
+    <div
+      className="w-full h-full fixed "
+      style={{
+        backgroundColor: "#0009",
+        zIndex: 100,
+      }}
+    >
+      <div
+        className="w-2/3  fixed top-1/2 left-1/2 overflow-scroll"
+        style={{
+          borderRadius: "8px",
+          backgroundColor: "white",
+          transform: "translate(-50%, -50%)",
+          zIndex: 100,
+          border: "1px solid #ccc",
+          height: "75%",
+        }}
+      >
+        {isLoading && (
+          <CircularProgress
+            className="absolute top-1/2 left-1/2 -transform-x-1/2 -transform-y-1/2 "
+            color="success"
+          />
+        )}
+        <div
+          style={{
+            flexDirection: "column",
+          }}
+          className="relative p-6 flex gap-8  items-center "
+        >
+          {!isLoading && !similar.length > 0 && <p>این حدیث تکراری نیست</p>}
+          {similar.length > 0 && (
+            <>
+              <p>{similar.length} حدیث مشابه یافت شد</p>
+              {similar.map((narration) => {
+                return (
+                  <SingleNarration narration={narration} className="w-full" />
+                );
+                // return <p>{item.content}</p>;
+              })}
+            </>
+          )}
+          <Button
+            variant="primary"
+            className="w-30"
+            onClickHandler={() => setIsOpen(false)}
+          >
+            بستن
+          </Button>
+        </div>
+        <AiOutlineClose
+          className="absolute cursor-pointer right-2 top-2"
+          onClick={() => setIsOpen(false)}
+        />
+      </div>
+    </div>
+  );
+};
+
 export const NarrationEditForm = ({ narration }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [updatedNarration, setUpdatedNarration] = useState(emptyNarration);
   const { narration: storeNarration } = useSelector((store) => store.narration);
   let { data: imam } = useGetImam();
@@ -44,6 +129,8 @@ export const NarrationEditForm = ({ narration }) => {
   const { mutate } = useModifyNarrationInfo();
   const navigate = useNavigate();
   const handleBlur = (fieldName, fieldValue) => {
+    if (!narration && fieldName === "content" && fieldValue)
+      setIsModalOpen(true);
     if (narration)
       mutate({
         narrationId: narration?.id,
@@ -92,6 +179,13 @@ export const NarrationEditForm = ({ narration }) => {
   }, [narration]);
   return (
     <>
+      {isModalOpen && (
+        <SimilarNarrations
+          narrationContent={updatedNarration.content}
+          setIsOpen={setIsModalOpen}
+          isOpen={isModalOpen}
+        />
+      )}
       <ContentContainer className="mb-4" title="اطلاعات شناسنامه‌ای حدیث">
         <div className="grid gap-4 grid-cols-3 grid-rows-3">
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -130,17 +224,18 @@ export const NarrationEditForm = ({ narration }) => {
             />
           </div>
           <div
-            className="flex gap-1 col-span-2"
+            className="flex gap-1 col-span-2 sm:col-span-3 sm:row-span-2"
             style={{ flexDirection: "column" }}
           >
             <p>متن حدیث</p>
             <Input
-              className=""
+              style={{ height: "100%" }}
               value={updatedNarration?.content}
               onChange={(e) => handleChange("content", e.target.value)}
               onBlur={(e) => handleBlur("content", updatedNarration?.content)}
               type="text"
               placeholder="متن حدیث"
+              textArea={true}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>

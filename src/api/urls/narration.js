@@ -29,4 +29,5 @@ export default {
     get: (footnoteId) => `${url}/footnote/${footnoteId}/`,
     post: `${url}/footnote/`,
   },
+  similar: `${url}/similar_narrations/`,
 };
