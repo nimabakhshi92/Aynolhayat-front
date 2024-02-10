@@ -16,7 +16,7 @@ export default {
   },
   get: (narrationId) => `${url}/narration/${narrationId}/`,
 
-  filterOptions: `${url0}/test/`,
+  filterOptions: `${url}/filter_options/`,
   subject: {
     get: (subjectId) => `${url}/subject/${subjectId}/`,
     post: `${url}/subject/`,
