@@ -1,10 +1,17 @@
 import { Stack, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from "react";
-import { BiCylinder, BiHeart, BiSave, BiSearch } from "react-icons/bi";
+import {
+  BiBookmark,
+  BiCylinder,
+  BiHeart,
+  BiSave,
+  BiSearch,
+} from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 import { getUserFromLocalStorage } from "../utils/localStorage";
 import { isAdmin } from "../utils/acl";
+import { MdBookmarkAdd } from "react-icons/md";
 
 const NavIcon = ({ iconName, isActive, ...props }) => {
   if (iconName === "search")
@@ -25,7 +32,7 @@ const NavIcon = ({ iconName, isActive, ...props }) => {
     );
   if (iconName === "saved")
     return (
-      <BiHeart
+      <BiBookmark
         color={isActive ? "green" : "#999"}
         style={{ width: "24px", height: "24px" }}
         {...props}
@@ -60,9 +67,9 @@ export const SidebarLT = () => {
       isActive: pageName === "",
     },
     {
-      icon: <BiHeart />,
+      icon: <BiBookmark />,
       name: "saved",
-      displayText: "مورد علاقه ها",
+      displayText: "نشان شده ها",
       to: "saved",
       isActive: pageName === "saved",
     },

@@ -33,6 +33,8 @@ import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { getUserFromLocalStorage } from "../utils/localStorage";
 import { getFont, isAdmin, isSuperAdmin } from "../utils/acl";
 import { setDataLoaded } from "../features/summaryTree/summaryTreeSlice";
+import { MdBookmarkAdd } from "react-icons/md";
+import axios from "axios";
 
 const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -271,12 +273,14 @@ export const SingleNarration = ({
   narration,
   onDelete,
   onEdit,
+  onBookmark,
   showSummary = false,
   lvl1,
   lvl2,
   lvl3,
   section,
   className,
+  hasBookmark = true,
 }) => {
   const [isSummary, setIsShowSummary] = useState(showSummary);
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -303,6 +307,15 @@ export const SingleNarration = ({
         );
     }
   );
+
+  const handleBookmark = () => {
+    if (!onBookmark) {
+      const url = apiUrls.narration.bookmark;
+      customApiCall.post({ url, data: { narration_id: narration.id } });
+    } else {
+      onBookmark();
+    }
+  };
   return (
     <ContentContainer
       // title={`${narration.book.name}`}
@@ -319,6 +332,12 @@ export const SingleNarration = ({
               )}
               {onEdit && (
                 <AiFillEdit className="cursor-pointer" onClick={onEdit} />
+              )}
+              {hasBookmark && (
+                <MdBookmarkAdd
+                  className="cursor-pointer"
+                  onClick={handleBookmark}
+                />
               )}
             </>
           ) : null}

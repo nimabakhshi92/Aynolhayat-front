@@ -30,4 +30,6 @@ export default {
     post: `${url}/footnote/`,
   },
   similar: `${url}/similar_narrations/`,
+  bookmark: `${url}/bookmark/`,
+  bookmarkRemove: (id) => `${url}/bookmark/${id}/`,
 };

@@ -25,6 +25,7 @@ import { NarrationSummariesNewLT } from "./pages/NarrationSummariesNewLT";
 import { NarrationSearch } from "./pages/NarrationSearch";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./styles/theme";
+import { Bookmarks } from "./pages/Bookmarks";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -82,7 +83,7 @@ function App() {
                 {/* <Route path="s/" element={<NarrationSummariesNewLT />}></Route> */}
                 {/* <Route index element={<NarrationWarehouse />}></Route> */}
                 <Route index element={<NarrationWarehouseLT />}></Route>
-                <Route path="saved/" element={<div>saved</div>}></Route>
+                <Route path="saved/" element={<Bookmarks />}></Route>
                 <Route path="search/" element={<NarrationSearch />}></Route>
                 {/* <Route path="summary" element={<NarrationSummariesNew />}></Route> */}
               </Route>
