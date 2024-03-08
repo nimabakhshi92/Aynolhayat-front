@@ -46,6 +46,8 @@ export default function InputWithSuggestion({
     }
   };
   const mouseEntered = useRef(false);
+  const suggestionsClicked = useRef(false);
+
   return (
     <div className={`relative ${parentClassName}`}>
       <Input
@@ -70,6 +72,8 @@ export default function InputWithSuggestion({
           setOpenSuggestions(false);
         }}
         onBlur={(e) => {
+          if (openSuggestions) return;
+
           if (onBlur) onBlur(e);
         }}
         onChange={(e) => {

@@ -20,12 +20,21 @@ import Dropdown from "../ui/dropdown";
 import Input from "../ui/input";
 import { useQueryClient } from "react-query";
 import InputWithSuggestion from "../general/InputWithSuggestion";
+import { toast } from "react-toastify";
+
+const findVerse = (quran, surah_no, verse_no) => {
+  const newVerse = quran.find(
+    (verse) => verse.surah_no === surah_no && verse.verse_no === verse_no
+  );
+  return newVerse;
+};
 
 export const SingleNarrationSummariesForEdit = ({
   inSummary,
   narration,
   handleCancelNewItem,
   ss,
+  quran,
 }) => {
   let { data: surah } = useGetSurah();
   surah = surah || [];
@@ -108,11 +117,34 @@ export const SingleNarrationSummariesForEdit = ({
   };
 
   const handleSurahChange = (data) => {
-    setSummary({ ...summary, verse: { ...summary.verse, ...data } });
+    const maxNoOfVerses = getNoOfVerses(data.surah_name);
+    const verse_no =
+      summary.verse?.verse_no <= maxNoOfVerses ? summary.verse?.verse_no : 1;
+    const newVerse = findVerse(quran, data.surah_no, verse_no);
+    if (!newVerse) {
+      toast.error("تغییر مورد نظر انجام نشد");
+      return;
+    }
+    setSummary({ ...summary, verse: newVerse });
+    mutate({
+      narrationId: narration?.id,
+      summaryId: summary?.id,
+      data: { quran_verse: newVerse.id },
+    });
   };
 
   const handleVerseChange = (key, newValue) => {
-    setSummary({ ...summary, verse: { ...summary.verse, [key]: newValue } });
+    const newVerse = findVerse(quran, summary.verse?.surah_no, newValue);
+    if (!newVerse) {
+      toast.error("تغییر مورد نظر انجام نشد");
+      return;
+    }
+    setSummary({ ...summary, verse: newVerse });
+    mutate({
+      narrationId: narration?.id,
+      summaryId: summary?.id,
+      data: { quran_verse: newVerse.id },
+    });
   };
 
   const handleDelete = () => {
@@ -163,13 +195,7 @@ export const SingleNarrationSummariesForEdit = ({
       });
     }
   };
-  const handleVerseBlur = () => {
-    mutate({
-      narrationId: narration?.id,
-      summaryId: summary?.id,
-      data: { quran_verse: verse.id },
-    });
-  };
+
   const handleVerseRemove = () => {
     mutate({
       narrationId: narration?.id,
@@ -177,17 +203,6 @@ export const SingleNarrationSummariesForEdit = ({
       data: { quran_verse: -1 },
     });
   };
-
-  useEffect(() => {
-    if (
-      verse.id &&
-      narration?.id &&
-      summary?.id &&
-      summary?.verse?.surah_name &&
-      summary?.verse?.verse_no > 0
-    )
-      handleVerseBlur();
-  }, [verse]);
 
   return (
     <div className="flex gap-2 items-start">
@@ -295,7 +310,7 @@ export const SingleNarrationSummariesForEdit = ({
         />
         <div className="relative col-span-2">
           <Dropdown
-            className=""
+            className="h-full"
             selected={summary?.verse}
             setSelected={(newValue) => {
               // setSelectedSurah(newValue);
@@ -318,10 +333,10 @@ export const SingleNarrationSummariesForEdit = ({
             color="var(--neutral-color-400)"
             className="absolute left-8 top-3 w-4 h-4 cursor-pointer"
             onClick={() => {
-              handleSurahChange({
-                surah_name: "",
-                surah_no: 0,
-              });
+              // handleSurahChange({
+              //   surah_name: "",
+              //   surah_no: 0,
+              // });
               handleVerseRemove();
               // setSelectedVerse(0);
               // handleVerseChange("verse_no", 0);
@@ -355,6 +370,8 @@ export const NarrationSummaryEditForm = ({ summaries, narration }) => {
   const queryClient = useQueryClient();
   let { data: surah } = useGetSurah();
   surah = surah || [];
+
+  const { data: quran } = useGetVerse("all", "all");
 
   const [showEmpty, setShowEmpty] = useState(false);
   const emptySummary0 = {
@@ -403,6 +420,7 @@ export const NarrationSummaryEditForm = ({ summaries, narration }) => {
           handleCancelNewItem={handleCancelNewItem}
           ss={ss}
           key={-1}
+          quran={quran}
         />
       )}
       {reversed.map((summary, index) => {
@@ -412,6 +430,7 @@ export const NarrationSummaryEditForm = ({ summaries, narration }) => {
             narration={narration}
             inSummary={summary}
             ss={ss}
+            quran={quran}
             // onInputChange={(newValues) => handleOnInputChange(index, newValues)}
           />
         );

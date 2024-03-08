@@ -56,7 +56,10 @@ export const useGetSurah = () => {
   return use2GeneralGetHook("surah", url);
 };
 export const useGetVerse = (surahNo, verseNo) => {
-  const url = apiUrls.quran.verse(surahNo ?? 0, verseNo ?? 0);
+  const url = apiUrls.quran.verse(
+    surahNo === "all" ? "" : surahNo || -1,
+    verseNo === "all" ? "" : verseNo || -1
+  );
   return use2GeneralGetHook(["verse", surahNo, verseNo], url);
 };
 export const useGetNarrationIndividual = (narrationId) => {
