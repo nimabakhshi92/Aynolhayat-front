@@ -26,7 +26,8 @@ import { NarrationSubjectEditForm } from "../components/NarrationSave/NarrationS
 import { useQueryClient } from "react-query";
 import { NarrationSummaryEditForm } from "../components/NarrationSave/NarrationSummaryEditForm";
 import { NarrationFootnoteEditForm } from "../components/NarrationSave/NarrationFootnoteEditForm";
-import { isAdmin, isSuperAdmin } from "../utils/acl";
+import { isAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
+import { YouMustLoginFirst } from "./Bookmarks";
 
 export const NarrationEdit = () => {
   const { narrationId } = useParams();
@@ -35,10 +36,16 @@ export const NarrationEdit = () => {
   const navigate = useNavigate();
 
   const { data: narration, isLoading } = useGetNarrationIndividual(
-    narrationId || 0
+    narrationId || 0,
+    user
   );
 
-  if (!isAdmin(user)) return <Navigate to={"/"} />;
+  // if (!isLoggedIn(user)) return <Navigate to={"/"} />;
+  if (!isLoggedIn(user))
+    return (
+      <YouMustLoginFirst message="برای ذخیره حدیث شحصی لطفا ابتدا وارد شوید" />
+    );
+
   return (
     <section className="mt-8 pb-4 px-2 sm:px-4 ">
       <NarrationEditForm narration={narration} />

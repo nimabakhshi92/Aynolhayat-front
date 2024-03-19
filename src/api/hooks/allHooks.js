@@ -35,9 +35,9 @@ const use2GeneralGetHook = (cacheName, url) => {
 // ==========================
 // Common Hooks
 // ==========================
-export const useGetSummaryTree = (section, user) => {
-  const url = apiUrls.narrationSummaries.list(section);
-  return use2GeneralGetHook(["summaryTree", section, user], url);
+export const useGetSummaryTree = (section, user, personal) => {
+  const url = apiUrls.narrationSummaries.list(section, personal && user.id);
+  return use2GeneralGetHook(["summaryTree", section, user, personal], url);
 };
 export const useGetImam = () => {
   const url = apiUrls.Imam.list;
@@ -62,8 +62,8 @@ export const useGetVerse = (surahNo, verseNo) => {
   );
   return use2GeneralGetHook(["verse", surahNo, verseNo], url);
 };
-export const useGetNarrationIndividual = (narrationId) => {
-  const url = apiUrls.narration.get(narrationId);
+export const useGetNarrationIndividual = (narrationId, user) => {
+  const url = apiUrls.narration.get(narrationId, user.id);
   return use2GeneralGetHook(["narrationIndividual", Number(narrationId)], url);
 };
 export const useGetNarrationList = (pageNo, selectedOptions) => {
@@ -143,8 +143,8 @@ export const useAddNarrationSubject = () => {
           return {
             ...oldData,
             subjects: [
-              ...oldData.subjects,
-              { id: Math.random(), subject: data.subject },
+              ...oldData?.subjects,
+              { id: Math.random(), subject: data?.subject },
             ],
           };
         }

@@ -410,12 +410,16 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
   }, [data, clicked]);
 
   useEffect(() => {
-    if (c?.length > 0 && !selectedNode[section]) {
+    if (
+      c?.length > 0 &&
+      !selectedNode[section] &&
+      c[3]?.children[2]?.children[1]?.value
+    ) {
       dispatch(
         setSelectedNode({
           node: {
             ...selectedNode,
-            [section]: c[3].children[2].children[1].value,
+            [section]: c[3]?.children[2]?.children[1]?.value,
           },
         })
       );

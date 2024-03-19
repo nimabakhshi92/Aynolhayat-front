@@ -83,6 +83,10 @@ function App() {
                 {/* <Route path="s/" element={<NarrationSummariesNewLT />}></Route> */}
                 {/* <Route index element={<NarrationWarehouse />}></Route> */}
                 <Route index element={<NarrationWarehouseLT />}></Route>
+                <Route
+                  path="my-narrations/"
+                  element={<NarrationWarehouseLT personal={true} />}
+                ></Route>
                 <Route path="saved/" element={<Bookmarks />}></Route>
                 <Route path="search/" element={<NarrationSearch />}></Route>
                 {/* <Route path="summary" element={<NarrationSummariesNew />}></Route> */}

@@ -32,9 +32,32 @@ import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
 import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { getUserFromLocalStorage } from "../utils/localStorage";
 import { SingleNarration } from "./NarrationWarehouse";
+import { isLoggedIn } from "../utils/acl";
+
+export const YouMustLoginFirst = ({ message }) => {
+  const navigate = useNavigate();
+  return (
+    <div
+      style={{
+        flexDirection: "column",
+        position: "fixed",
+        zIndex: 103,
+      }}
+      className="w-100 h-100 top-1/4 left-1/3  flex  items-center justify-center"
+    >
+      <p>{message}</p>
+      <Button
+        variant="primary"
+        className="w-20 mt-8"
+        onClickHandler={() => navigate("/login")}
+      >
+        ورود
+      </Button>
+    </div>
+  );
+};
 
 export const Bookmarks = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const [narrationList, setNarrationList] = useState([]);
@@ -64,25 +87,9 @@ export const Bookmarks = () => {
 
   const user = getUserFromLocalStorage();
   console.log(user);
-  if (user?.username === "nima@a.com" || user?.id === 2)
+  if (!isLoggedIn(user))
     return (
-      <div
-        style={{
-          flexDirection: "column",
-          position: "fixed",
-          zIndex: 103,
-        }}
-        className="w-100 h-100 top-1/4 left-1/3  flex  items-center justify-center"
-      >
-        <p>برای دیدن نشان شده های خود لطفا ابتدا وارد شوید</p>
-        <Button
-          variant="primary"
-          className="w-20 mt-8"
-          onClickHandler={() => navigate("/login")}
-        >
-          ورود
-        </Button>
-      </div>
+      <YouMustLoginFirst message="برای دیدن نشان شده های خود لطفا ابتدا وارد شوید" />
     );
 
   if (narrationList?.length)

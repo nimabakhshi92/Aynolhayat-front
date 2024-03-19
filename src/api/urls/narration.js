@@ -14,7 +14,10 @@ export default {
     baseUrl += `${index !== 0 ? "&" : ""}page=${pageNo}&page_size=${pageSize}`;
     return baseUrl;
   },
-  get: (narrationId) => `${url}/narration/${narrationId}/`,
+  get: (narrationId, userId) => {
+    const userIdClause = userId ? `?user_id=${userId}` : "";
+    return `${url}/narration/${narrationId}/${userIdClause}`;
+  },
 
   filterOptions: `${url}/filter_options/`,
   subject: {

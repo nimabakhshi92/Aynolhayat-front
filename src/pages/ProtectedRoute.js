@@ -27,6 +27,7 @@ export const ProtectedRoute = ({ children }) => {
     };
     loogIn();
   }, [flag]);
+
   const newToken = () => {
     if (!user) return;
     const expiresTime = new Date(user.expires_at || user.expires_in);

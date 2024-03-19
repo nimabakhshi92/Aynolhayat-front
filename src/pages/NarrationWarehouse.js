@@ -31,10 +31,11 @@ import FilterModal, {
 import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
 import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { getUserFromLocalStorage } from "../utils/localStorage";
-import { getFont, isAdmin, isSuperAdmin } from "../utils/acl";
+import { getFont, isAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
 import { setDataLoaded } from "../features/summaryTree/summaryTreeSlice";
 import { MdBookmarkAdd } from "react-icons/md";
 import axios from "axios";
+import { YouMustLoginFirst } from "./Bookmarks";
 
 const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -281,6 +282,7 @@ export const SingleNarration = ({
   section,
   className,
   hasBookmark = true,
+  personal,
 }) => {
   const [isSummary, setIsShowSummary] = useState(showSummary);
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -322,7 +324,7 @@ export const SingleNarration = ({
       title={`${narration.imam.name} می فرمایند:`}
       actionComponent={
         <div className=" gap-4 items-center flex">
-          {isAdmin(user) ? (
+          {isAdmin(user) || personal ? (
             <>
               {onDelete && (
                 <AiFillDelete
@@ -541,7 +543,7 @@ export const SingleNarration = ({
   );
 };
 
-export const NarrationWarehouseLT = () => {
+export const NarrationWarehouseLT = ({ personal = false }) => {
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(1);
   const [showSummary, setShowSummary] = useState(false);
@@ -550,7 +552,7 @@ export const NarrationWarehouseLT = () => {
   const searchSubject = useRef();
   const { section, selectedNode } = useSelector((store) => store.summaryTree);
   const { user } = useSelector((store) => store.user);
-  const { data: rawData } = useGetSummaryTree(section, user);
+  const { data: rawData } = useGetSummaryTree(section, user, personal);
   const data = rawData?.filter((e) => {
     return section === "surah" || e.alphabet !== "بیان";
   });
@@ -592,6 +594,7 @@ export const NarrationWarehouseLT = () => {
     ...selectedOptions,
     ...serachOptions,
     ...treeOptions,
+    user_id: personal ? user.id : null,
   });
 
   const handleSelect = (newValue, category) => {
@@ -695,6 +698,12 @@ export const NarrationWarehouseLT = () => {
   useEffect(() => {
     setSelectedPage(1);
   }, [selectedNode]);
+
+  if (personal && !isLoggedIn(user))
+    return (
+      <YouMustLoginFirst message="برای دیدن ذخیره شده های خود لطفا ابتدا وارد شوید" />
+    );
+
   return (
     <div className="sm:pr-8 pr-0">
       <NarrationSummaryNavbar />
@@ -768,7 +777,9 @@ export const NarrationWarehouseLT = () => {
                   {narrationList?.results?.map((narration, index) => (
                     <SingleNarration
                       key={index}
-                      onEdit={() => navigate(`${narration?.id}`)}
+                      onEdit={() =>
+                        navigate(`/edit narration/${narration?.id}`)
+                      }
                       onDelete={(pass) => handleDelete(narration?.id, pass)}
                       narration={narration}
                       showSummary={true}
@@ -776,6 +787,7 @@ export const NarrationWarehouseLT = () => {
                       lvl2={treeWords[1]}
                       lvl3={treeWords[2]}
                       section={section}
+                      personal={personal}
                     />
                   ))}
                 </section>
