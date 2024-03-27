@@ -34,8 +34,7 @@ import { getUserFromLocalStorage } from "../utils/localStorage";
 import { SingleNarration } from "./NarrationWarehouse";
 import { isLoggedIn } from "../utils/acl";
 
-export const YouMustLoginFirst = ({ message }) => {
-  const navigate = useNavigate();
+export const TextAndAction = ({ message, buttonText, onClick }) => {
   return (
     <div
       style={{
@@ -46,12 +45,8 @@ export const YouMustLoginFirst = ({ message }) => {
       className="w-100 h-100 top-1/4 left-1/3  flex  items-center justify-center"
     >
       <p>{message}</p>
-      <Button
-        variant="primary"
-        className="w-20 mt-8"
-        onClickHandler={() => navigate("/login")}
-      >
-        ورود
+      <Button variant="primary" className="p-3 mt-8" onClickHandler={onClick}>
+        {buttonText}
       </Button>
     </div>
   );
@@ -84,12 +79,16 @@ export const Bookmarks = () => {
       } catch {}
     } catch {}
   };
+  const navigate = useNavigate();
 
   const user = getUserFromLocalStorage();
-  console.log(user);
   if (!isLoggedIn(user))
     return (
-      <YouMustLoginFirst message="برای دیدن نشان شده های خود لطفا ابتدا وارد شوید" />
+      <TextAndAction
+        onClick={() => navigate("/login")}
+        buttonText="ورود"
+        message="برای دیدن نشان شده های خود لطفا ابتدا وارد شوید"
+      />
     );
 
   if (narrationList?.length)

@@ -490,3 +490,51 @@ export const useDeleteNarrationFootnote = () => {
     },
   });
 };
+
+// export const bookmarkNarration = async (inputs) => {
+//   const { narrationId } = inputs;
+//   const url = apiUrls.narration.bookmark;
+//   const resp = await customApiCall.post({ url, data: { narration_id: narrationId } });
+//   return resp;
+// };
+
+// export const useBookmarkNarration = () => {
+//   const queryClient = useQueryClient();
+//   return useMutation(bookmarkNarration, {
+//     onMutate: async (inputs) => {
+//       const { narrationId, data } = inputs;
+//       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
+//       const previousData = queryClient.getQueryData([
+//         "narrationIndividual",
+//         narrationId,
+//       ]);
+//       queryClient.setQueryData(
+//         ["narrationIndividual", narrationId],
+//         (oldData) => {
+//           return {
+//             ...oldData,
+//             is_bookmarked: true,
+//           };
+//         }
+//       );
+//       return { previousData, narrationId };
+//     },
+//     onError: (error, _output, context) => {
+//       toast.error("تغییر مورد نظر انجام نشد");
+//       queryClient.setQueryData(
+//         ["narrationIndividual", context.narrationId],
+//         context.previousData
+//       );
+//       // queryClient.invalidateQueries([
+//       //   "narrationIndividual",
+//       //   context.narrationId,
+//       // ]);
+//     },
+//     onSettled: (inputs, error, variables, context) => {
+//       queryClient.invalidateQueries([
+//         "narrationIndividual",
+//         context.narrationId,
+//       ]);
+//     },
+//   });
+// };

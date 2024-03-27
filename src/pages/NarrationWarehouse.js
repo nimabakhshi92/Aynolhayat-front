@@ -14,7 +14,13 @@ import Input from "../components/ui/input";
 import { InputWithState } from "../components/general/InputWithState";
 import InputWithSuggestion from "../components/general/InputWithSuggestion";
 import { useQueryClient } from "react-query";
-import { CircularProgress, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Popper,
+  Tooltip,
+  useMediaQuery,
+} from "@mui/material";
 import { AiFillDelete, AiFillEdit, AiOutlineClose } from "react-icons/ai";
 import apiUrls from "../api/urls";
 import { useNavigate } from "react-router-dom";
@@ -35,66 +41,17 @@ import { getFont, isAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
 import { setDataLoaded } from "../features/summaryTree/summaryTreeSlice";
 import { MdBookmarkAdd } from "react-icons/md";
 import axios from "axios";
-import { YouMustLoginFirst } from "./Bookmarks";
+import { TextAndAction } from "./Bookmarks";
+import { CiBookmarkPlus } from "react-icons/ci";
+import { RiDeleteBin2Line } from "react-icons/ri";
+import { CiEdit } from "react-icons/ci";
+import { FaBookmark } from "react-icons/fa";
+import { LuBookmarkPlus } from "react-icons/lu";
+import { RiEdit2Line } from "react-icons/ri";
+import styled from "@emotion/styled";
+import { tooltipClasses } from "@mui/material/Tooltip";
 
-const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
-
-// function colorizeTashkeel(string, oneColor = "red", footnotes) {
-//   let dollar = false;
-//   let atSign = false;
-//   let index = -1;
-//   const [showModal, setShowModal] = useState(false);
-//   return (
-//     <>
-//       <CustomModal
-//         modalOpen={showModal}
-//         setModalOpen={setShowModal}
-//         height="21.6rem"
-//         className="relative"
-//       >
-//         <p>salam</p>
-//       </CustomModal>
-//       <span style={{ color: "blue" }}>
-//         {[...string].map((char) => {
-//           if (char === "$") {
-//             dollar = !dollar;
-//           } else if (char === "@") {
-//             atSign = !atSign;
-//             index += 1;
-//             if (atSign)
-//               return (
-//                 <span className="relative inline-block w-1">
-//                   <FaRegStickyNote
-//                     className="absolute "
-//                     style={{
-//                       color: "#00000090",
-//                       transform: "translate(10px,-27px)",
-//                       cursor: "pointer",
-//                     }}
-//                     onMouseEnter={() => {}}
-//                   />
-//                 </span>
-//               );
-//             // atSign = !atSign;
-//           } else
-//             return /[\u064B-\u0652]/.test(char) ? (
-//               <span style={{ color: oneColor }}>&#8203;{`${char}`}</span>
-//             ) : (
-//               <span
-//                 style={{
-//                   color: dollar ? "#1ec718" : "#102cc9",
-//                   // backgroundColor: atSign && "#ff000030",
-//                   // cursor: atSign && "pointer",
-//                 }}
-//               >
-//                 {char}
-//               </span>
-//             );
-//         })}
-//       </span>
-//     </>
-//   );
-// }
+export const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
 const getWords = (text) => {
   return removeTashkel(text)
@@ -107,11 +64,6 @@ const getWords = (text) => {
     .split(" ")
     .filter((s) => s.length > 2 && !s.includes("  "));
 };
-
-// removeTashkel(text)
-// .replaceAll(" ", "")
-// .replaceAll(".", "")
-// .includes(removeTashkel(p).replaceAll(" ", "").replaceAll(".", ""))
 
 const textIsRelevant = (text, relevantParts) => {
   if (!text?.length > 0 || !relevantParts?.length > 0) return;
@@ -270,11 +222,23 @@ function ArabicTextComponent({
   );
 }
 
+const LightTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: "white",
+    color: "#0bab64",
+    boxShadow: theme.shadows[1],
+    fontSize: 14,
+    fontFamily: "IRANSansWeb",
+  },
+}));
+
 export const SingleNarration = ({
   narration,
   onDelete,
   onEdit,
-  onBookmark,
+  onBookmarkChange,
   showSummary = false,
   lvl1,
   lvl2,
@@ -310,39 +274,106 @@ export const SingleNarration = ({
     }
   );
 
-  const handleBookmark = () => {
-    if (!onBookmark) {
-      const url = apiUrls.narration.bookmark;
-      customApiCall.post({ url, data: { narration_id: narration.id } });
-    } else {
-      onBookmark();
+  const [isBookmarked, setIsBookmarked] = useState(narration?.is_bookmarked);
+  useEffect(() => {
+    setIsBookmarked(narration?.is_bookmarked);
+  }, [narration?.is_bookmarked]);
+
+  const [openTooltip, setOpenTooltip] = useState(false);
+  const handleBookmark = async () => {
+    // if (!onBookmark) {
+    try {
+      if (!isBookmarked) {
+        setIsBookmarked(true);
+        const url = apiUrls.narration.bookmark;
+        await customApiCall.post({ url, data: { narration_id: narration.id } });
+        setOpenTooltip(true);
+      } else {
+        setIsBookmarked(false);
+        const bookmarkId = narration?.bookmarks?.length
+          ? narration?.bookmarks[0]?.id
+          : 0;
+        const url = apiUrls.narration.bookmarkRemove(bookmarkId);
+        await customApiCall.delete({ url });
+        setOpenTooltip(true);
+      }
+    } catch {
+    } finally {
+      if (onBookmarkChange) {
+        console.log(onBookmarkChange);
+        onBookmarkChange();
+      }
     }
+    // } else {
+    // onBookmark();
+    // }
   };
+
+  useEffect(() => {
+    if (openTooltip)
+      setTimeout(() => {
+        setOpenTooltip(false);
+      }, 1000);
+  }, [openTooltip]);
+  const r = useRef();
   return (
     <ContentContainer
       // title={`${narration.book.name}`}
       title={`${narration.imam.name} می فرمایند:`}
       actionComponent={
         <div className=" gap-4 items-center flex">
-          {isAdmin(user) || personal ? (
-            <>
-              {onDelete && (
-                <AiFillDelete
-                  className="cursor-pointer"
-                  onClick={() => setOpen(true)}
-                />
-              )}
-              {onEdit && (
-                <AiFillEdit className="cursor-pointer" onClick={onEdit} />
-              )}
-              {hasBookmark && (
-                <MdBookmarkAdd
-                  className="cursor-pointer"
-                  onClick={handleBookmark}
-                />
-              )}
-            </>
-          ) : null}
+          <>
+            {(isSuperAdmin(user) || personal) && onDelete && (
+              <RiDeleteBin2Line
+                className="cursor-pointer w-5 h-5"
+                onClick={() => setOpen(true)}
+              />
+            )}
+            {(isSuperAdmin(user) || personal) && onEdit && (
+              <RiEdit2Line
+                className="cursor-pointer  w-5 h-5"
+                onClick={onEdit}
+              />
+            )}
+            {isLoggedIn(user) && (
+              // && hasBookmark
+              <>
+                <LightTooltip
+                  PopperProps={{
+                    disablePortal: true,
+                  }}
+                  // onClose={handleTooltipClose}
+                  open={openTooltip}
+                  disableFocusListener
+                  disableHoverListener
+                  disableTouchListener
+                  title={!isBookmarked ? "نشان حذف شد !" : "نشان شد !"}
+                  placement="top-end"
+                >
+                  <span ref={r}>
+                    {isBookmarked ? (
+                      <FaBookmark
+                        className="cursor-pointer w-5 h-5"
+                        onClick={handleBookmark}
+                        fill="green"
+                      />
+                    ) : (
+                      <LuBookmarkPlus
+                        className="cursor-pointer w-5 h-5"
+                        onClick={handleBookmark}
+                      />
+                    )}
+                  </span>
+                </LightTooltip>
+
+                {/* <Popper id="simple-popper" open={true} anchorEl={r.current}>
+                  <Box sx={{ border: 1, p: 1, bgcolor: "background.paper" }}>
+                    The content of the Popper.
+                    </Box>
+                </Popper> */}
+              </>
+            )}
+          </>
         </div>
       }
       className={`mb-4 relative min-h-30 ${className}`}
@@ -364,7 +395,8 @@ export const SingleNarration = ({
             className="relative p-6 flex gap-8  w-100  items-center "
           >
             <p className="mt-6">
-              آیا از حذف حدیث مطمئن هستید؟ لطفا در کادر زیر پسورد را وارد کنید:
+              آیا از حذف حدیث مطمئن هستید؟ لطفا در کادر زیر کلمه delete را وارد
+              کنید:
             </p>
             <Input reference={pass} />
             <Button
@@ -597,15 +629,28 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
     user_id: personal ? user.id : null,
   });
 
+  const onBookmarkChange = () =>
+    queryClient.invalidateQueries([
+      "narrationList",
+      selectedPage,
+      {
+        ...selectedOptions,
+        ...serachOptions,
+        ...treeOptions,
+        user_id: personal ? user.id : null,
+      },
+    ]);
   const handleSelect = (newValue, category) => {
     setSelectedOptions({ ...selectedOptions, [category]: newValue });
   };
 
   const handleDelete = async (narrationId, pass) => {
-    if (Number(pass) !== 1348) return;
+    if (pass !== "delete") return;
     const url = apiUrls.narration.get(narrationId);
-    const resp = await customApiCall.delete({ url });
-    queryClient.refetchQueries();
+    try {
+      const resp = await customApiCall.delete({ url });
+      queryClient.refetchQueries();
+    } catch {}
   };
 
   const sort = (array) => {
@@ -701,7 +746,20 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
 
   if (personal && !isLoggedIn(user))
     return (
-      <YouMustLoginFirst message="برای دیدن ذخیره شده های خود لطفا ابتدا وارد شوید" />
+      <TextAndAction
+        onClick={() => navigate("/login")}
+        buttonText="ورود"
+        message="برای دیدن ذخیره شده های خود لطفا ابتدا وارد شوید"
+      />
+    );
+
+  if (personal && !narrationList?.results?.length && !isLoading)
+    return (
+      <TextAndAction
+        onClick={() => navigate("/save narration")}
+        buttonText="حدیث جدید"
+        message="هنوز هیچ حدیثی ذخیره نکردی. از اینجا شروع کن"
+      />
     );
 
   return (
@@ -788,6 +846,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
                       lvl3={treeWords[2]}
                       section={section}
                       personal={personal}
+                      onBookmarkChange={onBookmarkChange}
                     />
                   ))}
                 </section>

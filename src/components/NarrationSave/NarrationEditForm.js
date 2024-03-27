@@ -33,7 +33,13 @@ const emptyNarration = {
   book_narration_no: null,
 };
 
-const SimilarNarrations = ({ narrationContent, setIsOpen, isOpen }) => {
+const SimilarNarrations = ({
+  narrationContent,
+  setIsOpen,
+  isOpen,
+  setHasSimilar,
+  trigger,
+}) => {
   const [similar, setSimilar] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const url = apiUrls.narration.similar;
@@ -44,72 +50,94 @@ const SimilarNarrations = ({ narrationContent, setIsOpen, isOpen }) => {
         const data = { text: narrationContent };
         const resp = await customApiCall.post({ data, url });
         setSimilar(resp);
+        setHasSimilar(!!resp.length);
       } catch {
       } finally {
         setIsLoading(false);
       }
     };
     if (isOpen) fn();
-  }, []);
+  }, [trigger]);
 
-  return (
-    <div
-      className="w-full h-full fixed "
-      style={{
-        backgroundColor: "#0009",
-        zIndex: 100,
-      }}
-    >
+  if (similar.length)
+    return (
       <div
-        className="w-2/3  fixed top-1/2 left-1/2 overflow-scroll"
+        className="w-full h-full fixed "
         style={{
-          borderRadius: "8px",
-          backgroundColor: "white",
-          transform: "translate(-50%, -50%)",
+          backgroundColor: "#0009",
           zIndex: 100,
-          border: "1px solid #ccc",
-          height: "75%",
         }}
       >
-        {isLoading && (
-          <CircularProgress
-            className="absolute top-1/2 left-1/2 -transform-x-1/2 -transform-y-1/2 "
-            color="success"
-          />
-        )}
         <div
+          className="w-2/3  fixed top-1/2 left-1/2 overflow-scroll"
           style={{
-            flexDirection: "column",
+            borderRadius: "8px",
+            backgroundColor: "white",
+            transform: "translate(-50%, -50%)",
+            zIndex: 100,
+            border: "1px solid #ccc",
+            height: "75%",
           }}
-          className="relative p-6 flex gap-8  items-center "
         >
-          {!isLoading && !similar.length > 0 && <p>این حدیث تکراری نیست</p>}
-          {similar.length > 0 && (
-            <>
-              <p>{similar.length} حدیث مشابه یافت شد</p>
-              {similar.map((narration) => {
-                return (
-                  <SingleNarration narration={narration} className="w-full" />
-                );
-                // return <p>{item.content}</p>;
-              })}
-            </>
+          {isLoading && (
+            <CircularProgress
+              className="absolute top-1/2 left-1/2 -transform-x-1/2 -transform-y-1/2 "
+              color="success"
+            />
           )}
-          <Button
-            variant="primary"
-            className="w-30"
-            onClickHandler={() => setIsOpen(false)}
+          <div
+            style={{
+              flexDirection: "column",
+            }}
+            className="relative p-6 flex gap-8  items-center "
           >
-            بستن
-          </Button>
+            {!isLoading && !similar.length > 0 && <p>این حدیث تکراری نیست</p>}
+            {similar.length > 0 && (
+              <>
+                <p>{similar.length} حدیث مشابه یافت شد</p>
+                {similar.map((narration) => {
+                  return (
+                    <SingleNarration narration={narration} className="w-full" />
+                  );
+                  // return <p>{item.content}</p>;
+                })}
+              </>
+            )}
+            <Button
+              variant="primary"
+              className="w-30"
+              onClickHandler={() => setIsOpen(false)}
+            >
+              بستن
+            </Button>
+          </div>
+          <AiOutlineClose
+            className="absolute cursor-pointer right-2 top-2"
+            onClick={() => setIsOpen(false)}
+          />
         </div>
-        <AiOutlineClose
-          className="absolute cursor-pointer right-2 top-2"
-          onClick={() => setIsOpen(false)}
-        />
       </div>
-    </div>
-  );
+    );
+};
+
+const narrationHasSimilarConfig = (hasSimilar) => {
+  if (hasSimilar === true)
+    return {
+      border: "1px solid var(--error-color)",
+      color: "var(--error-color)",
+      subText: "حدیث احتمالا تکراری است",
+    };
+  if (hasSimilar === false)
+    return {
+      border: "1px solid var(--primary-color)",
+      color: "var(--primary-color)",
+      subText: "حدیث تکراری نیست",
+    };
+  return {
+    border: undefined,
+    color: undefined,
+    subText: undefined,
+  };
 };
 
 export const NarrationEditForm = ({ narration }) => {
@@ -128,9 +156,12 @@ export const NarrationEditForm = ({ narration }) => {
   };
   const { mutate } = useModifyNarrationInfo();
   const navigate = useNavigate();
+  const [trigger, setTrigger] = useState(false);
   const handleBlur = (fieldName, fieldValue) => {
-    if (!narration && fieldName === "content" && fieldValue)
+    if (!narration && fieldName === "content" && fieldValue) {
       setIsModalOpen(true);
+      setTrigger(!trigger);
+    }
     if (narration)
       mutate({
         narrationId: narration?.id,
@@ -177,6 +208,9 @@ export const NarrationEditForm = ({ narration }) => {
   useEffect(() => {
     if (narration) setUpdatedNarration(narration);
   }, [narration]);
+
+  const [hasSimilar, setHasSimilar] = useState(null);
+  const { border, color, subText } = narrationHasSimilarConfig(hasSimilar);
   return (
     <>
       {isModalOpen && (
@@ -184,6 +218,8 @@ export const NarrationEditForm = ({ narration }) => {
           narrationContent={updatedNarration.content}
           setIsOpen={setIsModalOpen}
           isOpen={isModalOpen}
+          setHasSimilar={setHasSimilar}
+          trigger={trigger}
         />
       )}
       <ContentContainer className="mb-4" title="اطلاعات شناسنامه‌ای حدیث">
@@ -229,11 +265,16 @@ export const NarrationEditForm = ({ narration }) => {
           >
             <p>متن حدیث</p>
             <Input
-              style={{ height: "100%" }}
+              style={{
+                height: "100%",
+                border,
+              }}
               value={updatedNarration?.content}
               onChange={(e) => handleChange("content", e.target.value)}
               onBlur={(e) => handleBlur("content", updatedNarration?.content)}
               type="text"
+              subText={subText}
+              color={color}
               placeholder="متن حدیث"
               textArea={true}
             />
@@ -295,7 +336,7 @@ export const NarrationEditForm = ({ narration }) => {
         </div>
       </ContentContainer>
       {!narration && (
-        <div className="flex justify-end gap-4 mt-4">
+        <div className="flex justify-end gap-4 my-8">
           <Button
             variant="secondary"
             type="button"

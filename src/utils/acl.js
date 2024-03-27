@@ -1,5 +1,5 @@
 export const isAdmin = (user) => {
-  return user?.id === 1 || user?.id === 3;
+  return user?.is_staff;
 };
 
 export const isLoggedIn = (user) => user?.id !== 2;

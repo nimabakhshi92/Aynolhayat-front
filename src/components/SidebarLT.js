@@ -76,6 +76,8 @@ export const SidebarLT = () => {
     ? "my-narrations"
     : "";
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const { user } = useSelector((store) => store.user);
+
   const navItemsDefault = [
     {
       icon: <BiCylinder />,
@@ -83,6 +85,7 @@ export const SidebarLT = () => {
       displayText: "همه احادیث",
       to: "/",
       isActive: pageName === "",
+      show: true,
     },
     {
       icon: <PiFolderUser />,
@@ -90,6 +93,7 @@ export const SidebarLT = () => {
       displayText: "احادیث من",
       to: "my-narrations",
       isActive: pageName === "my-narrations",
+      show: isAdmin(user),
     },
 
     {
@@ -98,6 +102,7 @@ export const SidebarLT = () => {
       displayText: "نشان شده ها",
       to: "saved",
       isActive: pageName === "saved",
+      show: true,
     },
     {
       icon: <BiSearch />,
@@ -105,6 +110,7 @@ export const SidebarLT = () => {
       displayText: "جست و جو",
       to: "search",
       isActive: pageName === "search",
+      show: true,
     },
     {
       icon: <BiSave />,
@@ -112,13 +118,13 @@ export const SidebarLT = () => {
       displayText: "ذخیره حدیث",
       to: "save narration",
       isActive: pageName === "save",
+      show: isAdmin(user),
     },
   ];
 
   const [navItems, setNavItems] = useState(navItemsDefault);
   var isNotInit = localStorage.getItem("isNotInit");
   const [open, setOpen] = useState(isNotInit !== "true");
-  const { user } = useSelector((store) => store.user);
   useEffect(() => {
     if (isNotInit !== "true") {
       localStorage.setItem("isNotInit", "true");
@@ -160,59 +166,59 @@ export const SidebarLT = () => {
         gap="16px"
       >
         {navItems.map((item, index) => {
-          // if (item.name !== "save" || isLoggedIn(user))
-          return (
-            <NavLink
-              key={index}
-              to={item.to}
-              onClick={() => changeLink(item.name)}
-              className="block w-full"
-            >
-              <Stack
-                justifyContent={isSmallScreen ? "center" : "space-between"}
-                alignItems="center"
-                flexDirection="row"
-                className={`w-full h-10 px-3 ${
-                  item.isActive
-                    ? "bg-[#0bab6425] pl-2"
-                    : "bg-[white] hover:bg-[#0bab6410] hover:scale-105"
-                }  ${isSmallScreen && "justify-center"} `}
-                style={{
-                  borderLeft:
-                    !isSmallScreen && item.isActive && "4px solid #0bab64",
-                  borderBottom:
-                    isSmallScreen && item.isActive && "4px solid #0bab64",
-                }}
-                // style={{
-                //   backgroundColor: item.isActive ? "#0bab6425" : "white",
-                // }}
+          if (item.show)
+            return (
+              <NavLink
+                key={index}
+                to={item.to}
+                onClick={() => changeLink(item.name)}
+                className="block w-full"
               >
-                {!isSmallScreen && (
-                  <span
-                    style={{
-                      transition: "all 0.3s linear",
-                      // display: open ? "inline-block" : "none",
-                      // width: open ? "100px" : "0",
-                      // height: open ? "32px" : "0",
-                      marginRight: open ? "0" : "-120px",
-                      overflow: "hidden",
-                      display: "inline-block",
-                    }}
-                  >
-                    {item.displayText}
-                  </span>
-                )}
-                {/* <span> */}
-                <NavIcon
-                  width="36px"
-                  height="36px"
-                  iconName={item.name}
-                  isActive={item.isActive}
-                />
-                {/* </span> */}
-              </Stack>
-            </NavLink>
-          );
+                <Stack
+                  justifyContent={isSmallScreen ? "center" : "space-between"}
+                  alignItems="center"
+                  flexDirection="row"
+                  className={`w-full h-10 px-3 ${
+                    item.isActive
+                      ? "bg-[#0bab6425] pl-2"
+                      : "bg-[white] hover:bg-[#0bab6410] hover:scale-105"
+                  }  ${isSmallScreen && "justify-center"} `}
+                  style={{
+                    borderLeft:
+                      !isSmallScreen && item.isActive && "4px solid #0bab64",
+                    borderBottom:
+                      isSmallScreen && item.isActive && "4px solid #0bab64",
+                  }}
+                  // style={{
+                  //   backgroundColor: item.isActive ? "#0bab6425" : "white",
+                  // }}
+                >
+                  {!isSmallScreen && (
+                    <span
+                      style={{
+                        transition: "all 0.3s linear",
+                        // display: open ? "inline-block" : "none",
+                        // width: open ? "100px" : "0",
+                        // height: open ? "32px" : "0",
+                        marginRight: open ? "0" : "-120px",
+                        overflow: "hidden",
+                        display: "inline-block",
+                      }}
+                    >
+                      {item.displayText}
+                    </span>
+                  )}
+                  {/* <span> */}
+                  <NavIcon
+                    width="36px"
+                    height="36px"
+                    iconName={item.name}
+                    isActive={item.isActive}
+                  />
+                  {/* </span> */}
+                </Stack>
+              </NavLink>
+            );
         })}
       </Stack>
     </nav>

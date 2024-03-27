@@ -27,7 +27,7 @@ import { useQueryClient } from "react-query";
 import { NarrationSummaryEditForm } from "../components/NarrationSave/NarrationSummaryEditForm";
 import { NarrationFootnoteEditForm } from "../components/NarrationSave/NarrationFootnoteEditForm";
 import { isAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
-import { YouMustLoginFirst } from "./Bookmarks";
+import { TextAndAction } from "./Bookmarks";
 
 export const NarrationEdit = () => {
   const { narrationId } = useParams();
@@ -40,10 +40,19 @@ export const NarrationEdit = () => {
     user
   );
 
+  useEffect(() => {
+    if (narration)
+      window.scrollTo({ left: 0, top: window.innerHeight, behavior: "smooth" });
+  }, [!!narration]);
+
   // if (!isLoggedIn(user)) return <Navigate to={"/"} />;
   if (!isLoggedIn(user))
     return (
-      <YouMustLoginFirst message="برای ذخیره حدیث شحصی لطفا ابتدا وارد شوید" />
+      <TextAndAction
+        onClick={() => navigate("/login")}
+        buttonText="ورود"
+        message="برای ذخیره حدیث شحصی لطفا ابتدا وارد شوید"
+      />
     );
 
   return (

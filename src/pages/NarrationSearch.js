@@ -31,184 +31,7 @@ import FilterModal, {
 import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
 import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { getUserFromLocalStorage } from "../utils/localStorage";
-import { SingleNarration } from "./NarrationWarehouse";
-
-const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
-
-// function colorizeTashkeel(string, oneColor = "red", footnotes) {
-//   let dollar = false;
-//   let atSign = false;
-//   let index = -1;
-//   const [showModal, setShowModal] = useState(false);
-//   return (
-//     <>
-//       <CustomModal
-//         modalOpen={showModal}
-//         setModalOpen={setShowModal}
-//         height="21.6rem"
-//         className="relative"
-//       >
-//         <p>salam</p>
-//       </CustomModal>
-//       <span style={{ color: "blue" }}>
-//         {[...string].map((char) => {
-//           if (char === "$") {
-//             dollar = !dollar;
-//           } else if (char === "@") {
-//             atSign = !atSign;
-//             index += 1;
-//             if (atSign)
-//               return (
-//                 <span className="relative inline-block w-1">
-//                   <FaRegStickyNote
-//                     className="absolute "
-//                     style={{
-//                       color: "#00000090",
-//                       transform: "translate(10px,-27px)",
-//                       cursor: "pointer",
-//                     }}
-//                     onMouseEnter={() => {}}
-//                   />
-//                 </span>
-//               );
-//             // atSign = !atSign;
-//           } else
-//             return /[\u064B-\u0652]/.test(char) ? (
-//               <span style={{ color: oneColor }}>&#8203;{`${char}`}</span>
-//             ) : (
-//               <span
-//                 style={{
-//                   color: dollar ? "#1ec718" : "#102cc9",
-//                   // backgroundColor: atSign && "#ff000030",
-//                   // cursor: atSign && "pointer",
-//                 }}
-//               >
-//                 {char}
-//               </span>
-//             );
-//         })}
-//       </span>
-//     </>
-//   );
-// }
-
-function ArabicTextComponent({ children, footnotes, className }) {
-  let dollar = false;
-  let atSign = true;
-  let noteIndex = -1;
-  const [showModal, setShowModal] = useState(false);
-  const [footnote, setFootnote] = useState("");
-  const singleLangParts = children
-    .split("ظظظ")
-    ?.filter(
-      (singleLangText) => singleLangText.replaceAll(" ", "")?.length > 0
-    );
-  return (
-    <span
-      className={className}
-      style={
-        {
-          // wordBreak: "keep-all",
-        }
-      }
-    >
-      <CustomModal2
-        open={showModal}
-        setOpen={setShowModal}
-        height="21.6rem"
-        className="relative"
-        style={{
-          border: "1px solid gray",
-          top: "30vh",
-          padding: "16px",
-        }}
-        title="پاورقی"
-        text={footnote}
-      ></CustomModal2>
-      {singleLangParts?.map((singleLangText, index) => {
-        const isTranslation = index % 2 !== 0;
-        const isLastPart = index !== Math.floor(singleLangParts?.length) - 1;
-        return (
-          <>
-            <div className={"inline-block"}>
-              {singleLangText?.split(" ").map((word) => {
-                return (
-                  <span
-                    style={{
-                      display: "inline-block",
-                      marginLeft: "4px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: isTranslation ? "black" : "#102cc9",
-                        fontSize: isTranslation ? "1.4rem" : "1.6rem",
-                      }}
-                    >
-                      {[...word].map((char) => {
-                        if (char === "$") {
-                          dollar = !dollar;
-                        } else if (char === "@") {
-                          atSign = !atSign;
-                          if (atSign) {
-                            noteIndex += 1;
-                            const footnoteExplanation =
-                              footnotes[noteIndex]?.explanation;
-                            return (
-                              <span className="relative inline-block w-1">
-                                <BsChatLeftText
-                                  className="absolute "
-                                  style={{
-                                    color: "#000000",
-                                    transform: "translate(10px,-27px)",
-                                    cursor: "pointer",
-                                  }}
-                                  onMouseEnter={() => {
-                                    setFootnote(footnoteExplanation);
-                                    setShowModal(true);
-                                  }}
-                                  onClick={() => setShowModal(true)}
-                                />
-                              </span>
-                            );
-                          } // atSign = !atSign;
-                        } else
-                          return /[\u064B-\u0652]/.test(char) ? (
-                            <span style={{ color: "red" }}>&#8203;{char}</span>
-                          ) : (
-                            <span
-                              style={{
-                                color: dollar && "#0e8708",
-                                // backgroundColor: atSign && "#ff000030",
-                                // cursor: atSign && "pointer",
-                              }}
-                            >
-                              {char}
-                            </span>
-                          );
-                      })}
-                    </span>
-                  </span>
-                );
-              })}
-            </div>
-
-            {isTranslation && isLastPart && (
-              <div
-                style={{
-                  width: "75%",
-                  margin: "16px auto",
-                  height: "0px",
-                  backgroundColor: "gray",
-                }}
-              ></div>
-            )}
-          </>
-        );
-      })}
-    </span>
-  );
-}
+import { SingleNarration, removeTashkel } from "./NarrationWarehouse";
 
 export const NarrationSearch = () => {
   const dropdown = [
@@ -402,6 +225,193 @@ export const NarrationSearch = () => {
               // display: "flex",
               // flexDirection: "column",
               // justifyContent: "space-between",
+              minHeight: "80vh",
+              position: "relative",
+            }}
+          >
+            {isLoading && (
+              <CircularProgress
+                className="absolute top-1/2 left-1/2 "
+                color="success"
+              />
+            )}
+            {!isLoading && (
+              <>
+                <div
+                  className="p-4  px-2 sm:px-10 mb-4 mx-4 flex items-center justify-between"
+                  style={{
+                    boxShadow: "-3px 8px 16px -3px #00000026",
+                    borderRadius: "8px",
+                    backgroundColor: "white",
+                    fontSize: "16px",
+                    color: "var(--neutral-color-500)",
+                  }}
+                >
+                  <div style={{ fontSize: isSmallScreen ? "10px" : "14px" }}>
+                    <span>{narrationList?.number_of_records || 0}</span>
+                    &nbsp;
+                    <span>حدیث یافت شد </span>
+                  </div>
+                  <div className="flex gap-3 items-center">
+                    <p className="hidden sm:block">مرتب سازی :</p>
+                    <div className="flex gap-1 items-center">
+                      <div className="w-25 sm:w-35">
+                        <Dropdown
+                          className="h-8 "
+                          dataKey="title"
+                          selected={selectedSortOption}
+                          setSelected={setSelectedSortOption}
+                          items={dropdown}
+                        />
+                      </div>
+                      <div className="w-20 sm:w-30">
+                        <Dropdown
+                          className="h-8 "
+                          dataKey="title"
+                          selected={selectedSortType}
+                          setSelected={setSelectedSortType}
+                          items={sortTypeOptions}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <section className="h-full px-4" style={{}}>
+                  {narrationList?.results?.map((narration, index) => (
+                    <SingleNarration
+                      key={index}
+                      onEdit={() => navigate(`${narration?.id}`)}
+                      onDelete={(pass) => handleDelete(narration?.id, pass)}
+                      narration={narration}
+                      showSummary={false}
+                    />
+                  ))}
+                </section>
+              </>
+            )}
+          </article>
+          {narrationList?.last > 0 && (
+            <Pagination
+              className=" m-4 mb-16"
+              noOfPages={narrationList.last}
+              selected={selectedPage}
+              setSelected={setSelectedPage}
+            />
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export const NarrationSearchNew = () => {
+  const dropdown = [
+    { id: 1, title: "تاریخ ایجاد" },
+    { id: 2, title: "تاریخ ویرایش" },
+  ];
+  const sortTypeOptions = [
+    { id: 1, title: "نزولی" },
+    { id: 2, title: "صعودی" },
+  ];
+
+  const [selectedSortOption, setSelectedSortOption] = useState(dropdown[0]);
+  const [selectedSortType, setSelectedSortType] = useState(sortTypeOptions[0]);
+  const navigate = useNavigate();
+  const [selectedPage, setSelectedPage] = useState(1);
+  const queryClient = useQueryClient();
+  const searchTerm = useRef();
+  const searchSubject = useRef();
+
+  const serachOptions = {
+    subjects_search: searchSubject?.current?.value || "",
+    texts_search: removeTashkel(searchTerm?.current?.value || ""),
+    sort_by: selectedSortOption?.id === 2 ? "modified" : "created",
+    sort_type: selectedSortType?.id === 2 ? "asc" : "desc",
+  };
+
+  const { data: narrationList, isLoading } = useGetNarrationList(selectedPage, {
+    // ...selectedOptions,
+    ...serachOptions,
+    // ...treeOptions,
+  });
+
+  const handleDelete = async (narrationId, pass) => {
+    if (Number(pass) !== 1348) return;
+    const url = apiUrls.narration.get(narrationId);
+    const resp = await customApiCall.delete({ url });
+    queryClient.refetchQueries();
+  };
+
+  let { data: subject } = useGetSubjects();
+  subject = subject?.subjects || [];
+  const [searchStarted, setSearchStarted] = useState(false);
+  const [flag, setFlag] = useState(false);
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
+  return (
+    <div className="sm:mr-12">
+      <section
+        className={`w-full flex items-center justify-center`}
+        style={{
+          transition: "all 1s linear",
+          marginTop: "7rem",
+          minHeight: searchStarted ? "6rem" : "calc(100vh - 16rem)",
+        }}
+      >
+        <div className={`px-2 ${searchStarted ? "w-full" : "sm:w-3/4"}`}>
+          <section
+            className={`relative grid ${
+              searchStarted
+                ? "grid-cols-[1fr_1fr_1fr_1fr_1fr]"
+                : "grid-cols-[1fr_1fr]"
+            } gap-4 sm:gap-8 py-2 -px-4`}
+          >
+            <Input
+              className={`w-full ${
+                searchStarted ? "col-span-2" : "col-span-1"
+              }`}
+              type="search"
+              reference={searchTerm}
+              placeholder="جستجو در متن عربی احادیث"
+              // onChange={() => queryClient.refetchQueries()}
+            />
+            <InputWithSuggestion
+              parentClassName={`w-full ${
+                searchStarted ? "col-span-2" : "col-span-1"
+              }`}
+              className="w-full"
+              reference={searchSubject}
+              placeholder="جستجوی موضوعی"
+              suggestions={subject}
+              // onChange={() => queryClient.refetchQueries()}
+            />
+            <div
+              className={`w-full flex justify-center items-center ${
+                searchStarted ? "col-span-1" : "col-span-2"
+              } `}
+            >
+              <Button
+                onClickHandler={() => {
+                  setFlag(!flag);
+                  setSearchStarted(true);
+                  setSelectedPage(1);
+                  queryClient.refetchQueries();
+                }}
+                variant="primary"
+                className={`${searchStarted ? "w-full" : "w-1/3 sm:w-1/5"}`}
+                // style={{}}
+              >
+                جستجو
+              </Button>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      {searchStarted && (
+        <div className="mt-4">
+          <article
+            style={{
               minHeight: "80vh",
               position: "relative",
             }}

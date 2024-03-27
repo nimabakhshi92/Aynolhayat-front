@@ -28,65 +28,6 @@ import { BsChatLeftText } from "react-icons/bs";
 import FilterModal from "../components/show-traditions/filter-modal";
 import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
 
-const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
-
-// function colorizeTashkeel(string, oneColor = "red", footnotes) {
-//   let dollar = false;
-//   let atSign = false;
-//   let index = -1;
-//   const [showModal, setShowModal] = useState(false);
-//   return (
-//     <>
-//       <CustomModal
-//         modalOpen={showModal}
-//         setModalOpen={setShowModal}
-//         height="21.6rem"
-//         className="relative"
-//       >
-//         <p>salam</p>
-//       </CustomModal>
-//       <span style={{ color: "blue" }}>
-//         {[...string].map((char) => {
-//           if (char === "$") {
-//             dollar = !dollar;
-//           } else if (char === "@") {
-//             atSign = !atSign;
-//             index += 1;
-//             if (atSign)
-//               return (
-//                 <span className="relative inline-block w-1">
-//                   <FaRegStickyNote
-//                     className="absolute "
-//                     style={{
-//                       color: "#00000090",
-//                       transform: "translate(10px,-27px)",
-//                       cursor: "pointer",
-//                     }}
-//                     onMouseEnter={() => {}}
-//                   />
-//                 </span>
-//               );
-//             // atSign = !atSign;
-//           } else
-//             return /[\u064B-\u0652]/.test(char) ? (
-//               <span style={{ color: oneColor }}>&#8203;{`${char}`}</span>
-//             ) : (
-//               <span
-//                 style={{
-//                   color: dollar ? "#1ec718" : "#102cc9",
-//                   // backgroundColor: atSign && "#ff000030",
-//                   // cursor: atSign && "pointer",
-//                 }}
-//               >
-//                 {char}
-//               </span>
-//             );
-//         })}
-//       </span>
-//     </>
-//   );
-// }
-
 function ArabicTextComponent({ children, footnotes }) {
   let dollar = false;
   let atSign = true;
