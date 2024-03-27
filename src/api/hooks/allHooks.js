@@ -63,7 +63,7 @@ export const useGetVerse = (surahNo, verseNo) => {
   return use2GeneralGetHook(["verse", surahNo, verseNo], url);
 };
 export const useGetNarrationIndividual = (narrationId, user) => {
-  const url = apiUrls.narration.get(narrationId, user.id);
+  const url = apiUrls.narration.get(narrationId, user?.id);
   return use2GeneralGetHook(["narrationIndividual", Number(narrationId)], url);
 };
 export const useGetNarrationList = (pageNo, selectedOptions) => {

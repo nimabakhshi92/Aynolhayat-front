@@ -37,7 +37,7 @@ export const NarrationEdit = () => {
 
   const { data: narration, isLoading } = useGetNarrationIndividual(
     narrationId || 0,
-    user
+    !isSuperAdmin(user) ? user : undefined
   );
 
   useEffect(() => {
