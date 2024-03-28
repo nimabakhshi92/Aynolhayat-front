@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
-  section: "narration",
+  section: "bank",
   treeIsOpen: false,
   dataLoaded: false,
   selectedNode: {

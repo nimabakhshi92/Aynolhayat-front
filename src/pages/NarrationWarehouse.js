@@ -50,6 +50,7 @@ import { LuBookmarkPlus } from "react-icons/lu";
 import { RiEdit2Line } from "react-icons/ri";
 import styled from "@emotion/styled";
 import { tooltipClasses } from "@mui/material/Tooltip";
+import { NarrationSearch } from "./NarrationSearch";
 
 export const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -640,6 +641,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
         user_id: personal ? user.id : null,
       },
     ]);
+  
   const handleSelect = (newValue, category) => {
     setSelectedOptions({ ...selectedOptions, [category]: newValue });
   };
@@ -765,104 +767,108 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
   return (
     <div className="sm:pr-8 pr-0">
       <NarrationSummaryNavbar />
-      <FilterModalLT
-        data={data}
-        className={`${
-          !isSmallScreen || treeIsOpen ? "w-full" : "w-0"
-        }  sm:w-90 sm:mr-22 ${
-          isSmallScreen && !treeIsOpen ? "top-0" : "top-30"
-        } sm:top-50 right-0`}
-        style={{
-          zIndex: isSmallScreen ? "110" : 10,
-          // height: "calc(100vh - 6rem)",
-          position: "fixed",
-          // visibility: !isSmallScreen || treeIsOpen ? "visible" : "hidden",
-          // width: !isSmallScreen || treeIsOpen ? "100%" : "0",
-          maxHeight: isSmallScreen && !treeIsOpen ? "0px" : "100vh",
-          overflow: "hidden",
-          // transition: "all 0.6s linear",
-          // top: isSmallScreen && !treeIsOpen ? "0rem" : "12rem",
-        }}
-      />
-      <div className=" mt-15 mr-0 sm:mr-[42rem] ">
-        <article className="p-4 pt-20 grid gap-6 grid-cols-[1fr]">
-          {(isLoading || dataIsLoading) && (
-            <CircularProgress
-              className="absolute top-1/2 sm:left-1/3 left-[44%]  "
-              color="success"
-            />
-          )}
-          {!isLoading &&
-            !dataIsLoading &&
-            data?.length > 0 &&
-            selectedNode.narration !== "" &&
-            narrationList?.results?.length > 0 && (
-              <>
-                <div style={{ color: "var(--primary-color)", zIndex: 2 }}>
-                  <span>{treeWords[0]}</span>
-                  {treeWords[1] && (
-                    <span>
-                      <span
-                        style={{
-                          display: "inline-block",
-                          color: "gray",
-                          margin: "0 12px",
-                          transform: "translateY(2px)",
-                        }}
-                      >
-                        {" >> "}
-                      </span>
-                      <span>{treeWords[1]}</span>
-                    </span>
-                  )}
-                  {treeWords[2] && (
-                    <span>
-                      <span
-                        style={{
-                          display: "inline-block",
-                          color: "gray",
-                          margin: "0 12px",
-                          transform: "translateY(2px)",
-                        }}
-                      >
-                        {" >> "}
-                      </span>
-                      <span>{treeWords[2]}</span>
-                    </span>
-                  )}
-                </div>
-                <section className="-mt-6" style={{}}>
-                  {narrationList?.results?.map((narration, index) => (
-                    <SingleNarration
-                      key={index}
-                      onEdit={() =>
-                        navigate(`/edit narration/${narration?.id}`)
-                      }
-                      onDelete={(pass) => handleDelete(narration?.id, pass)}
-                      narration={narration}
-                      showSummary={true}
-                      lvl1={treeWords[0]}
-                      lvl2={treeWords[1]}
-                      lvl3={treeWords[2]}
-                      section={section}
-                      personal={personal}
-                      onBookmarkChange={onBookmarkChange}
-                    />
-                  ))}
-                </section>
-                {narrationList?.last > 1 && (
-                  <Pagination
-                    className="mb-8 mt-4"
-                    noOfPages={narrationList.last}
-                    selected={selectedPage}
-                    setSelected={setSelectedPage}
-                  />
+      {section === "bank" && <NarrationSearch personal={personal} />}
+      {section !== "bank" && (
+        <>
+          <FilterModalLT
+            data={data}
+            className={`${
+              !isSmallScreen || treeIsOpen ? "w-full" : "w-0"
+            }  sm:w-90 sm:mr-22 ${
+              isSmallScreen && !treeIsOpen ? "top-0" : "top-30"
+            } sm:top-50 right-0`}
+            style={{
+              zIndex: isSmallScreen ? "110" : 10,
+              // height: "calc(100vh - 6rem)",
+              position: "fixed",
+              // visibility: !isSmallScreen || treeIsOpen ? "visible" : "hidden",
+              // width: !isSmallScreen || treeIsOpen ? "100%" : "0",
+              maxHeight: isSmallScreen && !treeIsOpen ? "0px" : "100vh",
+              overflow: "hidden",
+              // transition: "all 0.6s linear",
+              // top: isSmallScreen && !treeIsOpen ? "0rem" : "12rem",
+            }}
+          />
+          <div className=" mt-15 mr-0 sm:mr-[42rem] ">
+            <article className="p-4 pt-20 grid gap-6 grid-cols-[1fr]">
+              {(isLoading || dataIsLoading) && (
+                <CircularProgress
+                  className="absolute top-1/2 sm:left-1/3 left-[44%]  "
+                  color="success"
+                />
+              )}
+              {!isLoading &&
+                !dataIsLoading &&
+                data?.length > 0 &&
+                selectedNode.narration !== "" &&
+                narrationList?.results?.length > 0 && (
+                  <>
+                    <div style={{ color: "var(--primary-color)", zIndex: 2 }}>
+                      <span>{treeWords[0]}</span>
+                      {treeWords[1] && (
+                        <span>
+                          <span
+                            style={{
+                              display: "inline-block",
+                              color: "gray",
+                              margin: "0 12px",
+                              transform: "translateY(2px)",
+                            }}
+                          >
+                            {" >> "}
+                          </span>
+                          <span>{treeWords[1]}</span>
+                        </span>
+                      )}
+                      {treeWords[2] && (
+                        <span>
+                          <span
+                            style={{
+                              display: "inline-block",
+                              color: "gray",
+                              margin: "0 12px",
+                              transform: "translateY(2px)",
+                            }}
+                          >
+                            {" >> "}
+                          </span>
+                          <span>{treeWords[2]}</span>
+                        </span>
+                      )}
+                    </div>
+                    <section className="-mt-6" style={{}}>
+                      {narrationList?.results?.map((narration, index) => (
+                        <SingleNarration
+                          key={index}
+                          onEdit={() =>
+                            navigate(`/edit narration/${narration?.id}`)
+                          }
+                          onDelete={(pass) => handleDelete(narration?.id, pass)}
+                          narration={narration}
+                          showSummary={true}
+                          lvl1={treeWords[0]}
+                          lvl2={treeWords[1]}
+                          lvl3={treeWords[2]}
+                          section={section}
+                          personal={personal}
+                          onBookmarkChange={onBookmarkChange}
+                        />
+                      ))}
+                    </section>
+                    {narrationList?.last > 1 && (
+                      <Pagination
+                        className="mb-8 mt-4"
+                        noOfPages={narrationList.last}
+                        selected={selectedPage}
+                        setSelected={setSelectedPage}
+                      />
+                    )}
+                  </>
                 )}
-              </>
-            )}
-        </article>
-      </div>
-      {/* </div> */}
+            </article>
+          </div>
+        </>
+      )}
     </div>
   );
 };

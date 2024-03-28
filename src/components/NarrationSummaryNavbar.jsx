@@ -42,6 +42,13 @@ export const NarrationSummaryNavbar = ({ className }) => {
       >
         <NavbarItem
           onClick={() => {
+            dispatch(setSection({ section: "bank" }));
+          }}
+          title="مخزن"
+          selected={section === "bank"}
+        />
+        <NavbarItem
+          onClick={() => {
             dispatch(setSection({ section: "narration" }));
           }}
           title="احادیث موضوعی"

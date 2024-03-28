@@ -110,7 +110,7 @@ export const SidebarLT = () => {
       displayText: "جست و جو",
       to: "search",
       isActive: pageName === "search",
-      show: true,
+      show: false,
     },
     {
       icon: <BiSave />,

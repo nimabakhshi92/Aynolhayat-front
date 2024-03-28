@@ -33,7 +33,7 @@ import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { getUserFromLocalStorage } from "../utils/localStorage";
 import { SingleNarration, removeTashkel } from "./NarrationWarehouse";
 
-export const NarrationSearch = () => {
+export const NarrationSearch = ({ personal }) => {
   const dropdown = [
     { id: 1, title: "تاریخ ایجاد" },
     { id: 2, title: "تاریخ ویرایش" },
@@ -52,7 +52,7 @@ export const NarrationSearch = () => {
   const searchTerm = useRef();
   const searchSubject = useRef();
   const { section, selectedNode } = useSelector((store) => store.summaryTree);
-
+  const { user } = useSelector((store) => store.user);
   const { data } = useGetSummaryTree(section);
   const treeWords = extractTreeWords(
     selectedNode[section],
@@ -93,6 +93,7 @@ export const NarrationSearch = () => {
   const { data: narrationList, isLoading } = useGetNarrationList(selectedPage, {
     // ...selectedOptions,
     ...serachOptions,
+    user_id: personal ? user.id : null,
     // ...treeOptions,
   });
   const handleSelect = (newValue, category) => {
@@ -100,10 +101,12 @@ export const NarrationSearch = () => {
   };
 
   const handleDelete = async (narrationId, pass) => {
-    if (Number(pass) !== 1348) return;
+    if (pass !== "delete") return;
     const url = apiUrls.narration.get(narrationId);
-    const resp = await customApiCall.delete({ url });
-    queryClient.refetchQueries();
+    try {
+      const resp = await customApiCall.delete({ url });
+      queryClient.refetchQueries();
+    } catch {}
   };
 
   const sort = (array) => {
@@ -114,7 +117,7 @@ export const NarrationSearch = () => {
   };
   let { data: subject } = useGetSubjects();
   subject = subject?.subjects || [];
-  const [searchStarted, setSearchStarted] = useState(false);
+  const [searchStarted, setSearchStarted] = useState(true);
   const [flag, setFlag] = useState(false);
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
@@ -125,6 +128,7 @@ export const NarrationSearch = () => {
         style={{
           transition: "all 1s linear",
           marginTop: "7rem",
+          paddingTop: "8rem",
           minHeight: searchStarted ? "6rem" : "calc(100vh - 16rem)",
         }}
       >
@@ -284,6 +288,7 @@ export const NarrationSearch = () => {
                       onDelete={(pass) => handleDelete(narration?.id, pass)}
                       narration={narration}
                       showSummary={false}
+                      personal={personal}
                     />
                   ))}
                 </section>
