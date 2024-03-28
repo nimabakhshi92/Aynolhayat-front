@@ -10,7 +10,7 @@ import {
 import { useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 import { getUserFromLocalStorage } from "../utils/localStorage";
-import { isAdmin, isLoggedIn } from "../utils/acl";
+import { isAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
 import { MdBookmarkAdd } from "react-icons/md";
 import { PiFolderUser } from "react-icons/pi";
 
@@ -93,7 +93,7 @@ export const SidebarLT = () => {
       displayText: "احادیث من",
       to: "my-narrations",
       isActive: pageName === "my-narrations",
-      show: isAdmin(user),
+      show: isAdmin(user) && !isSuperAdmin(user),
     },
 
     {

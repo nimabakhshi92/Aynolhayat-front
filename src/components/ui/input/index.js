@@ -10,7 +10,9 @@ export default function Input(props) {
           ref={reference}
           className={`${classes.input} ${className}`}
         />
-        <p style={{ marginTop: "-2px", fontSize: 12, color }}>{subText}</p>
+        {subText && (
+          <p style={{ marginTop: "-2px", fontSize: 12, color }}>{subText}</p>
+        )}
       </>
     );
 
@@ -21,8 +23,9 @@ export default function Input(props) {
         ref={reference}
         className={`${classes.input} ${className}`}
       />
-
-      <p style={{ marginTop: "-2px", fontSize: 10, color }}>{subText}</p>
+      {subText && (
+        <p style={{ marginTop: "-2px", fontSize: 10, color }}>{subText}</p>
+      )}
     </>
   );
 }
