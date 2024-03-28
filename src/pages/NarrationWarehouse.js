@@ -549,6 +549,10 @@ export const SingleNarration = ({
                   )}
 
                   <div className="flex items-start flex-col sm:flex-row justify-between w-full pr-3">
+                    <ArabicTextComponent
+                      className="block w-full sm:w-[48%]"
+                      children={contentItem.summary}
+                    />
                     <p
                       className=" sm:w-[48%]"
                       style={{
@@ -558,10 +562,6 @@ export const SingleNarration = ({
                     >
                       {contentItem.expression}
                     </p>
-                    <ArabicTextComponent
-                      className="block w-full sm:w-[48%]"
-                      children={contentItem.summary}
-                    />
 
                     {/* <p className="w-[48%]">{contentItem.summary}</p> */}
                   </div>
