@@ -33,6 +33,13 @@ import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { getUserFromLocalStorage } from "../utils/localStorage";
 import { SingleNarration, removeTashkel } from "./NarrationWarehouse";
 
+const sort = (array) => {
+  if (!array) return array;
+  const newArray = [...array];
+  newArray.sort();
+  return newArray;
+};
+
 export const NarrationSearch = ({ personal }) => {
   const dropdown = [
     { id: 1, title: "تاریخ ایجاد" },
@@ -43,6 +50,14 @@ export const NarrationSearch = ({ personal }) => {
     { id: 2, title: "صعودی" },
   ];
 
+  const sortOptionsNew = [
+    { id: 1, title: "جدیدترین" },
+    { id: 2, title: "قدیمی ترین" },
+  ];
+
+  const [selectedSortOptionNew, setSelectedSortOptionNew] = useState(
+    sortOptionsNew[0]
+  );
   const [selectedSortOption, setSelectedSortOption] = useState(dropdown[0]);
   const [selectedSortType, setSelectedSortType] = useState(sortTypeOptions[0]);
   const navigate = useNavigate();
@@ -83,15 +98,28 @@ export const NarrationSearch = ({ personal }) => {
   const serachOptions = {
     subjects_search: searchSubject?.current?.value || "",
     texts_search: removeTashkel(searchTerm?.current?.value || ""),
-    sort_by: selectedSortOption?.id === 2 ? "modified" : "created",
-    sort_type: selectedSortType?.id === 2 ? "asc" : "desc",
+    // sort_by: selectedSortOption?.id === 2 ? "modified" : "created",
+    sort_by: "modified",
+    sort_type: selectedSortOptionNew?.id === 2 ? "asc" : "desc",
   };
   const [selectedOptions, setSelectedOptions] = useState(emptyOptions);
   const { data: options } = useGetNarrationFilterOptions();
   const treeOptions = makeTreeOptions(treeWords, section);
 
+  const subjectOptions = sort([
+    ...new Set(options?.map((option) => option?.alphabet)),
+  ]);
+  const [selectedSubject, setSelectedSubject] = useState();
+
+  const subSubjectOptions = sort([
+    ...new Set(options?.map((option) => option?.subject)),
+  ]);
+  const [selectedSubSubject, setSelectedSubSubject] = useState();
+
   const { data: narrationList, isLoading } = useGetNarrationList(selectedPage, {
     // ...selectedOptions,
+    alphabet: selectedSubject,
+    subject: selectedSubSubject,
     ...serachOptions,
     user_id: personal ? user.id : null,
     // ...treeOptions,
@@ -109,12 +137,6 @@ export const NarrationSearch = ({ personal }) => {
     } catch {}
   };
 
-  const sort = (array) => {
-    if (!array) return array;
-    const newArray = [...array];
-    newArray.sort();
-    return newArray;
-  };
   let { data: subject } = useGetSubjects();
   subject = subject?.subjects || [];
   const [searchStarted, setSearchStarted] = useState(true);
@@ -155,7 +177,7 @@ export const NarrationSearch = ({ personal }) => {
               }`}
               className="w-full"
               reference={searchSubject}
-              placeholder="جستجوی موضوعی"
+              placeholder="#هشتگ"
               suggestions={subject}
               // onChange={() => queryClient.refetchQueries()}
             />
@@ -195,7 +217,7 @@ export const NarrationSearch = ({ personal }) => {
       </section>
 
       {searchStarted && (
-        <div className="mt-4">
+        <div className="mt-3">
           {/* <article
           style={{
             backgroundColor: "white",
@@ -242,7 +264,7 @@ export const NarrationSearch = ({ personal }) => {
             {!isLoading && (
               <>
                 <div
-                  className="p-4  px-2 sm:px-10 mb-4 mx-4 flex items-center justify-between"
+                  className="p-3  px-2  sm:px-4 mb-4 mx-4 flex items-center justify-between"
                   style={{
                     boxShadow: "-3px 8px 16px -3px #00000026",
                     borderRadius: "8px",
@@ -257,9 +279,38 @@ export const NarrationSearch = ({ personal }) => {
                     <span>حدیث یافت شد </span>
                   </div>
                   <div className="flex gap-3 items-center">
-                    <p className="hidden sm:block">مرتب سازی :</p>
                     <div className="flex gap-1 items-center">
-                      <div className="w-25 sm:w-35">
+                      <p className="hidden sm:block">فیلتر :</p>
+                      <div className="w-20 sm:w-50">
+                        <Dropdown
+                          className="h-8 "
+                          selected={selectedSubject}
+                          setSelected={setSelectedSubject}
+                          items={subjectOptions}
+                          placeholder="موضوع"
+                        />
+                      </div>
+                      <div className="w-20 sm:w-50 ml-0 sm:ml-8">
+                        <Dropdown
+                          className="h-8 "
+                          selected={selectedSubSubject}
+                          setSelected={setSelectedSubSubject}
+                          items={subSubjectOptions}
+                          placeholder="زیر موضوع"
+                        />
+                      </div>
+                      <p className="hidden sm:block">مرتب سازی :</p>
+                      <div className="w-20 sm:w-30">
+                        <Dropdown
+                          className="h-8 "
+                          dataKey="title"
+                          selected={selectedSortOptionNew}
+                          setSelected={setSelectedSortOptionNew}
+                          items={sortOptionsNew}
+                        />
+                      </div>
+
+                      {/* <div className="w-25 sm:w-35">
                         <Dropdown
                           className="h-8 "
                           dataKey="title"
@@ -276,7 +327,7 @@ export const NarrationSearch = ({ personal }) => {
                           setSelected={setSelectedSortType}
                           items={sortTypeOptions}
                         />
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

@@ -5,6 +5,7 @@
   border-radius: 8px;
   padding: 0 0.8rem;
   height: 40px;
+  cursor: pointer;
 }
 
 .dropdown_content {
