@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@tanstack/query-sync-storage-persister": "^5.28.9",
     "@tanstack/react-query": "^5.28.9",
+    "@tanstack/react-query-devtools": "^5.28.10",
     "@tanstack/react-query-persist-client": "^5.28.9",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",

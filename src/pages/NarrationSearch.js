@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  useGetImam,
   useGetNarrationFilterOptions,
   useGetNarrationList,
   useGetSubjects,
   useGetSummaryTree,
+  useGetVerse,
 } from "../api/hooks/allHooks";
 import noteIcon from "../assets/images/shapes/Icon-Note.svg";
 import shape_green from "../assets/images/shapes/shape-green.svg";
@@ -112,7 +114,13 @@ export const NarrationSearch = ({ personal }) => {
   const [selectedSubject, setSelectedSubject] = useState();
 
   const subSubjectOptions = sort([
-    ...new Set(options?.map((option) => option?.subject)),
+    ...new Set(
+      options
+        ?.filter(
+          (option) => option.alphabet === selectedSubject || !selectedSubject
+        )
+        ?.map((option) => option?.subject)
+    ),
   ]);
   const [selectedSubSubject, setSelectedSubSubject] = useState();
 
@@ -281,7 +289,7 @@ export const NarrationSearch = ({ personal }) => {
                   <div className="flex gap-3 items-center">
                     <div className="flex gap-1 items-center">
                       <p className="hidden sm:block">فیلتر :</p>
-                      <div className="w-20 sm:w-50">
+                      <div className="w-20 sm:w-50 relative">
                         <Dropdown
                           className="h-8 "
                           selected={selectedSubject}
@@ -289,14 +297,28 @@ export const NarrationSearch = ({ personal }) => {
                           items={subjectOptions}
                           placeholder="موضوع"
                         />
+                        <AiOutlineClose
+                          color="var(--neutral-color-400)"
+                          className="absolute left-8 top-3 w-4 h-4 cursor-pointer"
+                          onClick={() => {
+                            setSelectedSubject("");
+                          }}
+                        />
                       </div>
-                      <div className="w-25 sm:w-50 ml-0 sm:ml-8">
+                      <div className="w-25 sm:w-50 ml-0 sm:ml-8 relative">
                         <Dropdown
                           className="h-8 "
                           selected={selectedSubSubject}
                           setSelected={setSelectedSubSubject}
                           items={subSubjectOptions}
                           placeholder="زیر موضوع"
+                        />
+                        <AiOutlineClose
+                          color="var(--neutral-color-400)"
+                          className="absolute left-8 top-3 w-4 h-4 cursor-pointer"
+                          onClick={() => {
+                            setSelectedSubSubject("");
+                          }}
                         />
                       </div>
                       <p className="hidden sm:block">مرتب سازی :</p>
@@ -340,193 +362,6 @@ export const NarrationSearch = ({ personal }) => {
                       narration={narration}
                       showSummary={false}
                       personal={personal}
-                    />
-                  ))}
-                </section>
-              </>
-            )}
-          </article>
-          {narrationList?.last > 0 && (
-            <Pagination
-              className=" m-4 mb-16"
-              noOfPages={narrationList.last}
-              selected={selectedPage}
-              setSelected={setSelectedPage}
-            />
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
-
-export const NarrationSearchNew = () => {
-  const dropdown = [
-    { id: 1, title: "تاریخ ایجاد" },
-    { id: 2, title: "تاریخ ویرایش" },
-  ];
-  const sortTypeOptions = [
-    { id: 1, title: "نزولی" },
-    { id: 2, title: "صعودی" },
-  ];
-
-  const [selectedSortOption, setSelectedSortOption] = useState(dropdown[0]);
-  const [selectedSortType, setSelectedSortType] = useState(sortTypeOptions[0]);
-  const navigate = useNavigate();
-  const [selectedPage, setSelectedPage] = useState(1);
-  const queryClient = useQueryClient();
-  const searchTerm = useRef();
-  const searchSubject = useRef();
-
-  const serachOptions = {
-    subjects_search: searchSubject?.current?.value || "",
-    texts_search: removeTashkel(searchTerm?.current?.value || ""),
-    sort_by: selectedSortOption?.id === 2 ? "modified" : "created",
-    sort_type: selectedSortType?.id === 2 ? "asc" : "desc",
-  };
-
-  const { data: narrationList, isLoading } = useGetNarrationList(selectedPage, {
-    // ...selectedOptions,
-    ...serachOptions,
-    // ...treeOptions,
-  });
-
-  const handleDelete = async (narrationId, pass) => {
-    if (Number(pass) !== 1348) return;
-    const url = apiUrls.narration.get(narrationId);
-    const resp = await customApiCall.delete({ url });
-    queryClient.refetchQueries();
-  };
-
-  let { data: subject } = useGetSubjects();
-  subject = subject?.subjects || [];
-  const [searchStarted, setSearchStarted] = useState(false);
-  const [flag, setFlag] = useState(false);
-  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-
-  return (
-    <div className="sm:mr-12">
-      <section
-        className={`w-full flex items-center justify-center`}
-        style={{
-          transition: "all 1s linear",
-          marginTop: "7rem",
-          minHeight: searchStarted ? "6rem" : "calc(100vh - 16rem)",
-        }}
-      >
-        <div className={`px-2 ${searchStarted ? "w-full" : "sm:w-3/4"}`}>
-          <section
-            className={`relative grid ${
-              searchStarted
-                ? "grid-cols-[1fr_1fr_1fr_1fr_1fr]"
-                : "grid-cols-[1fr_1fr]"
-            } gap-4 sm:gap-8 py-2 -px-4`}
-          >
-            <Input
-              className={`w-full ${
-                searchStarted ? "col-span-2" : "col-span-1"
-              }`}
-              type="search"
-              reference={searchTerm}
-              placeholder="جستجو در متن عربی احادیث"
-              // onChange={() => queryClient.refetchQueries()}
-            />
-            <InputWithSuggestion
-              parentClassName={`w-full ${
-                searchStarted ? "col-span-2" : "col-span-1"
-              }`}
-              className="w-full"
-              reference={searchSubject}
-              placeholder="جستجوی موضوعی"
-              suggestions={subject}
-              // onChange={() => queryClient.refetchQueries()}
-            />
-            <div
-              className={`w-full flex justify-center items-center ${
-                searchStarted ? "col-span-1" : "col-span-2"
-              } `}
-            >
-              <Button
-                onClickHandler={() => {
-                  setFlag(!flag);
-                  setSearchStarted(true);
-                  setSelectedPage(1);
-                  queryClient.refetchQueries();
-                }}
-                variant="primary"
-                className={`${searchStarted ? "w-full" : "w-1/3 sm:w-1/5"}`}
-                // style={{}}
-              >
-                جستجو
-              </Button>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      {searchStarted && (
-        <div className="mt-4">
-          <article
-            style={{
-              minHeight: "80vh",
-              position: "relative",
-            }}
-          >
-            {isLoading && (
-              <CircularProgress
-                className="absolute top-1/2 left-1/2 "
-                color="success"
-              />
-            )}
-            {!isLoading && (
-              <>
-                <div
-                  className="p-4  px-2 sm:px-10 mb-4 mx-4 flex items-center justify-between"
-                  style={{
-                    boxShadow: "-3px 8px 16px -3px #00000026",
-                    borderRadius: "8px",
-                    backgroundColor: "white",
-                    fontSize: "16px",
-                    color: "var(--neutral-color-500)",
-                  }}
-                >
-                  <div style={{ fontSize: isSmallScreen ? "10px" : "14px" }}>
-                    <span>{narrationList?.number_of_records || 0}</span>
-                    &nbsp;
-                    <span>حدیث یافت شد </span>
-                  </div>
-                  <div className="flex gap-3 items-center">
-                    <p className="hidden sm:block">مرتب سازی :</p>
-                    <div className="flex gap-1 items-center">
-                      <div className="w-25 sm:w-35">
-                        <Dropdown
-                          className="h-8 "
-                          dataKey="title"
-                          selected={selectedSortOption}
-                          setSelected={setSelectedSortOption}
-                          items={dropdown}
-                        />
-                      </div>
-                      <div className="w-20 sm:w-30">
-                        <Dropdown
-                          className="h-8 "
-                          dataKey="title"
-                          selected={selectedSortType}
-                          setSelected={setSelectedSortType}
-                          items={sortTypeOptions}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <section className="h-full px-4" style={{}}>
-                  {narrationList?.results?.map((narration, index) => (
-                    <SingleNarration
-                      key={index}
-                      onEdit={() => navigate(`${narration?.id}`)}
-                      onDelete={(pass) => handleDelete(narration?.id, pass)}
-                      narration={narration}
-                      showSummary={false}
                     />
                   ))}
                 </section>

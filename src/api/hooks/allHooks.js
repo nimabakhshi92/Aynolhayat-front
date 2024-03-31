@@ -37,15 +37,19 @@ const use2GeneralGetHook = (cacheName, url, configs = {}) => {
     const resp = await customApiCall.get({ url });
     return resp;
   };
+
   return useQuery({
     queryKey: cacheName,
     queryFn: fn,
     staleTime: isAdmin(user) ? 0 : 1800000, // 30 Minutes
     ...configs,
-    // staleTime: 0, // 30 Minutes
   });
 };
 
+const longCacheConfig = {
+  // gcTime: 1000 * 60 * 60 * 24 * 7,
+  staleTime: 1000 * 60 * 60 * 24 * 7,
+};
 // ==========================
 // Common Hooks
 // ==========================
@@ -55,7 +59,7 @@ export const useGetSummaryTree = (section, user, personal) => {
 };
 export const useGetImam = () => {
   const url = apiUrls.Imam.list;
-  return use2GeneralGetHook(["Imam"], url);
+  return use2GeneralGetHook(["Imam"], url, longCacheConfig);
 };
 export const useGetBooks = () => {
   const url = apiUrls.book.list;
@@ -67,16 +71,18 @@ export const useGetSubjects = () => {
 };
 export const useGetSurah = () => {
   const url = apiUrls.quran.surah;
-  return use2GeneralGetHook(["surah"], url);
+  return use2GeneralGetHook(["surah"], url, longCacheConfig);
 };
 export const useGetVerse = (surahNo, verseNo) => {
   const url = apiUrls.quran.verse(
     surahNo === "all" ? "" : surahNo || -1,
     verseNo === "all" ? "" : verseNo || -1
   );
-  return use2GeneralGetHook(["verse", surahNo, verseNo], url, {
-    enabled: !!surahNo && !!verseNo,
-  });
+  const enabled = !!surahNo && !!verseNo;
+  let config = { enabled: true };
+  if (surahNo === "all" && verseNo === "all")
+    config = { ...config, ...longCacheConfig };
+  return use2GeneralGetHook(["verse", surahNo, verseNo], url, config);
 };
 export const useGetNarrationIndividual = (narrationId, user) => {
   const url = apiUrls.narration.get(narrationId, user?.id);
@@ -124,10 +130,9 @@ export const useModifyNarrationInfo = () => {
       );
     },
     onSettled: (inputs, error, variables, context) => {
-      queryClient.invalidateQueries([
-        "narrationIndividual",
-        context.narrationId,
-      ]);
+      queryClient.invalidateQueries({
+        queryKey: ["narrationIndividual", context.narrationId],
+      });
     },
   });
 };
@@ -177,10 +182,9 @@ export const useAddNarrationSubject = () => {
       );
     },
     onSettled: (inputs, error, variables, context) => {
-      queryClient.invalidateQueries([
-        "narrationIndividual",
-        context.narrationId,
-      ]);
+      queryClient.invalidateQueries({
+        queryKey: ["narrationIndividual", context.narrationId],
+      });
     },
   });
 };
@@ -215,7 +219,9 @@ export const useDeleteNarrationSubject = () => {
     },
     onSettled: (inputs) => {
       const { narrationId, data } = inputs;
-      queryClient.invalidateQueries(["narrationIndividual", narrationId]);
+      queryClient.invalidateQueries({
+        queryKey: ["narrationIndividual", narrationId],
+      });
     },
   });
 };
@@ -232,7 +238,7 @@ export const useModifyNarrationSummary = () => {
   return useMutation({
     mutationFn: modifyNarrationSummary,
     onMutate: async (inputs) => {
-      const { narrationId, summaryId, data, dataForMutate } = inputs;
+      const { narrationId, summaryId, data, dataForMutate, onSettled } = inputs;
       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
       const previousData = queryClient.getQueryData([
         "narrationIndividual",
@@ -250,7 +256,7 @@ export const useModifyNarrationSummary = () => {
           };
         }
       );
-      return { previousData, narrationId, data };
+      return { previousData, narrationId, data, onSettled };
     },
     onError: (error, _output, context) => {
       if (context?.data?.alphabet !== "")
@@ -259,16 +265,16 @@ export const useModifyNarrationSummary = () => {
         ["narrationIndividual", context.narrationId],
         context.previousData
       );
-      // queryClient.invalidateQueries([
+      // queryClient.invalidateQueries({queryKey:[
       //   "narrationIndividual",
       //   context.narrationId,
-      // ]);
+      // ]});
     },
     onSettled: (inputs, error, variables, context) => {
-      queryClient.invalidateQueries([
-        "narrationIndividual",
-        context.narrationId,
-      ]);
+      queryClient.invalidateQueries({
+        queryKey: ["narrationIndividual", context.narrationId],
+      });
+      if (context.onSettled) context.onSettled();
     },
   });
 };
@@ -310,16 +316,15 @@ export const useAddNarrationSummary = () => {
         ["narrationIndividual", context.narrationId],
         context.previousData
       );
-      // queryClient.invalidateQueries([
+      // queryClient.invalidateQueries({queryKey:[
       //   "narrationIndividual",
       //   context.narrationId,
-      // ]);
+      // ]});
     },
     onSettled: (inputs, error, variables, context) => {
-      queryClient.invalidateQueries([
-        "narrationIndividual",
-        context.narrationId,
-      ]);
+      queryClient.invalidateQueries({
+        queryKey: ["narrationIndividual", context.narrationId],
+      });
     },
   });
 };
@@ -363,10 +368,9 @@ export const useDeleteNarrationSummary = () => {
       );
     },
     onSettled: (inputs, error, variables, context) => {
-      queryClient.invalidateQueries([
-        "narrationIndividual",
-        context.narrationId,
-      ]);
+      queryClient.invalidateQueries({
+        queryKey: ["narrationIndividual", context.narrationId],
+      });
     },
   });
 };
@@ -409,16 +413,15 @@ export const useModifyNarrationFootnote = () => {
         ["narrationIndividual", context.narrationId],
         context.previousData
       );
-      // queryClient.invalidateQueries([
+      // queryClient.invalidateQueries({queryKey:[
       //   "narrationIndividual",
       //   context.narrationId,
-      // ]);
+      // ]});
     },
     onSettled: (inputs, error, variables, context) => {
-      queryClient.invalidateQueries([
-        "narrationIndividual",
-        context.narrationId,
-      ]);
+      queryClient.invalidateQueries({
+        queryKey: ["narrationIndividual", context.narrationId],
+      });
     },
   });
 };
@@ -457,16 +460,15 @@ export const useAddNarrationFootnote = () => {
         ["narrationIndividual", context.narrationId],
         context.previousData
       );
-      // queryClient.invalidateQueries([
+      // queryClient.invalidateQueries({queryKey:[
       //   "narrationIndividual",
       //   context.narrationId,
-      // ]);
+      // ]});
     },
     onSettled: (inputs, error, variables, context) => {
-      queryClient.invalidateQueries([
-        "narrationIndividual",
-        context.narrationId,
-      ]);
+      queryClient.invalidateQueries({
+        queryKey: ["narrationIndividual", context.narrationId],
+      });
     },
   });
 };
@@ -508,10 +510,9 @@ export const useDeleteNarrationFootnote = () => {
       );
     },
     onSettled: (inputs, error, variables, context) => {
-      queryClient.invalidateQueries([
-        "narrationIndividual",
-        context.narrationId,
-      ]);
+      queryClient.invalidateQueries({
+        queryKey: ["narrationIndividual", context.narrationId],
+      });
     },
   });
 };
@@ -550,16 +551,16 @@ export const useDeleteNarrationFootnote = () => {
 //         ["narrationIndividual", context.narrationId],
 //         context.previousData
 //       );
-//       // queryClient.invalidateQueries([
+//       // queryClient.invalidateQueries({queryKey:[
 //       //   "narrationIndividual",
 //       //   context.narrationId,
-//       // ]);
+//       // ]});
 //     },
 //     onSettled: (inputs, error, variables, context) => {
-//       queryClient.invalidateQueries([
+//       queryClient.invalidateQueries({queryKey:[
 //         "narrationIndividual",
 //         context.narrationId,
-//       ]);
+//       ]});
 //     },
 //   });
 // };

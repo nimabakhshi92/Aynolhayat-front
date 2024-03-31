@@ -40,10 +40,13 @@ export const NarrationEdit = () => {
   );
 
   useEffect(() => {
-    if (narration)
+    if (
+      narration &&
+      !narration?.subjects?.length &&
+      !narration?.content_summary_tree?.length
+    )
       window.scrollTo({ left: 0, top: window.innerHeight, behavior: "smooth" });
   }, [!!narration]);
-
   // if (!isLoggedIn(user)) return <Navigate to={"/"} />;
   if (!isLoggedIn(user))
     return (

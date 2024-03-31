@@ -37,7 +37,9 @@ export const NarrationSubjectEditForm = ({ narration }) => {
 
   useEffect(() => {
     setUpdatedNarration(narration);
-    queryClient.invalidateQueries("subject");
+    queryClient.invalidateQueries({
+      queryKey: ["subject"],
+    });
   }, [narration]);
 
   return (

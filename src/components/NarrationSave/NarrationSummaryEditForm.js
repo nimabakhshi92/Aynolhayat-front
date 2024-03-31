@@ -111,6 +111,7 @@ export const SingleNarrationSummariesForEdit = ({
   const { mutate } = useModifyNarrationSummary();
   const { mutate: addSummary } = useAddNarrationSummary();
   const { mutate: deleteSummary } = useDeleteNarrationSummary();
+  const queryClient = useQueryClient();
 
   const handleChange = (key, newValue) => {
     setSummary({ ...summary, [key]: newValue });
@@ -130,6 +131,11 @@ export const SingleNarrationSummariesForEdit = ({
       narrationId: narration?.id,
       summaryId: summary?.id,
       data: { quran_verse: newVerse.id },
+      onSettled: () => {
+        queryClient.refetchQueries({
+          queryKey: ["verse", data?.surah_no, verse_no],
+        });
+      },
     });
   };
 
@@ -144,6 +150,11 @@ export const SingleNarrationSummariesForEdit = ({
       narrationId: narration?.id,
       summaryId: summary?.id,
       data: { quran_verse: newVerse.id },
+      onSettled: () => {
+        queryClient.refetchQueries({
+          queryKey: ["verse", summary.verse?.surah_no, newValue],
+        });
+      },
     });
   };
 
@@ -204,164 +215,174 @@ export const SingleNarrationSummariesForEdit = ({
     });
   };
 
+  // useEffect(() => {
+  //   if (summary?.verse?.surah_no && selectedVerse) {
+  //     queryClient.refetchQueries({
+  //       queryKey: ["verse", summary?.verse?.surah_no, selectedVerse],
+  //     });
+  //   }
+  // }, [selectedVerse]);
+
   return (
-    <div className="flex gap-2 items-start">
-      <AiFillDelete
-        className="cursor-pointer"
-        style={{
-          height: "30px",
-          width: "30px",
-        }}
-        onClick={() => handleDelete()}
-      />
-      <div
-        style={{
-          borderBottom: "1px solid var(--neutral-color-400)",
-          marginBottom: "32px",
-          paddingBottom: "32px",
-        }}
-        className="grid gap-4 grid-cols-7 grid-rows-4"
-      >
-        <InputWithSuggestion
-          suggestions={level1?.sort()}
-          className="w-full"
-          onPressEnter={(e) => handleBlur("alphabet", e.target.value)}
-          onChange={(e) => {
-            handleChange("alphabet", e.target.value);
+    <>
+      <div className="flex gap-2 items-start">
+        <AiFillDelete
+          className="cursor-pointer"
+          style={{
+            height: "30px",
+            width: "30px",
           }}
-          value={summary.alphabet}
-          placeholder="سطح 1"
-          onBlur={(e) => handleBlur("alphabet", e.target.value)}
-          key={"i1" + summary.id}
+          onClick={() => handleDelete()}
         />
-
-        <InputWithSuggestion
-          suggestions={level2?.sort()}
-          parentClassName="col-span-1"
-          className="w-full"
-          onPressEnter={(e) => handleBlur("subject", e.target.value)}
-          onChange={(e) => {
-            handleChange("subject", e.target.value);
+        <div
+          style={{
+            borderBottom: "1px solid var(--neutral-color-400)",
+            marginBottom: "32px",
+            paddingBottom: "32px",
           }}
-          value={summary.subject}
-          placeholder="سطح 2"
-          onBlur={(e) => handleBlur("subject", e.target.value)}
-          key={"i2" + summary.id}
-        />
-
-        <InputWithSuggestion
-          suggestions={level3?.sort()}
-          parentClassName=" col-span-2"
-          className="w-full"
-          onPressEnter={(e) => handleBlur("sub_subject", e.target.value)}
-          onChange={(e) => {
-            handleChange("sub_subject", e.target.value);
-          }}
-          value={summary.sub_subject}
-          placeholder="سطح 3"
-          onBlur={(e) => handleBlur("sub_subject", e.target.value)}
-          key={"i3" + summary.id}
-        />
-
-        <InputWithSuggestion
-          suggestions={level4?.sort()}
-          parentClassName=" col-span-3"
-          className="w-full"
-          onPressEnter={(e) => handleBlur("subject_3", e.target.value)}
-          onChange={(e) => {
-            handleChange("subject_3", e.target.value);
-          }}
-          value={summary.subject_3}
-          placeholder="سطح 4"
-          onBlur={(e) => handleBlur("subject_3", e.target.value)}
-          key={"i4" + summary.id}
-        />
-
-        <InputWithSuggestion
-          suggestions={level5?.sort()}
-          parentClassName=" col-span-7"
-          className="w-full"
-          onPressEnter={(e) => handleBlur("subject_4", e.target.value)}
-          onChange={(e) => {
-            handleChange("subject_4", e.target.value);
-          }}
-          value={summary.subject_4}
-          placeholder="سطح 5"
-          onBlur={(e) => handleBlur("subject_4", e.target.value)}
-          key={"i5" + summary.id}
-        />
-
-        <InputWithState
-          className="col-span-7"
-          value={summary.expression}
-          setValue={(newValue) => handleChange("expression", newValue)}
-          onBlur={() => handleBlur("expression", summary.expression)}
-          type="text"
-          placeholder="عبارت فارسی"
-        />
-        <InputWithState
-          className="col-span-7"
-          value={summary.summary}
-          setValue={(newValue) => handleChange("summary", newValue)}
-          onBlur={() => handleBlur("summary", summary.summary)}
-          type="text"
-          placeholder="عبارت عربی"
-          key={"i6" + summary.id}
-        />
-        <div className="relative col-span-2">
-          <Dropdown
-            className="h-full"
-            selected={summary?.verse}
-            setSelected={(newValue) => {
-              // setSelectedSurah(newValue);
-              handleSurahChange({
-                surah_name: newValue?.surah_name,
-                surah_no: newValue?.surah_no,
-              });
-              // handleVerseChange();
-              // handleVerseBlur();
+          className="grid gap-4 grid-cols-7 grid-rows-4"
+        >
+          <InputWithSuggestion
+            suggestions={level1?.sort()}
+            className="w-full"
+            onPressEnter={(e) => handleBlur("alphabet", e.target.value)}
+            onChange={(e) => {
+              handleChange("alphabet", e.target.value);
             }}
-            items={sortedSurah?.map((surah) => ({
-              ...surah,
-              surahWithNo: surah.surah_no + "- " + surah.surah_name,
-            }))}
-            dataKey="surah_name"
-            placeholder="نام سوره"
-            key={"i7" + summary.id}
+            value={summary.alphabet}
+            placeholder="سطح 1"
+            onBlur={(e) => handleBlur("alphabet", e.target.value)}
+            key={"i1" + summary.id}
           />
-          <AiOutlineClose
-            color="var(--neutral-color-400)"
-            className="absolute left-8 top-3 w-4 h-4 cursor-pointer"
-            onClick={() => {
-              // handleSurahChange({
-              //   surah_name: "",
-              //   surah_no: 0,
-              // });
-              handleVerseRemove();
-              // setSelectedVerse(0);
-              // handleVerseChange("verse_no", 0);
+
+          <InputWithSuggestion
+            suggestions={level2?.sort()}
+            parentClassName="col-span-1"
+            className="w-full"
+            onPressEnter={(e) => handleBlur("subject", e.target.value)}
+            onChange={(e) => {
+              handleChange("subject", e.target.value);
             }}
+            value={summary.subject}
+            placeholder="سطح 2"
+            onBlur={(e) => handleBlur("subject", e.target.value)}
+            key={"i2" + summary.id}
+          />
+
+          <InputWithSuggestion
+            suggestions={level3?.sort()}
+            parentClassName=" col-span-2"
+            className="w-full"
+            onPressEnter={(e) => handleBlur("sub_subject", e.target.value)}
+            onChange={(e) => {
+              handleChange("sub_subject", e.target.value);
+            }}
+            value={summary.sub_subject}
+            placeholder="سطح 3"
+            onBlur={(e) => handleBlur("sub_subject", e.target.value)}
+            key={"i3" + summary.id}
+          />
+
+          <InputWithSuggestion
+            suggestions={level4?.sort()}
+            parentClassName=" col-span-3"
+            className="w-full"
+            onPressEnter={(e) => handleBlur("subject_3", e.target.value)}
+            onChange={(e) => {
+              handleChange("subject_3", e.target.value);
+            }}
+            value={summary.subject_3}
+            placeholder="سطح 4"
+            onBlur={(e) => handleBlur("subject_3", e.target.value)}
+            key={"i4" + summary.id}
+          />
+
+          <InputWithSuggestion
+            suggestions={level5?.sort()}
+            parentClassName=" col-span-7"
+            className="w-full"
+            onPressEnter={(e) => handleBlur("subject_4", e.target.value)}
+            onChange={(e) => {
+              handleChange("subject_4", e.target.value);
+            }}
+            value={summary.subject_4}
+            placeholder="سطح 5"
+            onBlur={(e) => handleBlur("subject_4", e.target.value)}
+            key={"i5" + summary.id}
+          />
+
+          <InputWithState
+            className="col-span-7"
+            value={summary.expression}
+            setValue={(newValue) => handleChange("expression", newValue)}
+            onBlur={() => handleBlur("expression", summary.expression)}
+            type="text"
+            placeholder="عبارت فارسی"
+          />
+          <InputWithState
+            className="col-span-7"
+            value={summary.summary}
+            setValue={(newValue) => handleChange("summary", newValue)}
+            onBlur={() => handleBlur("summary", summary.summary)}
+            type="text"
+            placeholder="عبارت عربی"
+            key={"i6" + summary.id}
+          />
+          <div className="relative col-span-2">
+            <Dropdown
+              className="h-full"
+              selected={summary?.verse}
+              setSelected={(newValue) => {
+                // setSelectedSurah(newValue);
+                handleSurahChange({
+                  surah_name: newValue?.surah_name,
+                  surah_no: newValue?.surah_no,
+                });
+                // handleVerseChange();
+                // handleVerseBlur();
+              }}
+              items={sortedSurah?.map((surah) => ({
+                ...surah,
+                surahWithNo: surah.surah_no + "- " + surah.surah_name,
+              }))}
+              dataKey="surah_name"
+              placeholder="نام سوره"
+              key={"i7" + summary.id}
+            />
+            <AiOutlineClose
+              color="var(--neutral-color-400)"
+              className="absolute left-8 top-3 w-4 h-4 cursor-pointer"
+              onClick={() => {
+                // handleSurahChange({
+                //   surah_name: "",
+                //   surah_no: 0,
+                // });
+                handleVerseRemove();
+                // setSelectedVerse(0);
+                // handleVerseChange("verse_no", 0);
+              }}
+            />
+          </div>
+          <Dropdown
+            selected={selectedVerse}
+            setSelected={(newValue) => {
+              setSelectedVerse(newValue);
+              handleVerseChange("verse_no", newValue);
+            }}
+            items={verseNos}
+            placeholder="شماره آیه"
+            key={"i8" + summary.id}
+          />
+          <Input
+            className="col-span-4"
+            type="text"
+            placeholder={verse?.verse_content || "متن آیه"}
+            disabled={true}
+            key={"i9" + summary.id}
           />
         </div>
-        <Dropdown
-          selected={selectedVerse}
-          setSelected={(newValue) => {
-            setSelectedVerse(newValue);
-            handleVerseChange("verse_no", newValue);
-          }}
-          items={verseNos}
-          placeholder="شماره آیه"
-          key={"i8" + summary.id}
-        />
-        <Input
-          className="col-span-4"
-          type="text"
-          placeholder={verse?.verse_content || "متن آیه"}
-          disabled={true}
-          key={"i9" + summary.id}
-        />
       </div>
-    </div>
+    </>
   );
 };
 
@@ -392,7 +413,9 @@ export const NarrationSummaryEditForm = ({ summaries, narration }) => {
   useEffect(() => {
     setShowEmpty(false);
     setEmptySummary(emptySummary0);
-    queryClient.invalidateQueries("filterOptions");
+    queryClient.invalidateQueries({
+      queryKey: ["filterOptions"],
+    });
   }, [summaries]);
   const handleAddInputComponent = () => setShowEmpty(true);
   const reversed = [...summaries].reverse();

@@ -12,7 +12,7 @@ import { SharedLayout, SharedLayoutLT } from "./pages/SharedLayout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NarrationSave } from "./pages/NarrationSave";
 import "react-toastify/dist/ReactToastify.css";
-
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
@@ -42,6 +42,7 @@ const queryClient = new QueryClient({
       retry: false,
       gcTime: 600000000,
       staleTime: 1800000, // 30 Minutes
+      buster: "busteer",
     },
   },
 });
@@ -91,6 +92,11 @@ function App() {
                 element={<NarrationEdit />}
               ></Route>
               <Route
+                path="my-narrations/:narrationId"
+                element={<NarrationEdit />}
+              ></Route>
+
+              <Route
                 path="/"
                 element={
                   <ProtectedRoute>
@@ -112,6 +118,7 @@ function App() {
             </Routes>
           </BrowserRouter>
           {/* </QueryClientProvider> */}
+          <ReactQueryDevtools initialIsOpen={false} />
         </PersistQueryClientProvider>
         <ToastContainer />
       </Provider>
