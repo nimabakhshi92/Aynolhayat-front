@@ -18,7 +18,7 @@ import {
 } from "../../api/hooks/allHooks";
 import Dropdown from "../ui/dropdown";
 import Input from "../ui/input";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import InputWithSuggestion from "../general/InputWithSuggestion";
 import { toast } from "react-toastify";
 

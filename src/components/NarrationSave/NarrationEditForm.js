@@ -7,7 +7,7 @@ import {
   useGetImam,
   useModifyNarrationInfo,
 } from "../../api/hooks/allHooks";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import {
   clearNarration,

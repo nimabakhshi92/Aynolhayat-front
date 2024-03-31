@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+
 import {
   useGetNarrationFilterOptions,
   useGetNarrationList,
@@ -13,6 +14,8 @@ import Dropdown, { DropdownSingleSelect } from "../components/ui/dropdown";
 import Input from "../components/ui/input";
 import { InputWithState } from "../components/general/InputWithState";
 import InputWithSuggestion from "../components/general/InputWithSuggestion";
+import { useQueryClient } from "@tanstack/react-query";
+
 import {
   Box,
   CircularProgress,
@@ -50,7 +53,6 @@ import { RiEdit2Line } from "react-icons/ri";
 import styled from "@emotion/styled";
 import { tooltipClasses } from "@mui/material/Tooltip";
 import { NarrationSearch } from "./NarrationSearch";
-import { useQueryClient } from "@tanstack/react-query";
 
 export const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -127,9 +129,7 @@ function ArabicTextComponent({
         const isRelevant = textIsRelevant(singleLangText, relevantParts);
         return (
           <>
-            <div
-              className={`inline-block ${isRelevant ? "bg-[#ffff007d]" : ""}`}
-            >
+            <div className={`inline ${isRelevant ? "bg-[#ffff007d]" : ""}`}>
               {singleLangText?.split(" ").map((word) => {
                 return (
                   <span
@@ -549,13 +549,28 @@ export const SingleNarration = ({
                     </div>
                   )}
 
-                  <div className="flex items-start flex-col sm:flex-row justify-between w-full pr-3">
+                  <div className=" w-full pr-3">
+                    {/* <div className="flex items-start flex-col sm:flex-row justify-between w-full pr-3"> */}
+                    <BlurredText>
+                      <span className="text-[#102cc9]">
+                        یک متن تستی برای تار مقدار کل حدیث و بیشتر شدن مطبل شدن
+                        یک متن تستی برای تار مقدار کل حدیث و بیشتر شدن مطبل شدن
+                      </span>
+                    </BlurredText>
                     <ArabicTextComponent
-                      className="block w-full sm:w-[48%]"
+                      className=" w-full" // sm:w-[48%]
                       children={contentItem.summary}
                     />
+                    <BlurredText>
+                      <span className="text-[#102cc9]">
+                        انتهای متن تستی برای تار کل مطلب و برای بیشتر به نظر یک
+                        متن تستی برای تار مقدار کل حدیث و بیشتر شدن مطبل شدن
+                        رسیدن یک خط کامل شدن{" "}
+                      </span>
+                    </BlurredText>
+
                     <p
-                      className=" sm:w-[48%]"
+                      // className=" sm:w-[48%]"
                       style={{
                         fontSize:
                           (isSuperAdmin(user) ? getFont(1.4) : 1.4) + "rem",
@@ -563,7 +578,6 @@ export const SingleNarration = ({
                     >
                       {contentItem.expression}
                     </p>
-
                     {/* <p className="w-[48%]">{contentItem.summary}</p> */}
                   </div>
                 </>
@@ -573,6 +587,21 @@ export const SingleNarration = ({
         </>
       )}
     </ContentContainer>
+  );
+};
+
+export const BlurredText = ({ children }) => {
+  return (
+    <span className="relative">
+      <span
+        className="w-full h-full absolute z-[10]"
+        style={{
+          backgroundColor: "#f7fafc10",
+          backdropFilter: "blur(3px)",
+        }}
+      />
+      {children}
+    </span>
   );
 };
 

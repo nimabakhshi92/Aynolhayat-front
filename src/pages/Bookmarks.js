@@ -13,7 +13,7 @@ import Dropdown, { DropdownSingleSelect } from "../components/ui/dropdown";
 import Input from "../components/ui/input";
 import { InputWithState } from "../components/general/InputWithState";
 import InputWithSuggestion from "../components/general/InputWithSuggestion";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { CircularProgress, useMediaQuery } from "@mui/material";
 import { AiFillDelete, AiFillEdit, AiOutlineClose } from "react-icons/ai";
 import apiUrls from "../api/urls";

@@ -9,7 +9,7 @@ import NarrationSummaries from "./pages/NarrationSummaries";
 import { store } from "./store";
 import { ProtectedRoute } from "./pages/ProtectedRoute";
 import { SharedLayout, SharedLayoutLT } from "./pages/SharedLayout";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NarrationSave } from "./pages/NarrationSave";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -27,15 +27,27 @@ import { ThemeProvider } from "@mui/material";
 import { theme } from "./styles/theme";
 import { Bookmarks } from "./pages/Bookmarks";
 
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+import {
+  PersistQueryClientProvider,
+  persistQueryClient,
+} from "@tanstack/react-query-persist-client";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      cacheTime: 1000000000, // about 3 hours
+      cacheTime: 600000000, // about a week
       // cacheTime: 0, //
       retry: false,
+      gcTime: 600000000,
+      staleTime: 1800000, // 30 Minutes
     },
   },
+});
+
+const persister = createSyncStoragePersister({
+  storage: window.localStorage,
 });
 
 function App() {
@@ -48,10 +60,16 @@ function App() {
 
     return null;
   }
+
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
+        <PersistQueryClientProvider
+          client={queryClient}
+          // queryClient={queryClient}
+          persistOptions={{ persister }}
+        >
+          {/* <QueryClientProvider client={queryClient}> */}
           <BrowserRouter>
             <ScrollToTop />
             <Routes>
@@ -93,7 +111,8 @@ function App() {
               </Route>
             </Routes>
           </BrowserRouter>
-        </QueryClientProvider>
+          {/* </QueryClientProvider> */}
+        </PersistQueryClientProvider>
         <ToastContainer />
       </Provider>
     </ThemeProvider>

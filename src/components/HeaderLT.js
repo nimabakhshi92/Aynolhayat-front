@@ -104,13 +104,42 @@ export const HeaderLT = () => {
           </>
         )}
         {isSmallScreen && (
-          <MdAccountCircle
-            style={{
-              width: "30px",
-              height: "30px",
+          // <MdAccountCircle
+          //   style={{
+          //     width: "30px",
+          //     height: "30px",
+          //   }}
+          //   color="var(--neutral-color-600)"
+          // />
+          <Button
+            onClickHandler={() => {
+              dispatch(logout());
+
+              navigate("/login");
             }}
-            color="var(--neutral-color-600)"
-          />
+            variant="primary"
+            style={{
+              border: "1px solid #aaa",
+              padding: "2px 4px",
+              borderRadius: "6px",
+              // color: "gray",
+              // width: "100px",
+            }}
+          >
+            {user && user?.id !== 2 ? (
+              <span className="flex items-center gap-2">
+                <span>خروج</span>
+                <BiLogOut />
+              </span>
+            ) : (
+              <>
+                <span className="flex items-center gap-2">
+                  <span>ورود</span>
+                  <BiLogIn />
+                </span>
+              </>
+            )}
+          </Button>
         )}
       </Stack>
     </header>

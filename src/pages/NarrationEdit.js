@@ -23,7 +23,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { createNarration } from "../features/narrationSave/narrationSlice";
 import { NarrationEditForm } from "../components/NarrationSave/NarrationEditForm";
 import { NarrationSubjectEditForm } from "../components/NarrationSave/NarrationSubjectEditForm";
-import { useQueryClient } from "react-query";
 import { NarrationSummaryEditForm } from "../components/NarrationSave/NarrationSummaryEditForm";
 import { NarrationFootnoteEditForm } from "../components/NarrationSave/NarrationFootnoteEditForm";
 import { isAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";

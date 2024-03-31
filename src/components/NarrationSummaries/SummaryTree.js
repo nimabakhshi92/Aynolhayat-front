@@ -433,6 +433,7 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
     }
     setFilteredNodes(c.reduce(filterNodes, []));
   }, [filterText, c]);
+
   const onClick = (value) => {
     setClicked(value);
     dispatch(
@@ -440,7 +441,9 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
     );
     dispatch(toggleTreeIsOpen());
   };
+
   const [flag, setFlag] = useState(false);
+
   useEffect(() => {
     const clickedValue = clicked.value;
     const filteredExpanded = expanded.filter((e) =>
@@ -455,11 +458,10 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
 
     if (
       node.label.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase()) >
-        -1 ||
-      children.length
+      -1
     ) {
-      filtered.push({ ...node, children });
-    }
+      filtered.push(node);
+    } else if (children.length) filtered.push({ ...node, children });
 
     return filtered;
   };

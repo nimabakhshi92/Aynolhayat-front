@@ -13,7 +13,7 @@ import {
 import InputWithSuggestion from "../general/InputWithSuggestion";
 import { AiOutlinePlus } from "react-icons/ai";
 import Tag from "../ui/tag";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const NarrationSubjectEditForm = ({ narration }) => {
   const [updatedNarration, setUpdatedNarration] = useState({});

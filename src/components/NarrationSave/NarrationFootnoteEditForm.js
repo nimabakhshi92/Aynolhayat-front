@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ContentContainer } from "../general/ContentContainer";
 
 import { AiFillDelete, AiOutlinePlusCircle } from "react-icons/ai";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   useAddNarrationFootnote,
   useDeleteNarrationFootnote,

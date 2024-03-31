@@ -1,11 +1,17 @@
-import { useMutation, useQueries, useQuery, useQueryClient } from "react-query";
-import { useDispatch } from "react-redux";
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { useDispatch, useSelector } from "react-redux";
 
 import { toast } from "react-toastify";
 import apiUrls from "../urls";
 import { customApiCall } from "../../utils/axios";
 import { logoutUser } from "../../features/user/userSlice";
 import axios from "axios";
+import { isAdmin } from "../../utils/acl";
 
 // ==========================
 // Hooks Skleton
@@ -24,12 +30,20 @@ const useGeneralGetHook = ({ defaultDataValue, cacheName, getFunction }) => {
   return { data: resultData, isLoading, isError };
 };
 
-const use2GeneralGetHook = (cacheName, url) => {
+const use2GeneralGetHook = (cacheName, url, configs = {}) => {
+  const { user } = useSelector((store) => store.user);
+
   const fn = async () => {
     const resp = await customApiCall.get({ url });
     return resp;
   };
-  return useQuery(cacheName, fn);
+  return useQuery({
+    queryKey: cacheName,
+    queryFn: fn,
+    staleTime: isAdmin(user) ? 0 : 1800000, // 30 Minutes
+    ...configs,
+    // staleTime: 0, // 30 Minutes
+  });
 };
 
 // ==========================
@@ -41,26 +55,28 @@ export const useGetSummaryTree = (section, user, personal) => {
 };
 export const useGetImam = () => {
   const url = apiUrls.Imam.list;
-  return use2GeneralGetHook("Imam", url);
+  return use2GeneralGetHook(["Imam"], url);
 };
 export const useGetBooks = () => {
   const url = apiUrls.book.list;
-  return use2GeneralGetHook("book", url);
+  return use2GeneralGetHook(["book"], url);
 };
 export const useGetSubjects = () => {
   const url = apiUrls.subject.list;
-  return use2GeneralGetHook("subject", url);
+  return use2GeneralGetHook(["subject"], url);
 };
 export const useGetSurah = () => {
   const url = apiUrls.quran.surah;
-  return use2GeneralGetHook("surah", url);
+  return use2GeneralGetHook(["surah"], url);
 };
 export const useGetVerse = (surahNo, verseNo) => {
   const url = apiUrls.quran.verse(
     surahNo === "all" ? "" : surahNo || -1,
     verseNo === "all" ? "" : verseNo || -1
   );
-  return use2GeneralGetHook(["verse", surahNo, verseNo], url);
+  return use2GeneralGetHook(["verse", surahNo, verseNo], url, {
+    enabled: !!surahNo && !!verseNo,
+  });
 };
 export const useGetNarrationIndividual = (narrationId, user) => {
   const url = apiUrls.narration.get(narrationId, user?.id);
@@ -72,7 +88,7 @@ export const useGetNarrationList = (pageNo, selectedOptions) => {
 };
 export const useGetNarrationFilterOptions = () => {
   const url = apiUrls.narration.filterOptions;
-  return use2GeneralGetHook("filterOptions", url);
+  return use2GeneralGetHook(["filterOptions"], url);
 };
 
 export const modifyNarrationInfo = async (inputs) => {
@@ -83,7 +99,8 @@ export const modifyNarrationInfo = async (inputs) => {
 };
 export const useModifyNarrationInfo = () => {
   const queryClient = useQueryClient();
-  return useMutation(modifyNarrationInfo, {
+  return useMutation({
+    mutationFn: modifyNarrationInfo,
     onMutate: async (inputs) => {
       const { narrationId, data } = inputs;
       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
@@ -129,7 +146,8 @@ export const deleteNarrationSubject = async (inputs) => {
 };
 export const useAddNarrationSubject = () => {
   const queryClient = useQueryClient();
-  return useMutation(addNarrationSubject, {
+  return useMutation({
+    mutationFn: addNarrationSubject,
     onMutate: async (inputs) => {
       const { narrationId, data } = inputs;
       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
@@ -168,7 +186,8 @@ export const useAddNarrationSubject = () => {
 };
 export const useDeleteNarrationSubject = () => {
   const queryClient = useQueryClient();
-  return useMutation(deleteNarrationSubject, {
+  return useMutation({
+    mutationFn: deleteNarrationSubject,
     onMutate: async (inputs) => {
       const { narrationId, subjectId } = inputs;
       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
@@ -210,7 +229,8 @@ export const modifyNarrationSummary = async (inputs) => {
 };
 export const useModifyNarrationSummary = () => {
   const queryClient = useQueryClient();
-  return useMutation(modifyNarrationSummary, {
+  return useMutation({
+    mutationFn: modifyNarrationSummary,
     onMutate: async (inputs) => {
       const { narrationId, summaryId, data, dataForMutate } = inputs;
       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
@@ -261,7 +281,8 @@ export const addNarrationSummary = async (inputs) => {
 };
 export const useAddNarrationSummary = () => {
   const queryClient = useQueryClient();
-  return useMutation(addNarrationSummary, {
+  return useMutation({
+    mutationFn: addNarrationSummary,
     onMutate: async (inputs) => {
       const { narrationId, data, dataForMutate } = inputs;
       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
@@ -312,7 +333,8 @@ export const deleteNarrationSummary = async (inputs) => {
 
 export const useDeleteNarrationSummary = () => {
   const queryClient = useQueryClient();
-  return useMutation(deleteNarrationSummary, {
+  return useMutation({
+    mutationFn: deleteNarrationSummary,
     onMutate: async (inputs) => {
       const { narrationId, summaryId } = inputs;
       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
@@ -358,7 +380,8 @@ export const modifyNarrationFootnote = async (inputs) => {
 };
 export const useModifyNarrationFootnote = () => {
   const queryClient = useQueryClient();
-  return useMutation(modifyNarrationFootnote, {
+  return useMutation({
+    mutationFn: modifyNarrationFootnote,
     onMutate: async (inputs) => {
       const { narrationId, footnoteId, data } = inputs;
       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
@@ -408,7 +431,8 @@ export const addNarrationFootnote = async (inputs) => {
 };
 export const useAddNarrationFootnote = () => {
   const queryClient = useQueryClient();
-  return useMutation(addNarrationFootnote, {
+  return useMutation({
+    mutationFn: addNarrationFootnote,
     onMutate: async (inputs) => {
       const { narrationId, data } = inputs;
       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
@@ -456,7 +480,8 @@ export const deleteNarrationFootnote = async (inputs) => {
 
 export const useDeleteNarrationFootnote = () => {
   const queryClient = useQueryClient();
-  return useMutation(deleteNarrationFootnote, {
+  return useMutation({
+    mutationFn: deleteNarrationFootnote,
     onMutate: async (inputs) => {
       const { narrationId, footnoteId } = inputs;
       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
@@ -500,7 +525,7 @@ export const useDeleteNarrationFootnote = () => {
 
 // export const useBookmarkNarration = () => {
 //   const queryClient = useQueryClient();
-//   return useMutation(bookmarkNarration, {
+//   return useMutation({mutationFn:bookmarkNarration,
 //     onMutate: async (inputs) => {
 //       const { narrationId, data } = inputs;
 //       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
