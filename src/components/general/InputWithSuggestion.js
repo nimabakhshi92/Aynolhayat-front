@@ -1,6 +1,6 @@
 import Input from "../ui/input";
 import classes from "../ui/dropdown/dropdown.module.css";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function InputWithSuggestion({
   style,
@@ -13,6 +13,7 @@ export default function InputWithSuggestion({
   value,
   onBlur,
   parentClassName,
+  flag
 }) {
   const [matchedSuggesttions, setMatchedSuggestions] = useState(suggestions);
   const [openSuggestions, setOpenSuggestions] = useState(false);
@@ -48,11 +49,20 @@ export default function InputWithSuggestion({
   const mouseEntered = useRef(false);
   const suggestionsClicked = useRef(false);
 
+  const ref = useRef(false)
+  useEffect(() => {
+    if (ref?.current && flag) {
+      ref.current.style.backgroundColor = 'var(--primary-color)'
+      setTimeout(() => {
+        ref.current.style.backgroundColor = ''
+      }, 1000);
+    }
+  }, [flag])
   return (
-    <div className={`relative ${parentClassName}`}>
+    <div className={`relative ${parentClassName}`} ref={ref}>
       <Input
         value={value}
-        style={style}
+        style={{ backgroundColor: 'transparent', ...style }}
         reference={reference}
         className={className}
         type="text"

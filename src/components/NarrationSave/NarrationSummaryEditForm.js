@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ContentContainer } from "../general/ContentContainer";
 
 import { InputWithState } from "../general/InputWithState";
@@ -116,6 +116,7 @@ export const SingleNarrationSummariesForEdit = ({
   const handleChange = (key, newValue) => {
     setSummary({ ...summary, [key]: newValue });
   };
+  const flag = useRef(false)
 
   const handleSurahChange = (data) => {
     const maxNoOfVerses = getNoOfVerses(data.surah_name);
@@ -136,7 +137,8 @@ export const SingleNarrationSummariesForEdit = ({
           queryKey: ["verse", data?.surah_no, verse_no],
         });
       },
-    });
+    },
+    );
   };
 
   const handleVerseChange = (key, newValue) => {
@@ -167,6 +169,7 @@ export const SingleNarrationSummariesForEdit = ({
       });
   };
   const handleBlur = (key, newValue) => {
+    flag.current = ''
     if (
       !newValue &&
       (key === "alphabet" || key === "subject" || key === "sub_subject")
@@ -189,7 +192,13 @@ export const SingleNarrationSummariesForEdit = ({
         summaryId: summary?.id,
         data: { [keyForPost]: newValue, quran_verse: 0 },
         dataForMutate: { [key]: newValue, quran_verse: 0 },
-      });
+      },
+        {
+          onSuccess: () => {
+            flag.current = key
+          }
+        }
+      );
     else {
       addSummary({
         narrationId: narration?.id,
@@ -253,6 +262,7 @@ export const SingleNarrationSummariesForEdit = ({
             placeholder="سطح 1"
             onBlur={(e) => handleBlur("alphabet", e.target.value)}
             key={"i1" + summary.id}
+            flag={flag?.current === 'alphabet'}
           />
 
           <InputWithSuggestion
@@ -267,6 +277,7 @@ export const SingleNarrationSummariesForEdit = ({
             placeholder="سطح 2"
             onBlur={(e) => handleBlur("subject", e.target.value)}
             key={"i2" + summary.id}
+            flag={flag?.current === 'subject'}
           />
 
           <InputWithSuggestion
@@ -281,6 +292,7 @@ export const SingleNarrationSummariesForEdit = ({
             placeholder="سطح 3"
             onBlur={(e) => handleBlur("sub_subject", e.target.value)}
             key={"i3" + summary.id}
+            flag={flag?.current === 'sub_subject'}
           />
 
           <InputWithSuggestion
@@ -295,6 +307,7 @@ export const SingleNarrationSummariesForEdit = ({
             placeholder="سطح 4"
             onBlur={(e) => handleBlur("subject_3", e.target.value)}
             key={"i4" + summary.id}
+            flag={flag?.current === 'subject_3'}
           />
 
           <InputWithSuggestion
@@ -309,6 +322,7 @@ export const SingleNarrationSummariesForEdit = ({
             placeholder="سطح 5"
             onBlur={(e) => handleBlur("subject_4", e.target.value)}
             key={"i5" + summary.id}
+            flag={flag?.current === 'subject_4'}
           />
 
           <InputWithState
@@ -318,6 +332,7 @@ export const SingleNarrationSummariesForEdit = ({
             onBlur={() => handleBlur("expression", summary.expression)}
             type="text"
             placeholder="عبارت فارسی"
+            flag={flag?.current === 'expression'}
           />
           <InputWithState
             className="col-span-7"
@@ -327,6 +342,7 @@ export const SingleNarrationSummariesForEdit = ({
             type="text"
             placeholder="عبارت عربی"
             key={"i6" + summary.id}
+            flag={flag?.current === 'summary'}
           />
           <div className="relative col-span-2">
             <Dropdown
@@ -454,7 +470,7 @@ export const NarrationSummaryEditForm = ({ summaries, narration }) => {
             inSummary={summary}
             ss={ss}
             quran={quran}
-            // onInputChange={(newValues) => handleOnInputChange(index, newValues)}
+          // onInputChange={(newValues) => handleOnInputChange(index, newValues)}
           />
         );
       })}

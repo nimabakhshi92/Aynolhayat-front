@@ -31,11 +31,13 @@ export default function LoginForm() {
     else dispatch(signupUser(values));
     setNext(true);
   };
+
   console.log(user);
   if (user && user?.id !== 2 && next) return <Navigate to={"/"} />;
 
   return (
     <EntranceForm>
+
       <InputContainer reference={{ emailRef, passwordRef }} />
       <div>
         <Button variant="primary" onClickHandler={onClickHandler} type="submit">

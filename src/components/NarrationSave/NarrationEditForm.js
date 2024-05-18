@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ContentContainer } from "../general/ContentContainer";
 import Dropdown from "../ui/dropdown";
 import Input from "../ui/input";
@@ -157,7 +157,10 @@ export const NarrationEditForm = ({ narration }) => {
   const { mutate } = useModifyNarrationInfo();
   const navigate = useNavigate();
   const [trigger, setTrigger] = useState(false);
+
+  const flag = useRef(false)
   const handleBlur = (fieldName, fieldValue) => {
+    flag.current = ''
     if (!narration && fieldName === "content" && fieldValue) {
       setIsModalOpen(true);
       setTrigger(!trigger);
@@ -166,6 +169,10 @@ export const NarrationEditForm = ({ narration }) => {
       mutate({
         narrationId: narration?.id,
         data: { [fieldName]: fieldValue },
+      }, {
+        onSuccess: () => {
+          flag.current = fieldName
+        }
       });
   };
   const handleSubmit = (e) => {
@@ -232,6 +239,7 @@ export const NarrationEditForm = ({ narration }) => {
               onBlur={(e) => handleBlur("name", updatedNarration?.name)}
               type="text"
               placeholder="نام حدیث"
+              flag={flag?.current === 'name'}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -246,6 +254,7 @@ export const NarrationEditForm = ({ narration }) => {
               items={imam}
               dataKey="name"
               placeholder="نام معصوم"
+              flag={flag?.current === 'imam'}
             />
           </div>
 
@@ -257,6 +266,7 @@ export const NarrationEditForm = ({ narration }) => {
               onBlur={(e) => handleBlur("narrator", updatedNarration?.narrator)}
               type="text"
               placeholder="راویان حدیث"
+              flag={flag?.current === 'narrator'}
             />
           </div>
           <div
@@ -277,6 +287,7 @@ export const NarrationEditForm = ({ narration }) => {
               color={color}
               placeholder="متن حدیث"
               textArea={true}
+              flag={flag?.current === 'content'}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -290,6 +301,7 @@ export const NarrationEditForm = ({ narration }) => {
               items={book}
               dataKey="name"
               placeholder="نام کتاب"
+              flag={flag?.current === 'book'}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -302,6 +314,7 @@ export const NarrationEditForm = ({ narration }) => {
               }
               type="number"
               placeholder="شماره جلد کتاب"
+              flag={flag?.current === 'book_vol_no'}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -314,6 +327,7 @@ export const NarrationEditForm = ({ narration }) => {
               }
               type="number"
               placeholder="شماره صفحه"
+              flag={flag?.current === 'book_page_no'}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -331,6 +345,7 @@ export const NarrationEditForm = ({ narration }) => {
               }
               type="number"
               placeholder="شماره حدیث"
+              flag={flag?.current === 'book_narration_no'}
             />
           </div>
         </div>

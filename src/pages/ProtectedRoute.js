@@ -12,9 +12,11 @@ export const ProtectedRoute = ({ children }) => {
   var { user } = useSelector((store) => store.user);
   // var user = getUserFromLocalStorage();
   const [flag, setFlag] = useState(true);
+  console.log('ProtectedRoute', user)
   useEffect(() => {
     // var user2 = getUserFromLocalStorage();
     const loogIn = async () => {
+      console.log('useEffect', user)
       if (!user) {
         console.log("!user");
         const values = {
@@ -22,7 +24,7 @@ export const ProtectedRoute = ({ children }) => {
           password: "nima",
         };
         await dispatch(loginUser(values));
-        setFlag(!flag);
+        // setFlag(!flag);
       }
     };
     loogIn();
@@ -38,9 +40,9 @@ export const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     const getNewAccessToken = setInterval(newToken, 25000);
     return () => clearInterval(getNewAccessToken);
-  }, []);
+  }, [user]);
 
-  if (!user && false) return <Navigate to={"/login"} />;
+  if (!user) return
   else {
     return children;
   }

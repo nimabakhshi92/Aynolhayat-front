@@ -1,13 +1,24 @@
+import { useEffect, useRef } from "react";
 import classes from "./input.module.css";
 
 export default function Input(props) {
-  const { reference, className, textArea, subText, color } = props;
+  const { className, textArea, subText, color, flag } = props;
+  const ref = useRef(false)
+  useEffect(() => {
+    if (ref?.current && flag) {
+      ref.current.style.backgroundColor = 'var(--primary-color)'
+      setTimeout(() => {
+        ref.current.style.backgroundColor = ''
+      }, 1000);
+    }
+  }, [flag])
   if (textArea)
     return (
       <>
         <textarea
+
           {...props}
-          ref={reference}
+          ref={ref}
           className={`${classes.input} ${className}`}
         />
         {subText && (
@@ -20,7 +31,7 @@ export default function Input(props) {
     <>
       <input
         {...props}
-        ref={reference}
+        ref={ref}
         className={`${classes.input} ${className}`}
       />
       {subText && (

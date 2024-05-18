@@ -147,8 +147,8 @@ function ArabicTextComponent({
                               ? getFont(1.4)
                               : 1.4
                             : isSuperAdmin(user)
-                            ? getFont(1.6)
-                            : 1.6) + "rem",
+                              ? getFont(1.6)
+                              : 1.6) + "rem",
                       }}
                     >
                       {[...word].map((char) => {
@@ -426,7 +426,7 @@ export const SingleNarration = ({
               style={{
                 fontSize:
                   (isSuperAdmin(user) ? getFont(1.1) : 1.1) *
-                    (isSmallScreen ? 1 : 1.2) +
+                  (isSmallScreen ? 1 : 1.2) +
                   "rem",
                 maxWidth: "calc(100% - 100px)",
               }}
@@ -504,7 +504,7 @@ export const SingleNarration = ({
               style={{
                 fontSize:
                   (isSuperAdmin(user) ? getFont(1.2) : 1.2) *
-                    (isSmallScreen ? 1 : 1.2) +
+                  (isSmallScreen ? 1 : 1.2) +
                   "rem",
                 marginRight: "12px",
               }}
@@ -585,7 +585,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
   const searchSubject = useRef();
   const { section, selectedNode } = useSelector((store) => store.summaryTree);
   const { user } = useSelector((store) => store.user);
-  const { data: rawData } = useGetSummaryTree(section, user, personal);
+  const { data: rawData, isLoading: tableOfContentsIsLoading } = useGetSummaryTree(section, user, personal);
   const data = rawData?.filter((e) => {
     return section === "surah" || e.alphabet !== "بیان";
   });
@@ -652,7 +652,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
     try {
       const resp = await customApiCall.delete({ url });
       queryClient.refetchQueries();
-    } catch {}
+    } catch { }
   };
 
   const sort = (array) => {
@@ -673,71 +673,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
   const { treeIsOpen } = useSelector((state) => state.summaryTree);
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   let newc = data.map((level1, index1) => {
-  //     return {
-  //       value: index1 + "l1" + level1.alphabet,
-  //       label: level1.alphabet,
-  //       children: level1.subjects?.map((level2, index2) => {
-  //         return {
-  //           value: index1 + "l1" + index2 + "l2" + level2.title,
-  //           label: level2.title,
-  //           children: level2.sub_subjects?.map((level3, index3) => {
-  //             return {
-  //               value:
-  //                 index1 + "l1" + index2 + "l2" + index3 + "l3" + level3.title,
-  //               label: level3.title,
-  //               className:
-  //                 index1 +
-  //                   "l1" +
-  //                   index2 +
-  //                   "l2" +
-  //                   index3 +
-  //                   "l3" +
-  //                   level3.title ===
-  //                 clicked.value
-  //                   ? "b-red"
-  //                   : null,
-  //               children: level2.subjects_3?.map((level4, index4) => {
-  //                 return {
-  //                   value:
-  //                     index1 +
-  //                     "l1" +
-  //                     index2 +
-  //                     "l2" +
-  //                     index3 +
-  //                     "l3" +
-  //                     index4 +
-  //                     "l4" +
-  //                     level4.title,
-  //                   label: level4.title,
-  //                   children: level4.subjects_4?.map((level5, index5) => {
-  //                     return {
-  //                       value:
-  //                         index1 +
-  //                         "l1" +
-  //                         index2 +
-  //                         "l2" +
-  //                         index3 +
-  //                         "l3" +
-  //                         index4 +
-  //                         "l4" +
-  //                         index5 +
-  //                         "l5" +
-  //                         level5.title,
-  //                       label: level5.title,
-  //                     };
-  //                   }),
-  //                 };
-  //               }),
-  //             };
-  //           }),
-  //         };
-  //       }),
-  //     };
-  //   });
-  //   setC(newc);
-  // }, [data]);
+
   useEffect(() => {
     if (data?.length > 0) dispatch(setDataLoaded(true));
   }, [data]);
@@ -745,6 +681,8 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
   useEffect(() => {
     setSelectedPage(1);
   }, [selectedNode]);
+
+
 
   if (personal && !isLoggedIn(user))
     return (
@@ -763,7 +701,6 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
         message="هنوز هیچ حدیثی ذخیره نکردی. از اینجا شروع کن"
       />
     );
-
   return (
     <div className="sm:pr-8 pr-0">
       <NarrationSummaryNavbar />
@@ -772,11 +709,9 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
         <>
           <FilterModalLT
             data={data}
-            className={`${
-              !isSmallScreen || treeIsOpen ? "w-full" : "w-0"
-            }  sm:w-90 sm:mr-22 ${
-              isSmallScreen && !treeIsOpen ? "top-0" : "top-30"
-            } sm:top-50 right-0`}
+            className={`${!isSmallScreen || treeIsOpen ? "w-full" : "w-0"
+              }  sm:w-90 sm:mr-22 ${isSmallScreen && !treeIsOpen ? "top-0" : "top-30"
+              } sm:top-50 right-0`}
             style={{
               zIndex: isSmallScreen ? "110" : 10,
               // height: "calc(100vh - 6rem)",
@@ -791,7 +726,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
           />
           <div className=" mt-15 mr-0 sm:mr-[42rem] ">
             <article className="p-4 pt-20 grid gap-6 grid-cols-[1fr]">
-              {(isLoading || dataIsLoading) && (
+              {(isLoading || tableOfContentsIsLoading || dataIsLoading) && (
                 <CircularProgress
                   className="absolute top-1/2 sm:left-1/3 left-[44%]  "
                   color="success"
@@ -800,7 +735,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
               {!isLoading &&
                 !dataIsLoading &&
                 data?.length > 0 &&
-                selectedNode.narration !== "" &&
+                selectedNode[section] !== "" &&
                 narrationList?.results?.length > 0 && (
                   <>
                     <div style={{ color: "var(--primary-color)", zIndex: 2 }}>
