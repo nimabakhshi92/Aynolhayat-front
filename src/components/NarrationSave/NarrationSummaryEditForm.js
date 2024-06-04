@@ -261,6 +261,7 @@ export const SingleNarrationSummariesForEdit = ({
             value={summary.alphabet}
             placeholder="سطح 1"
             onBlur={(e) => handleBlur("alphabet", e.target.value)}
+
             key={"i1" + summary.id}
             flag={flag?.current === 'alphabet'}
           />

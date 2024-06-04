@@ -56,7 +56,8 @@ export const NarrationSubjectEditForm = ({ narration }) => {
           suggestions={subject}
           onPressEnter={() => {
             handleAdd(newSubject.current?.value);
-            newSubject.current.value = "";
+            if (newSubject.current)
+              newSubject.current.value = "";
           }}
         />
         <div
@@ -71,7 +72,8 @@ export const NarrationSubjectEditForm = ({ narration }) => {
           }}
           onClick={() => {
             handleAdd(newSubject.current?.value);
-            newSubject.current.value = "";
+            if (newSubject.current)
+              newSubject.current.value = "";
           }}
         >
           <AiOutlinePlus />

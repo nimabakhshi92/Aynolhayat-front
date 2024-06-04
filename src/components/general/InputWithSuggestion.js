@@ -1,4 +1,4 @@
-import Input from "../ui/input";
+import Input, { InputOld } from "../ui/input";
 import classes from "../ui/dropdown/dropdown.module.css";
 import { useEffect, useRef, useState } from "react";
 
@@ -60,7 +60,7 @@ export default function InputWithSuggestion({
   }, [flag])
   return (
     <div className={`relative ${parentClassName}`} ref={ref}>
-      <Input
+      <InputOld
         value={value}
         style={{ backgroundColor: 'transparent', ...style }}
         reference={reference}
@@ -82,7 +82,7 @@ export default function InputWithSuggestion({
           setOpenSuggestions(false);
         }}
         onBlur={(e) => {
-          if (openSuggestions) return;
+          // if (openSuggestions) return;
 
           if (onBlur) onBlur(e);
         }}

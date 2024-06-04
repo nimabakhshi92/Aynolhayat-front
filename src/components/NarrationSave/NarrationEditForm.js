@@ -286,7 +286,6 @@ export const NarrationEditForm = ({ narration }) => {
               subText={subText}
               color={color}
               placeholder="متن حدیث"
-              textArea={true}
               flag={flag?.current === 'content'}
             />
           </div>
