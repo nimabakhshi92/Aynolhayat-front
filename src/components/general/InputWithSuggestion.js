@@ -54,7 +54,7 @@ export default function InputWithSuggestion({
     if (ref?.current && flag) {
       ref.current.style.backgroundColor = 'var(--primary-color)'
       setTimeout(() => {
-        ref.current.style.backgroundColor = ''
+        ref.current.style.backgroundColor = 'white'
       }, 1000);
     }
   }, [flag])
@@ -62,7 +62,7 @@ export default function InputWithSuggestion({
     <div className={`relative ${parentClassName}`} ref={ref}>
       <InputOld
         value={value}
-        style={{ backgroundColor: 'transparent', ...style }}
+        style={{ backgroundColor: 'white', ...style }}
         reference={reference}
         className={className}
         type="text"

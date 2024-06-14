@@ -12,7 +12,7 @@ import shape_green from "../assets/images/shapes/shape-green.svg";
 import { Pagination } from "../components/Pagination";
 import { ContentContainer } from "../components/general/ContentContainer";
 import Dropdown, { DropdownSingleSelect } from "../components/ui/dropdown";
-import Input from "../components/ui/input";
+import Input, { InputOld } from "../components/ui/input";
 import { InputWithState } from "../components/general/InputWithState";
 import InputWithSuggestion from "../components/general/InputWithSuggestion";
 import { useQueryClient } from "@tanstack/react-query";
@@ -142,7 +142,7 @@ export const NarrationSearch = ({ personal }) => {
     try {
       const resp = await customApiCall.delete({ url });
       queryClient.refetchQueries();
-    } catch {}
+    } catch { }
   };
 
   let { data: subject } = useGetSubjects();
@@ -164,35 +164,31 @@ export const NarrationSearch = ({ personal }) => {
       >
         <div className={`px-2 ${searchStarted ? "w-full" : "sm:w-3/4"}`}>
           <section
-            className={`relative grid ${
-              searchStarted
+            className={`relative grid ${searchStarted
                 ? "grid-cols-[1fr_1fr_1fr_1fr_1fr]"
                 : "grid-cols-[1fr_1fr]"
-            } gap-4 sm:gap-8 py-2 -px-4`}
+              } gap-4 sm:gap-8 py-2 -px-4`}
           >
-            <Input
-              className={`w-full ${
-                searchStarted ? "col-span-2" : "col-span-1"
-              }`}
+            <InputOld
+              className={`w-full ${searchStarted ? "col-span-2" : "col-span-1"
+                }`}
               type="search"
               reference={searchTerm}
               placeholder="جستجو در متن عربی احادیث"
-              // onChange={() => queryClient.refetchQueries()}
+            // onChange={() => queryClient.refetchQueries()}
             />
             <InputWithSuggestion
-              parentClassName={`w-full ${
-                searchStarted ? "col-span-2" : "col-span-1"
-              }`}
+              parentClassName={`w-full ${searchStarted ? "col-span-2" : "col-span-1"
+                }`}
               className="w-full"
               reference={searchSubject}
               placeholder="#هشتگ"
               suggestions={subject}
-              // onChange={() => queryClient.refetchQueries()}
+            // onChange={() => queryClient.refetchQueries()}
             />
             <div
-              className={`w-full flex justify-center items-center ${
-                searchStarted ? "col-span-1" : "col-span-2"
-              } `}
+              className={`w-full flex justify-center items-center ${searchStarted ? "col-span-1" : "col-span-2"
+                } `}
             >
               <Button
                 onClickHandler={() => {
@@ -203,7 +199,7 @@ export const NarrationSearch = ({ personal }) => {
                 }}
                 variant="primary"
                 className={`${searchStarted ? "w-full" : "w-1/3 sm:w-1/5"}`}
-                // style={{}}
+              // style={{}}
               >
                 جستجو
               </Button>

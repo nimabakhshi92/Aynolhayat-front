@@ -623,12 +623,24 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
   const { data: options } = useGetNarrationFilterOptions();
   const treeOptions = makeTreeOptions(treeWords, section);
 
-  const { data: narrationList, isLoading } = useGetNarrationList(selectedPage, {
+  const { data: rawNarrationList, isLoading } = useGetNarrationList(selectedPage, {
     ...selectedOptions,
     ...serachOptions,
     ...treeOptions,
     user_id: personal ? user.id : null,
   });
+
+  const narrationListResult = rawNarrationList?.results?.filter((e) => {
+    const hasBayan = e?.content_summary_tree?.some(item => (
+      (item.alphabet === "بیان") &&
+      (item?.verse?.verse_no === treeOptions?.verse_no) &&
+      (item?.verse?.surah_name === treeOptions?.surah_name)
+    ))
+    return (section === "surah" && hasBayan) || (section !== "surah" && !hasBayan);
+  });
+  console.log(treeOptions)
+  const narrationList = { ...rawNarrationList, results: narrationListResult }
+
 
   const onBookmarkChange = () =>
     queryClient.invalidateQueries([
