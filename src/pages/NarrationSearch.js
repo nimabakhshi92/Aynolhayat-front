@@ -53,8 +53,9 @@ export const NarrationSearch = ({ personal }) => {
   ];
 
   const sortOptionsNew = [
-    { id: 1, title: "جدیدترین" },
-    { id: 2, title: "قدیمی ترین" },
+    { id: 1, title: "آخرین" },
+    { id: 2, title: "اولین" },
+    { id: 3, title: 'به روز ترین' }
   ];
 
   const [selectedSortOptionNew, setSelectedSortOptionNew] = useState(
@@ -101,7 +102,7 @@ export const NarrationSearch = ({ personal }) => {
     subjects_search: searchSubject?.current?.value || "",
     texts_search: removeTashkel(searchTerm?.current?.value || ""),
     // sort_by: selectedSortOption?.id === 2 ? "modified" : "created",
-    sort_by: "modified",
+    sort_by: selectedSortOptionNew?.id === 3 ? 'modified' : "created",
     sort_type: selectedSortOptionNew?.id === 2 ? "asc" : "desc",
   };
   const [selectedOptions, setSelectedOptions] = useState(emptyOptions);
@@ -165,8 +166,8 @@ export const NarrationSearch = ({ personal }) => {
         <div className={`px-2 ${searchStarted ? "w-full" : "sm:w-3/4"}`}>
           <section
             className={`relative grid ${searchStarted
-                ? "grid-cols-[1fr_1fr_1fr_1fr_1fr]"
-                : "grid-cols-[1fr_1fr]"
+              ? "grid-cols-[1fr_1fr_1fr_1fr_1fr]"
+              : "grid-cols-[1fr_1fr]"
               } gap-4 sm:gap-8 py-2 -px-4`}
           >
             <InputOld

@@ -16,9 +16,7 @@ export const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     // var user2 = getUserFromLocalStorage();
     const loogIn = async () => {
-      console.log('useEffect', user)
       if (!user) {
-        console.log("!user");
         const values = {
           username: "nima@a.com",
           password: "nima",

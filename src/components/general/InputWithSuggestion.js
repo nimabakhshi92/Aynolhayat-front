@@ -49,12 +49,21 @@ export default function InputWithSuggestion({
   const mouseEntered = useRef(false);
   const suggestionsClicked = useRef(false);
 
+  const [bgColor, setBGColor] = useState('')
   const ref = useRef(false)
+  // useEffect(() => {
+  //   if (ref?.current && flag) {
+  //     ref.current.style.backgroundColor = 'var(--primary-color)'
+  //     setTimeout(() => {
+  //       ref.current.style.backgroundColor = 'white'
+  //     }, 1000);
+  //   }
+  // }, [flag])
   useEffect(() => {
-    if (ref?.current && flag) {
-      ref.current.style.backgroundColor = 'var(--primary-color)'
+    if (flag) {
+      setBGColor('var(--primary-color)')
       setTimeout(() => {
-        ref.current.style.backgroundColor = 'white'
+        setBGColor('white')
       }, 1000);
     }
   }, [flag])
@@ -62,7 +71,7 @@ export default function InputWithSuggestion({
     <div className={`relative ${parentClassName}`} ref={ref}>
       <InputOld
         value={value}
-        style={{ backgroundColor: 'white', ...style }}
+        style={{ ...style, backgroundColor: bgColor }}
         reference={reference}
         className={className}
         type="text"

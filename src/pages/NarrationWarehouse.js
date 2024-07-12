@@ -10,7 +10,7 @@ import shape_green from "../assets/images/shapes/shape-green.svg";
 import { Pagination } from "../components/Pagination";
 import { ContentContainer } from "../components/general/ContentContainer";
 import Dropdown, { DropdownSingleSelect } from "../components/ui/dropdown";
-import Input from "../components/ui/input";
+import Input, { InputOld } from "../components/ui/input";
 import { InputWithState } from "../components/general/InputWithState";
 import InputWithSuggestion from "../components/general/InputWithSuggestion";
 import {
@@ -399,7 +399,7 @@ export const SingleNarration = ({
               آیا از حذف حدیث مطمئن هستید؟ لطفا در کادر زیر کلمه delete را وارد
               کنید:
             </p>
-            <Input reference={pass} />
+            <InputOld reference={pass} />
             <Button
               variant="primary"
               className="w-30"
@@ -638,7 +638,6 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
     ))
     return (section === "surah" && hasBayan) || (section !== "surah" && !hasBayan);
   });
-  console.log(treeOptions)
   const narrationList = { ...rawNarrationList, results: narrationListResult }
 
 
@@ -663,8 +662,20 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
     const url = apiUrls.narration.get(narrationId);
     try {
       const resp = await customApiCall.delete({ url });
-      queryClient.refetchQueries();
     } catch { }
+    finally {
+      queryClient.invalidateQueries([
+        "narrationList",
+        selectedPage,
+        {
+          ...selectedOptions,
+          ...serachOptions,
+          ...treeOptions,
+          user_id: personal ? user.id : null,
+        },
+      ]);
+      // queryClient.refetchQueries();
+    }
   };
 
   const sort = (array) => {

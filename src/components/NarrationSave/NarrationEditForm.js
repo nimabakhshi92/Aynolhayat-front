@@ -287,6 +287,7 @@ export const NarrationEditForm = ({ narration }) => {
               color={color}
               placeholder="متن حدیث"
               flag={flag?.current === 'content'}
+              textArea={true}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>

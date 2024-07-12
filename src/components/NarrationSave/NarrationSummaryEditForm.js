@@ -262,7 +262,7 @@ export const SingleNarrationSummariesForEdit = ({
             placeholder="سطح 1"
             onBlur={(e) => handleBlur("alphabet", e.target.value)}
 
-            key={"i1" + summary.id}
+            key={"i0" + summary.id}
             flag={flag?.current === 'alphabet'}
           />
 
@@ -277,7 +277,7 @@ export const SingleNarrationSummariesForEdit = ({
             value={summary.subject}
             placeholder="سطح 2"
             onBlur={(e) => handleBlur("subject", e.target.value)}
-            key={"i2" + summary.id}
+            key={"i1" + summary.id}
             flag={flag?.current === 'subject'}
           />
 
@@ -292,7 +292,7 @@ export const SingleNarrationSummariesForEdit = ({
             value={summary.sub_subject}
             placeholder="سطح 3"
             onBlur={(e) => handleBlur("sub_subject", e.target.value)}
-            key={"i3" + summary.id}
+            key={"i2" + summary.id}
             flag={flag?.current === 'sub_subject'}
           />
 
@@ -307,7 +307,7 @@ export const SingleNarrationSummariesForEdit = ({
             value={summary.subject_3}
             placeholder="سطح 4"
             onBlur={(e) => handleBlur("subject_3", e.target.value)}
-            key={"i4" + summary.id}
+            key={"i3" + summary.id}
             flag={flag?.current === 'subject_3'}
           />
 
@@ -322,28 +322,36 @@ export const SingleNarrationSummariesForEdit = ({
             value={summary.subject_4}
             placeholder="سطح 5"
             onBlur={(e) => handleBlur("subject_4", e.target.value)}
-            key={"i5" + summary.id}
+            key={"i4" + summary.id}
             flag={flag?.current === 'subject_4'}
           />
-
-          <InputWithState
-            className="col-span-7"
+          <InputWithSuggestion
+            parentClassName="col-span-7"
+            className="w-full"
             value={summary.expression}
-            setValue={(newValue) => handleChange("expression", newValue)}
             onBlur={() => handleBlur("expression", summary.expression)}
             type="text"
             placeholder="عبارت فارسی"
+            onChange={(e) => {
+              handleChange("expression", e.target.value)
+            }}
             flag={flag?.current === 'expression'}
+            key={"i5" + summary.id}
           />
-          <InputWithState
-            className="col-span-7"
+          <InputWithSuggestion
+            parentClassName="col-span-7"
+            className="w-full"
             value={summary.summary}
-            setValue={(newValue) => handleChange("summary", newValue)}
             onBlur={() => handleBlur("summary", summary.summary)}
+
             type="text"
             placeholder="عبارت عربی"
-            key={"i6" + summary.id}
+
+            onChange={(e) => {
+              handleChange("summary", e.target.value)
+            }}
             flag={flag?.current === 'summary'}
+            key={"i6" + summary.id}
           />
           <div className="relative col-span-2">
             <Dropdown
@@ -397,6 +405,8 @@ export const SingleNarrationSummariesForEdit = ({
             disabled={true}
             key={"i9" + summary.id}
           />
+
+
         </div>
       </div>
     </>
