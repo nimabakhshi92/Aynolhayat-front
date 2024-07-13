@@ -13,6 +13,8 @@ import { getUserFromLocalStorage } from "../utils/localStorage";
 import { isAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
 import { MdBookmarkAdd } from "react-icons/md";
 import { PiFolderUser } from "react-icons/pi";
+import { TbArrowsTransferDown } from "react-icons/tb";
+import { FiSend } from "react-icons/fi";
 
 const NavIcon = ({ iconName, isActive, ...props }) => {
   const icons = {
@@ -21,6 +23,7 @@ const NavIcon = ({ iconName, isActive, ...props }) => {
     save: BiSave,
     saved: BiBookmark,
     "my-narrations": PiFolderUser,
+    transfer: FiSend
   };
   const SelectedIcon = icons[iconName];
   return (
@@ -69,12 +72,14 @@ export const SidebarLT = () => {
   const pageName = pathname.includes("search")
     ? "search"
     : pathname.includes("saved")
-    ? "saved"
-    : pathname.includes("save")
-    ? "save"
-    : pathname.includes("my-narrations")
-    ? "my-narrations"
-    : "";
+      ? "saved"
+      : pathname.includes("save")
+        ? "save"
+        : pathname.includes("transfer")
+          ? "transfer"
+          : pathname.includes("my-narrations")
+            ? "my-narrations"
+            : "";
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const { user } = useSelector((store) => store.user);
 
@@ -120,6 +125,16 @@ export const SidebarLT = () => {
       isActive: pageName === "save",
       show: isAdmin(user),
     },
+    {
+      icon: <FiSend />,
+      name: "transfer",
+      displayText: "درخواست ها",
+      to: "transfer",
+      isActive: pageName === "transfer",
+      show: isAdmin(user),
+    },
+
+
   ];
 
   const [navItems, setNavItems] = useState(navItemsDefault);
@@ -144,9 +159,8 @@ export const SidebarLT = () => {
 
   return (
     <nav
-      className={`bg-white fixed right-0 ${
-        isSmallScreen ? "bottom-0" : "top-32 h-full"
-      }`}
+      className={`bg-white fixed right-0 ${isSmallScreen ? "bottom-0" : "top-32 h-full"
+        }`}
       style={{
         transition: "all 0.3s linear",
         // display: open ? "block" : "none",
@@ -178,20 +192,19 @@ export const SidebarLT = () => {
                   justifyContent={isSmallScreen ? "center" : "space-between"}
                   alignItems="center"
                   flexDirection="row"
-                  className={`w-full h-10 px-3 ${
-                    item.isActive
-                      ? "bg-[#0bab6425] pl-2"
-                      : "bg-[white] hover:bg-[#0bab6410] hover:scale-105"
-                  }  ${isSmallScreen && "justify-center"} `}
+                  className={`w-full h-10 px-3 ${item.isActive
+                    ? "bg-[#0bab6425] pl-2"
+                    : "bg-[white] hover:bg-[#0bab6410] hover:scale-105"
+                    }  ${isSmallScreen && "justify-center"} `}
                   style={{
                     borderLeft:
                       !isSmallScreen && item.isActive && "4px solid #0bab64",
                     borderBottom:
                       isSmallScreen && item.isActive && "4px solid #0bab64",
                   }}
-                  // style={{
-                  //   backgroundColor: item.isActive ? "#0bab6425" : "white",
-                  // }}
+                // style={{
+                //   backgroundColor: item.isActive ? "#0bab6425" : "white",
+                // }}
                 >
                   {!isSmallScreen && (
                     <span

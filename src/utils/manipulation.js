@@ -47,7 +47,7 @@ export const extractTreeWords = (value, data, section, subSection1) => {
       treeWords.push(
         data[lvl1][subSection2][lvl2].sub_subjects[lvl3].subjects_3[lvl4].title
       );
-  } catch {}
+  } catch { }
   return treeWords;
 };
 export const extractText = (value) => {
@@ -75,4 +75,10 @@ export const makeTreeOptions = (treeWords, section) => {
     if (word) treeOption[treeKey[index]] = word;
   });
   return treeOption;
+};
+
+export const getSortType = (headerDataKey, sortColumn, isSortAscending) => {
+  if (headerDataKey !== sortColumn) return "Sorting";
+  if (isSortAscending) return "SortingAscending";
+  return "SortingDescending";
 };

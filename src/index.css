@@ -6,10 +6,12 @@
   font-family: IRANSansWeb;
   src: url("./assets/fonts/IRANSansWeb(FaNum).woff");
 }
+
 @import url("https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2&family=Gulzar&family=Harmattan&family=Noto+Sans+Arabic&family=Rubik&family=Vazirmatn&display=swap");
 
 :root {
   --primary-color: #0bab64;
+
   --primary-color-light: #0bab6450;
   --secondary-brown-color: #d69f69;
   --secondary-blue-color: #0085ff;
@@ -24,7 +26,13 @@
   --neutral-color-200: #dfe4ea;
   --neutral-color-100: #f1f2f6;
   --error-color: #ff0000;
+
+  --green-100: #0bab6433;
+  --blue-200: #0085ff33;
+  --yellow-100: #d69f6933;
+  --red-100: #ff000033;
 }
+
 html {
   font-size: 62.5%;
   font-family: IRANSansWeb, serif;
@@ -38,9 +46,24 @@ html {
   line-height: 2;
   background-color: var(--blue-100);
 }
+
 body {
   font-size: 1.6rem;
 }
+
+.t-iran-sans {
+  font-family: IRANSansWeb;
+}
+
+.t-large {
+  font-size: 1.2rem;
+}
+
+.t-semi-large {
+  font-size: 1.1rem;
+}
+
+
 *,
 ::before,
 ::after {
@@ -78,6 +101,7 @@ a {
   text-decoration: none;
   cursor: "pointer";
 }
+
 .Toastify__toast {
   font-family: IRANSansWeb, serif;
   font-size: 1.5rem;
@@ -85,38 +109,48 @@ a {
   line-height: 1.7rem;
   letter-spacing: 0.04em;
 }
+
 .section-center {
   /* padding: 0 1.8rem; */
 }
+
 /* .rct-icons-fa4 .rct-icon-expand-close::before {
   content: "\f053" !important;
 } */
 .rct-icons-fa4 .rct-icon-parent-close::before {
   content: "\f053" !important;
 }
+
 .rct-icons-fa4 .rct-icon-parent-open::before {
   content: "\f078" !important;
 }
+
 .react-checkbox-tree ol ol {
   padding-right: 24px !important;
   padding-left: 0 !important;
 }
+
 .rct-text {
   align-items: start !important;
   position: relative;
 }
+
 .rct-checkbox {
   display: none;
 }
+
 .rct-node-icon {
   /* display: none; */
 }
+
 .rct-node-expanded {
   background-color: #eefff8 !important;
 }
+
 .rct-node-expanded .rct-title {
   color: var(--primary-color) !important;
 }
+
 .rct-node-clickable {
   width: 100%;
   /* position: absolute;
@@ -124,19 +158,24 @@ a {
   left: 0;
   padding-right: 25px; */
 }
+
 .rct-collapse.rct-collapse-btn {
   height: 34px;
   display: none;
 }
+
 .rct-node-icon {
   color: #82828b !important;
 }
+
 .b-red {
   background-color: #aaefd5;
 }
+
 .rct-node-clickable:focus {
   background: transparent !important;
 }
+
 .arabic-text {
   color: blue;
   position: relative;
@@ -150,15 +189,18 @@ a {
   top: 0;
   right: 0;
 }
+
 .arabic-text {
   font-size: 18px;
   color: blue;
-  direction: rtl; /* Right-to-left text direction for Arabic */
+  direction: rtl;
+  /* Right-to-left text direction for Arabic */
 }
 
 .diacritic {
   color: red;
 }
+
 .main-bg {
   background-image: url("assets/images/MainBG.png");
 }

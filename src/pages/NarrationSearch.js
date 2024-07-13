@@ -146,6 +146,33 @@ export const NarrationSearch = ({ personal }) => {
     } catch { }
   };
 
+  const [allSentStatus, setAllSentStatus] = useState({})
+
+  const handleSend = async (narrationId) => {
+    setAllSentStatus(allSentStatus => {
+      const newAllSentStatus = { ...allSentStatus }
+      newAllSentStatus[narrationId] = 'sending'
+      return newAllSentStatus
+    })
+
+    setTimeout(() => {
+      setAllSentStatus(allSentStatus => {
+        const newAllSentStatus = { ...allSentStatus }
+        newAllSentStatus[narrationId] = 'accepted'
+        return newAllSentStatus
+      })
+    }, 3000);
+    setTimeout(() => {
+      setAllSentStatus(allSentStatus => {
+        const newAllSentStatus = { ...allSentStatus }
+        newAllSentStatus[narrationId] = 'pending'
+        return newAllSentStatus
+      })
+    }, 1000);
+  }
+
+
+
   let { data: subject } = useGetSubjects();
   subject = subject?.subjects || [];
   const [searchStarted, setSearchStarted] = useState(true);
@@ -356,6 +383,8 @@ export const NarrationSearch = ({ personal }) => {
                       key={index}
                       onEdit={() => navigate(`${narration?.id}`)}
                       onDelete={(pass) => handleDelete(narration?.id, pass)}
+                      onSend={() => handleSend(narration?.id)}
+                      sentStatus={allSentStatus[narration?.id]}
                       narration={narration}
                       showSummary={false}
                       personal={personal}

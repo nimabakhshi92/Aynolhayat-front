@@ -27,8 +27,10 @@ import { NarrationSummaryEditForm } from "../components/NarrationSave/NarrationS
 import { NarrationFootnoteEditForm } from "../components/NarrationSave/NarrationFootnoteEditForm";
 import { isAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
 import { TextAndAction } from "./Bookmarks";
+import Modal from '@mui/material/Modal';
+import { Stack } from "@mui/material";
 
-export const NarrationEdit = () => {
+export const NarrationEdit = ({ checkOnly }) => {
   const { narrationId } = useParams();
   const { user } = useSelector((store) => store.user);
 
@@ -48,6 +50,8 @@ export const NarrationEdit = () => {
       window.scrollTo({ left: 0, top: window.innerHeight, behavior: "smooth" });
   }, [!!narration]);
   // if (!isLoggedIn(user)) return <Navigate to={"/"} />;
+  if (checkOnly && !isSuperAdmin(user))
+    return <Navigate to={"/"} />
   if (!isLoggedIn(user))
     return (
       <TextAndAction
@@ -59,6 +63,27 @@ export const NarrationEdit = () => {
 
   return (
     <section className="mt-8 pb-4 px-2 sm:px-4 ">
+      <div></div>
+      {checkOnly &&
+        <div className="-mt-8 " style={{
+          width: '100vw',
+          height: '100vh',
+          right: -10,
+          left: -10,
+          position: 'fixed',
+          zIndex: 10,
+          backgroundColor: '#ffffff01'
+          // backgroundColor: '#f00'
+        }}>
+          <Stack className="w-full h-10 bg-[white] justify-center" style={{ borderBottom: '1px solid var(--neutral-color-400)' }}>
+            <Button>
+              Salam
+            </Button>
+          </Stack>
+
+
+        </div>
+      }
       <NarrationEditForm narration={narration} />
       {narration && (
         <>

@@ -51,6 +51,8 @@ import styled from "@emotion/styled";
 import { tooltipClasses } from "@mui/material/Tooltip";
 import { NarrationSearch } from "./NarrationSearch";
 import { useQueryClient } from "@tanstack/react-query";
+import { Label, PendingNarrationSentLabel, RejectedNarrationSentLabel, SendingNarrationSentLabel, AcceptedNarrationSentLabel } from "../components/ui/Label";
+import { FiSend } from "react-icons/fi";
 
 export const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -239,6 +241,8 @@ export const SingleNarration = ({
   narration,
   onDelete,
   onEdit,
+  onSend,
+  sentStatus,
   onBookmarkChange,
   showSummary = false,
   lvl1,
@@ -317,6 +321,7 @@ export const SingleNarration = ({
       }, 1000);
   }, [openTooltip]);
   const r = useRef();
+
   return (
     <ContentContainer
       // title={`${narration.book.name}`}
@@ -324,6 +329,24 @@ export const SingleNarration = ({
       actionComponent={
         <div className=" gap-4 items-center flex">
           <>
+            {sentStatus === 'sending' &&
+              <SendingNarrationSentLabel />
+            }
+            {sentStatus === 'pending' &&
+
+              <PendingNarrationSentLabel />}
+            {sentStatus === 'accepted' &&
+              <AcceptedNarrationSentLabel />
+            }
+            {sentStatus === 'rejected' &&
+              <RejectedNarrationSentLabel />
+            }
+            {(isAdmin(user) && personal && (!['sending', 'pending', 'accepted'].includes(sentStatus))) && onSend && (
+              <FiSend
+                className="cursor-pointer  w-5 h-5"
+                onClick={onSend}
+              />
+            )}
             {(isSuperAdmin(user) || personal) && onDelete && (
               <RiDeleteBin2Line
                 className="cursor-pointer w-5 h-5"
@@ -374,6 +397,7 @@ export const SingleNarration = ({
                 </Popper> */}
               </>
             )}
+
           </>
         </div>
       }
@@ -631,6 +655,8 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
   });
 
   const narrationListResult = rawNarrationList?.results?.filter((e) => {
+    if (section === "bank")
+      return true
     const hasBayan = e?.content_summary_tree?.some(item => (
       (item.alphabet === "بیان") &&
       (item?.verse?.verse_no === treeOptions?.verse_no) &&
@@ -687,21 +713,9 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
     }
   };
 
-  const sort = (array) => {
-    if (!array) return array;
-    const newArray = [...array];
-    newArray.sort();
-    return newArray;
-  };
   let { data: subject, isLoading: dataIsLoading } = useGetSubjects();
   subject = subject?.subjects || [];
-  const dropdown = [
-    { id: 1, title: "پربازدیدترین" },
-    { id: 2, title: "پرتکرارترین" },
-    { id: 3, title: "قدیمی ترین" },
-  ];
-  const [a, setA] = useState({ id: 1, title: "پربازدیدترین" });
-  const [c, setC] = useState([]);
+
   const { treeIsOpen } = useSelector((state) => state.summaryTree);
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const dispatch = useDispatch();
@@ -804,23 +818,26 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
                       )}
                     </div>
                     <section className="-mt-6" style={{}}>
-                      {narrationList?.results?.map((narration, index) => (
-                        <SingleNarration
-                          key={index}
-                          onEdit={() =>
-                            navigate(`/edit narration/${narration?.id}`)
-                          }
-                          onDelete={(pass) => handleDelete(narration?.id, pass)}
-                          narration={narration}
-                          showSummary={true}
-                          lvl1={treeWords[0]}
-                          lvl2={treeWords[1]}
-                          lvl3={treeWords[2]}
-                          section={section}
-                          personal={personal}
-                          onBookmarkChange={onBookmarkChange}
-                        />
-                      ))}
+                      {narrationList?.results?.map((narration, index) => {
+                        return (
+                          <SingleNarration
+                            key={index}
+                            onEdit={() =>
+                              navigate(`/edit narration/${narration?.id}`)
+                            }
+                            onDelete={(pass) => handleDelete(narration?.id, pass)}
+
+                            narration={narration}
+                            showSummary={true}
+                            lvl1={treeWords[0]}
+                            lvl2={treeWords[1]}
+                            lvl3={treeWords[2]}
+                            section={section}
+                            personal={personal}
+                            onBookmarkChange={onBookmarkChange}
+                          />
+                        )
+                      })}
                     </section>
                     {narrationList?.last > 1 && (
                       <Pagination

@@ -1,37 +1,31 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
+import { ThemeProvider } from "@mui/material";
+import { QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 import Login from "./components/user-entrance/login";
 import SingUp from "./components/user-entrance/sing-up";
-import Modal from "./components/ui/modal";
-import NarrationSummaries from "./pages/NarrationSummaries";
-import { store } from "./store";
-import { ProtectedRoute } from "./pages/ProtectedRoute";
-import { SharedLayout, SharedLayoutLT } from "./pages/SharedLayout";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { NarrationSave } from "./pages/NarrationSave";
-import "react-toastify/dist/ReactToastify.css";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import {
-  NarrationWarehouse,
-  NarrationWarehouseLT,
-} from "./pages/NarrationWarehouse";
-import { NarrationEdit } from "./pages/NarrationEdit";
-import { NarrationSummariesNew } from "./pages/NarrationSummariesNew";
-import { NarrationSummariesNewLT } from "./pages/NarrationSummariesNewLT";
-import { NarrationSearch } from "./pages/NarrationSearch";
-import { ThemeProvider } from "@mui/material";
-import { theme } from "./styles/theme";
 import { Bookmarks } from "./pages/Bookmarks";
+import { NarrationEdit } from "./pages/NarrationEdit";
+import { NarrationSearch } from "./pages/NarrationSearch";
+import {
+  NarrationWarehouseLT
+} from "./pages/NarrationWarehouse";
+import { ProtectedRoute } from "./pages/ProtectedRoute";
+import { SharedLayoutLT } from "./pages/SharedLayout";
+import { store } from "./store";
+import { theme } from "./styles/theme";
 
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import {
-  PersistQueryClientProvider,
-  persistQueryClient,
+  PersistQueryClientProvider
 } from "@tanstack/react-query-persist-client";
+import { Transfer } from "./pages/Transfer";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -95,7 +89,10 @@ function App() {
                 path="my-narrations/:narrationId"
                 element={<NarrationEdit />}
               ></Route>
-
+              <Route
+                path="shared-narrations/:narrationId"
+                element={<NarrationEdit checkOnly={true} />}
+              ></Route>
               <Route
                 path="/"
                 element={
@@ -104,8 +101,6 @@ function App() {
                   </ProtectedRoute>
                 }
               >
-                {/* <Route path="s/" element={<NarrationSummariesNewLT />}></Route> */}
-                {/* <Route index element={<NarrationWarehouse />}></Route> */}
                 <Route index element={<NarrationWarehouseLT />}></Route>
                 <Route
                   path="my-narrations/"
@@ -113,7 +108,7 @@ function App() {
                 ></Route>
                 <Route path="saved/" element={<Bookmarks />}></Route>
                 <Route path="search/" element={<NarrationSearch />}></Route>
-                {/* <Route path="summary" element={<NarrationSummariesNew />}></Route> */}
+                <Route path="transfer/" element={<Transfer />}></Route>
               </Route>
             </Routes>
           </BrowserRouter>
