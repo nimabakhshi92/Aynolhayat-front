@@ -636,7 +636,16 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
       (item?.verse?.verse_no === treeOptions?.verse_no) &&
       (item?.verse?.surah_name === treeOptions?.surah_name)
     ))
-    return (section === "surah" && hasBayan) || (section !== "surah" && !hasBayan);
+    const hasRelevantVerse = e?.content_summary_tree?.some(item => (
+      (item.alphabet === treeOptions.alphabet) &&
+      (item.subject === treeOptions.subject) &&
+      (item.sub_subject === treeOptions.sub_subject) &&
+      (item?.verse?.verse_no) &&
+      (item?.verse?.surah_name)
+    ))
+
+    return (section === "surah" && hasBayan) || (section === "narration" && !hasBayan)
+      || (section === "verse" && !hasBayan && hasRelevantVerse);
   });
   const narrationList = { ...rawNarrationList, results: narrationListResult }
 

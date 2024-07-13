@@ -44,7 +44,7 @@ export const NarrationSummaryNavbar = ({ className }) => {
           onClick={() => {
             dispatch(setSection({ section: "bank" }));
           }}
-          title="مخزن"
+          title="جستجو"
           selected={section === "bank"}
         />
         <NavbarItem
@@ -58,7 +58,7 @@ export const NarrationSummaryNavbar = ({ className }) => {
           onClick={() => {
             dispatch(setSection({ section: "surah" }));
           }}
-          title="تفسیر"
+          title="تفاسیر آیات"
           selected={section === "surah"}
         />
 
