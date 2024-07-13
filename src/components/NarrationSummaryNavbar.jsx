@@ -58,7 +58,7 @@ export const NarrationSummaryNavbar = ({ className }) => {
           onClick={() => {
             dispatch(setSection({ section: "surah" }));
           }}
-          title="تفاسیر آیات"
+          title="تفسیر سوره ای"
           selected={section === "surah"}
         />
 
