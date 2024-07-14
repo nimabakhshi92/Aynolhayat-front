@@ -329,7 +329,7 @@ export const SingleNarration = ({
       actionComponent={
         <div className=" gap-4 items-center flex">
           <>
-            {sentStatus === 'sending' &&
+            {/* {sentStatus === 'sending' &&
               <SendingNarrationSentLabel />
             }
             {sentStatus === 'pending' &&
@@ -346,7 +346,7 @@ export const SingleNarration = ({
                 className="cursor-pointer  w-5 h-5"
                 onClick={onSend}
               />
-            )}
+            )} */}
             {(isSuperAdmin(user) || personal) && onDelete && (
               <RiDeleteBin2Line
                 className="cursor-pointer w-5 h-5"
@@ -662,6 +662,12 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
       (item?.verse?.verse_no === treeOptions?.verse_no) &&
       (item?.verse?.surah_name === treeOptions?.surah_name)
     ))
+    const hasOtherThanBayan = e?.content_summary_tree?.some(item => (
+      (item.alphabet !== "بیان") &&
+      (item.alphabet === treeOptions.alphabet) &&
+      (item?.subject === treeOptions?.subject) &&
+      (item?.sub_subject === treeOptions?.sub_subject)
+    ))
     const hasRelevantVerse = e?.content_summary_tree?.some(item => (
       (item.alphabet === treeOptions.alphabet) &&
       (item.subject === treeOptions.subject) &&
@@ -670,10 +676,13 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
       (item?.verse?.surah_name)
     ))
 
-    return (section === "surah" && hasBayan) || (section === "narration" && !hasBayan)
-      || (section === "verse" && !hasBayan && hasRelevantVerse);
+    return (section === "surah" && hasBayan) || (section === "narration" && hasOtherThanBayan)
+      || (section === "verse" && hasOtherThanBayan && hasRelevantVerse);
   });
   const narrationList = { ...rawNarrationList, results: narrationListResult }
+
+  console.log(rawNarrationList, narrationListResult)
+  console.log(section)
 
 
   const onBookmarkChange = () =>
@@ -739,14 +748,15 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
       />
     );
 
-  if (personal && !narrationList?.results?.length && !isLoading)
-    return (
-      <TextAndAction
-        onClick={() => navigate("/save narration")}
-        buttonText="حدیث جدید"
-        message="هنوز هیچ حدیثی ذخیره نکردی. از اینجا شروع کن"
-      />
-    );
+
+  // if (personal && !narrationList?.results?.length && !isLoading)
+  //   return (
+  //     <TextAndAction
+  //       onClick={() => navigate("/save narration")}
+  //       buttonText="حدیث جدید"
+  //       message="هنوز هیچ حدیثی ذخیره نکردی. از اینجا شروع کن"
+  //     />
+  //   );
   return (
     <div className="sm:pr-8 pr-0">
       <NarrationSummaryNavbar />

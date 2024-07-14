@@ -12,7 +12,6 @@ export default function Input(props) {
       }, 1000);
     }
   }, [flag])
-  console.log(textArea)
   if (textArea)
     return (
       <>

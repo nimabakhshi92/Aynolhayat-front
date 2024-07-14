@@ -39,10 +39,12 @@ export default function InputWithSuggestion({
 
   const suggestionsExist = matchedSuggesttions?.length > 0;
   const onMenuClick = async (item) => {
+    console.log(item, reference, !!onChange, !!onPressEnter)
     if (reference) reference.current.value = item;
     if (reference && onChange) onChange();
     if (!reference && onChange && onPressEnter) {
       // await onChange({ target: { value: item } });
+      console.log(item)
       await onPressEnter({ target: { value: item } });
     }
   };
@@ -67,8 +69,11 @@ export default function InputWithSuggestion({
       }, 1000);
     }
   }, [flag])
+
+
   return (
-    <div className={`relative ${parentClassName}`} ref={ref}>
+    <div className={`relative ${parentClassName}`} ref={ref}
+    >
       <InputOld
         value={value}
         style={{ ...style, backgroundColor: bgColor }}
@@ -91,8 +96,7 @@ export default function InputWithSuggestion({
           setOpenSuggestions(false);
         }}
         onBlur={(e) => {
-          // if (openSuggestions) return;
-
+          if (openSuggestions) return;
           if (onBlur) onBlur(e);
         }}
         onChange={(e) => {
@@ -120,7 +124,7 @@ export default function InputWithSuggestion({
           {matchSearch()?.map((item, index) => (
             <li
               key={index}
-              onClick={() => {
+              onClick={(e) => {
                 setOpenSuggestions(false);
                 onMenuClick(item);
               }}

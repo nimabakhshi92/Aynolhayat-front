@@ -169,6 +169,8 @@ export const SingleNarrationSummariesForEdit = ({
       });
   };
   const handleBlur = (key, newValue) => {
+    console.log('handleBlur', newValue)
+
     flag.current = ''
     if (
       !newValue &&
@@ -256,6 +258,7 @@ export const SingleNarrationSummariesForEdit = ({
             className="w-full"
             onPressEnter={(e) => handleBlur("alphabet", e.target.value)}
             onChange={(e) => {
+              console.log('OnChange', e.target.value)
               handleChange("alphabet", e.target.value);
             }}
             value={summary.alphabet}
@@ -330,6 +333,7 @@ export const SingleNarrationSummariesForEdit = ({
             className="w-full"
             value={summary.expression}
             onBlur={() => handleBlur("expression", summary.expression)}
+            onPressEnter={() => handleBlur("expression", summary.expression)}
             type="text"
             placeholder="عبارت فارسی"
             onChange={(e) => {
@@ -343,6 +347,7 @@ export const SingleNarrationSummariesForEdit = ({
             className="w-full"
             value={summary.summary}
             onBlur={() => handleBlur("summary", summary.summary)}
+            onPressEnter={() => handleBlur("summary", summary.summary)}
 
             type="text"
             placeholder="عبارت عربی"

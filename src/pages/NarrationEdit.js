@@ -102,7 +102,14 @@ export const NarrationEdit = ({ checkOnly }) => {
             variant="primary"
             className="w-40 h-8"
             style={{ fontSize: "14px" }}
-            onClickHandler={() => navigate("/")}
+            onClickHandler={() => {
+              if (!isSuperAdmin(user))
+                navigate("/my-narrations")
+              else {
+                navigate("/")
+              }
+            }
+            }
           >
             اتمام ویرایش و بازگشت
           </Button>
