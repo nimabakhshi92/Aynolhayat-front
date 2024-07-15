@@ -125,14 +125,14 @@ export const SidebarLT = () => {
       isActive: pageName === "save",
       show: isAdmin(user),
     },
-    // {
-    //   icon: <FiSend />,
-    //   name: "transfer",
-    //   displayText: "درخواست ها",
-    //   to: "transfer",
-    //   isActive: pageName === "transfer",
-    //   show: isAdmin(user),
-    // },
+    {
+      icon: <FiSend />,
+      name: "transfer",
+      displayText: "درخواست ها",
+      to: "transfer",
+      isActive: pageName === "transfer",
+      show: isAdmin(user),
+    },
 
 
   ];

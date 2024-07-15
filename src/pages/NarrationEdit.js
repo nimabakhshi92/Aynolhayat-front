@@ -5,10 +5,13 @@ import Tag from "../components/ui/tag";
 import { AiOutlinePlus, AiOutlinePlusCircle } from "react-icons/ai";
 import Dropdown from "../components/ui/dropdown";
 import {
+  duplicateSharedNarration,
+  updateSharedNarrations,
   useGetBooks,
   useGetImam,
   useGetNarrationFilterOptions,
   useGetNarrationIndividual,
+  useGetSingleSharedNarration,
   useGetSubjects,
   useGetSurah,
   useGetVerse,
@@ -25,21 +28,26 @@ import { NarrationEditForm } from "../components/NarrationSave/NarrationEditForm
 import { NarrationSubjectEditForm } from "../components/NarrationSave/NarrationSubjectEditForm";
 import { NarrationSummaryEditForm } from "../components/NarrationSave/NarrationSummaryEditForm";
 import { NarrationFootnoteEditForm } from "../components/NarrationSave/NarrationFootnoteEditForm";
-import { isAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
+import { isAdmin, isCheckerAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
 import { TextAndAction } from "./Bookmarks";
 import Modal from '@mui/material/Modal';
 import { Stack } from "@mui/material";
+import { shareNarrationStatus } from "../utils/enums";
 
 export const NarrationEdit = ({ checkOnly }) => {
-  const { narrationId } = useParams();
+  const { narrationId, sharedNarrationId } = useParams();
   const { user } = useSelector((store) => store.user);
 
   const navigate = useNavigate();
 
-  const { data: narration, isLoading } = useGetNarrationIndividual(
+  const { data: narrationIndividual, isLoading } = useGetNarrationIndividual(
     narrationId || 0,
     !isSuperAdmin(user) ? user : undefined
   );
+
+  const { data: sharedNarration } = useGetSingleSharedNarration(sharedNarrationId);
+
+  const narration = checkOnly ? sharedNarration?.narration : narrationIndividual
 
   useEffect(() => {
     if (
@@ -49,8 +57,34 @@ export const NarrationEdit = ({ checkOnly }) => {
     )
       window.scrollTo({ left: 0, top: window.innerHeight, behavior: "smooth" });
   }, [!!narration]);
+
+  const rejectShareRequest = async () => {
+    try {
+      await updateSharedNarrations({ id: sharedNarrationId, data: { status: shareNarrationStatus.REJECTED } })
+      toast.success('عملیات مورد نظر انجام شد')
+      navigate('/transfer')
+    } catch {
+      toast.error('متاسفانه عملیات مورد نظر انجام نشد')
+      navigate('/transfer')
+    }
+  }
+
+
+  const acceptShareRequest = async () => {
+    try {
+      await updateSharedNarrations({ id: sharedNarrationId, data: { status: shareNarrationStatus.ACCEPTED } })
+      await duplicateSharedNarration({ narrationId: narration?.id })
+      toast.success('عملیات مورد نظر انجام شد')
+      navigate('/transfer')
+    } catch {
+      toast.error('متاسفانه عملیات مورد نظر انجام نشد')
+      navigate('/transfer')
+    }
+  }
+
+
   // if (!isLoggedIn(user)) return <Navigate to={"/"} />;
-  if (checkOnly && !isSuperAdmin(user))
+  if (checkOnly && !isCheckerAdmin(user))
     return <Navigate to={"/"} />
   if (!isLoggedIn(user))
     return (
@@ -75,10 +109,30 @@ export const NarrationEdit = ({ checkOnly }) => {
           backgroundColor: '#ffffff01'
           // backgroundColor: '#f00'
         }}>
-          <Stack className="w-full h-10 bg-[white] justify-center" style={{ borderBottom: '1px solid var(--neutral-color-400)' }}>
-            <Button>
-              Salam
-            </Button>
+          <Stack className="w-full bg-[white] justify-center" flexDirection={'row'}
+            style={{ borderBottom: '1px solid var(--neutral-color-400)' }}
+          >
+            <Stack className="w-2/3 px-10 h-15  justify-around items-center"
+              flexDirection={'row'}
+            >
+              <Button variant={'primary'} className='w-35 h-10'
+                onClickHandler={() => acceptShareRequest()}
+              >
+                ارسال به حفظ
+              </Button>
+              <Button variant={'primary'} className='w-35 h-10' style={{ backgroundColor: 'red' }}
+                onClickHandler={() => rejectShareRequest()}
+              >
+                نیاز به تغییر
+              </Button>
+              <Button variant={'secondary'} className='w-35 h-10'
+                onClickHandler={() => navigate(-1)}
+              >
+                بازگشت
+              </Button>
+
+
+            </Stack>
           </Stack>
 
 

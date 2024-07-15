@@ -3,9 +3,12 @@ import {
   useGetImam,
   useGetNarrationFilterOptions,
   useGetNarrationList,
+  useGetSharedNarrations,
   useGetSubjects,
   useGetSummaryTree,
   useGetVerse,
+  useShareNarration,
+  useUpdateSharedNarration,
 } from "../api/hooks/allHooks";
 import noteIcon from "../assets/images/shapes/Icon-Note.svg";
 import shape_green from "../assets/images/shapes/shape-green.svg";
@@ -34,6 +37,8 @@ import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
 import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { getUserFromLocalStorage } from "../utils/localStorage";
 import { SingleNarration, removeTashkel } from "./NarrationWarehouse";
+import { getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
+import { shareNarrationStatus } from "../utils/enums";
 
 const sort = (array) => {
   if (!array) return array;
@@ -78,6 +83,12 @@ export const NarrationSearch = ({ personal }) => {
     section,
     section !== "surah" ? "alphabet" : "surah_name"
   );
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [selectedPage]);
+
+
   // const [searchSubject, setSearchSubject] = useState("");
   const emptyOptions = {
     alphabet: null,
@@ -146,32 +157,24 @@ export const NarrationSearch = ({ personal }) => {
     } catch { }
   };
 
-  const [allSentStatus, setAllSentStatus] = useState({})
+
+  const { data: allSentStatus } = useGetSharedNarrations()
+
+  const { mutate } = useShareNarration();
+  const { mutate: updateNarration } = useUpdateSharedNarration();
 
   const handleSend = async (narrationId) => {
-    setAllSentStatus(allSentStatus => {
-      const newAllSentStatus = { ...allSentStatus }
-      newAllSentStatus[narrationId] = 'sending'
-      return newAllSentStatus
-    })
+    if (!narrationId) return
+    const sentStatus = getSingleNarrationSentStatus({ narrationId, allSentStatus })
+    const id = getSharedNarrationIdFromNarrationId({ narrationId, allSentStatus })
 
-    setTimeout(() => {
-      setAllSentStatus(allSentStatus => {
-        const newAllSentStatus = { ...allSentStatus }
-        newAllSentStatus[narrationId] = 'accepted'
-        return newAllSentStatus
-      })
-    }, 3000);
-    setTimeout(() => {
-      setAllSentStatus(allSentStatus => {
-        const newAllSentStatus = { ...allSentStatus }
-        newAllSentStatus[narrationId] = 'pending'
-        return newAllSentStatus
-      })
-    }, 1000);
-  }
+    if (!sentStatus) {
 
-
+      mutate({ narrationId, });
+    } else {
+      updateNarration({ narrationId, id, data: { status: shareNarrationStatus.PENDING } });
+    }
+  };
 
   let { data: subject } = useGetSubjects();
   subject = subject?.subjects || [];
@@ -384,7 +387,7 @@ export const NarrationSearch = ({ personal }) => {
                       onEdit={() => navigate(`${narration?.id}`)}
                       onDelete={(pass) => handleDelete(narration?.id, pass)}
                       onSend={() => handleSend(narration?.id)}
-                      sentStatus={allSentStatus[narration?.id]}
+                      sentStatus={getSingleNarrationSentStatus({ narrationId: narration?.id, allSentStatus })}
                       narration={narration}
                       showSummary={false}
                       personal={personal}

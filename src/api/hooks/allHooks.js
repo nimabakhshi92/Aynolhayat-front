@@ -12,6 +12,7 @@ import { customApiCall } from "../../utils/axios";
 import { logoutUser } from "../../features/user/userSlice";
 import axios from "axios";
 import { isAdmin } from "../../utils/acl";
+import { shareNarrationStatus } from "../../utils/enums";
 
 // ==========================
 // Hooks Skleton
@@ -517,50 +518,109 @@ export const useDeleteNarrationFootnote = () => {
   });
 };
 
-// export const bookmarkNarration = async (inputs) => {
-//   const { narrationId } = inputs;
-//   const url = apiUrls.narration.bookmark;
-//   const resp = await customApiCall.post({ url, data: { narration_id: narrationId } });
-//   return resp;
-// };
 
-// export const useBookmarkNarration = () => {
-//   const queryClient = useQueryClient();
-//   return useMutation({mutationFn:bookmarkNarration,
-//     onMutate: async (inputs) => {
-//       const { narrationId, data } = inputs;
-//       await queryClient.cancelQueries(["narrationIndividual", narrationId]);
-//       const previousData = queryClient.getQueryData([
-//         "narrationIndividual",
-//         narrationId,
-//       ]);
-//       queryClient.setQueryData(
-//         ["narrationIndividual", narrationId],
-//         (oldData) => {
-//           return {
-//             ...oldData,
-//             is_bookmarked: true,
-//           };
-//         }
-//       );
-//       return { previousData, narrationId };
-//     },
-//     onError: (error, _output, context) => {
-//       toast.error("تغییر مورد نظر انجام نشد");
-//       queryClient.setQueryData(
-//         ["narrationIndividual", context.narrationId],
-//         context.previousData
-//       );
-//       // queryClient.invalidateQueries({queryKey:[
-//       //   "narrationIndividual",
-//       //   context.narrationId,
-//       // ]});
-//     },
-//     onSettled: (inputs, error, variables, context) => {
-//       queryClient.invalidateQueries({queryKey:[
-//         "narrationIndividual",
-//         context.narrationId,
-//       ]});
-//     },
-//   });
-// };
+export const duplicateSharedNarration = async ({ narrationId }) => {
+  const url = apiUrls.transfer.duplicateNarration(narrationId)
+  const resp = await customApiCall.post({ url });
+  return resp;
+};
+
+
+export const postSharedNarrations = async ({ narrationId }) => {
+  const data = { narration_id: narrationId, status: shareNarrationStatus.PENDING }
+  const url = apiUrls.transfer.sharedNarrations.post(narrationId)
+  const resp = await customApiCall.post({ url, data });
+  return resp;
+};
+
+export const updateSharedNarrations = async ({ id, data }) => {
+  const url = apiUrls.transfer.sharedNarrations.update(id)
+  const resp = await customApiCall.patch({ url, data });
+  return resp;
+};
+
+
+export const useGetSharedNarrations = () => {
+  const url = apiUrls.transfer.sharedNarrations.list()
+  return use2GeneralGetHook(["sharedNarrations"], url);
+};
+
+export const useGetSingleSharedNarration = (sharedNarrationId) => {
+  const url = apiUrls.transfer.sharedNarrations.get(sharedNarrationId)
+  return use2GeneralGetHook(["sharedNarrations", sharedNarrationId], url);
+};
+
+export const useShareNarration = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: postSharedNarrations,
+    onMutate: async (inputs) => {
+      const { narrationId } = inputs;
+      await queryClient.cancelQueries(["sharedNarrations", narrationId]);
+      const previousData = queryClient.getQueryData([
+        "sharedNarrations",
+      ]);
+      queryClient.setQueryData(
+        ["sharedNarrations"],
+        (oldData) => {
+          return [
+            ...oldData,
+            { id: -1, status: shareNarrationStatus.SENDING, narration: { id: narrationId } },
+          ];
+        }
+      );
+      return { previousData, narrationId };
+    },
+    onError: (error, _output, context) => {
+      toast.error("تغییر مورد نظر انجام نشد");
+      queryClient.setQueryData(
+        ["sharedNarrations"],
+        context.previousData
+      );
+    },
+    onSettled: (inputs, error, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: ["sharedNarrations"],
+      });
+    },
+  });
+};
+
+
+export const useUpdateSharedNarration = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateSharedNarrations,
+    onMutate: async (inputs) => {
+      const { id, narrationId, data } = inputs;
+      await queryClient.cancelQueries(["sharedNarrations"]);
+      const previousData = queryClient.getQueryData([
+        "sharedNarrations",
+      ]);
+      queryClient.setQueryData(
+        ["sharedNarrations"],
+        (oldData) => {
+          return [
+            ...oldData,
+            { id: -1, status: shareNarrationStatus.SENDING, narration: { id: narrationId } },
+          ];
+        }
+      );
+      return { previousData, narrationId };
+    },
+    onError: (error, _output, context) => {
+      toast.error("تغییر مورد نظر انجام نشد");
+      queryClient.setQueryData(
+        ["sharedNarrations"],
+        context.previousData
+      );
+    },
+    onSettled: (inputs, error, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: ["sharedNarrations"],
+      });
+    },
+  });
+};
+
+

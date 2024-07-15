@@ -3,6 +3,7 @@ import {
   useGetImam,
   useGetNarrationFilterOptions,
   useGetNarrationList,
+  useGetSharedNarrations,
   useGetSubjects,
   useGetSummaryTree,
   useGetVerse,
@@ -36,7 +37,8 @@ import { getUserFromLocalStorage } from "../utils/localStorage";
 import { SingleNarration, removeTashkel } from "./NarrationWarehouse";
 import { Table } from "../components/ui/Table";
 import { AcceptedNarrationSentLabel, Label, NarrationSentStatusLabel } from "../components/ui/Label";
-import { isAdmin, isSuperAdmin } from "../utils/acl";
+import { isAdmin, isCheckerAdmin, isSuperAdmin } from "../utils/acl";
+import { convertGregorianToJalali } from "../functions/general";
 
 const sort = (array) => {
   if (!array) return array;
@@ -47,84 +49,63 @@ const sort = (array) => {
 
 export const Transfer = ({ }) => {
   const { user } = useSelector((store) => store.user);
-  const superAdmin = isSuperAdmin(user)
+  const checkerAdmin = isCheckerAdmin(user)
   const navigate = useNavigate();
 
+  const { data: allSentStatus } = useGetSharedNarrations()
+
+  const tableData = allSentStatus?.map(narrationStatus => {
+    const narration = narrationStatus?.narration
+    const bookVolText = narration?.book_vol_no ? `جلد ${narration?.book_vol_no}` : " "
+    const bookPageText = narration?.book_page_no ? `-  صفحه ${narration?.book_page_no}` : ""
+    return {
+      id: narrationStatus?.id,
+      name: narration?.name,
+      content: narration?.content?.substr(0, 150) + '...',
+      created: convertGregorianToJalali(narrationStatus?.created),
+      status: narrationStatus?.status,
+      book: narration?.book?.name + ' ' + bookVolText + ' ' + bookPageText,
+      senderName: narrationStatus?.sender?.username,
+      narrationId: narration?.id
+    }
+  })
 
   const headers = [
     {
       label: 'عنوان حدیث',
-      dataKey: "a",
-      valueTransformation: (row) => row["a"],
+      dataKey: "name",
+      valueTransformation: (row) => row["name"],
     },
     {
-      label: 'آدرس حدیث',
-      dataKey: "b",
-      valueTransformation: (row) => row["b"],
+      label: 'قسمتی از متن',
+      dataKey: "content",
+      valueTransformation: (row) => row["content"],
     },
     {
-      label: 'وضعیت',
-      dataKey: "c",
-      valueTransformation: (row) => row["c"],
-    },
-    {
-      label: 'تاریخ درخواست',
-      dataKey: "d",
-      valueTransformation: (row) => <NarrationSentStatusLabel status={row['d']} />,
-    },
-  ];
-
-  const superAdminHeaders = [
-    {
-      label: 'عنوان حدیث',
-      dataKey: "a",
-      valueTransformation: (row) => row["a"],
-    },
-    {
-      label: 'آدرس حدیث',
-      dataKey: "b",
-      valueTransformation: (row) => row["b"],
-    },
-    {
-      label: 'فرستنده',
-      dataKey: "c",
-      valueTransformation: (row) => row["c"],
+      label: 'کتاب',
+      dataKey: "book",
+      valueTransformation: (row) => row["book"],
     },
     {
       label: 'وضعیت',
-      dataKey: "c",
-      valueTransformation: (row) => row["c"],
+      dataKey: "status",
+      valueTransformation: (row) => <NarrationSentStatusLabel status={row['status']} />,
     },
     {
       label: 'تاریخ درخواست',
-      dataKey: "d",
-      valueTransformation: (row) => <NarrationSentStatusLabel status={row['d']} />,
+      dataKey: "created",
+      valueTransformation: (row) => row["created"],
     },
+
   ];
 
-  const dat3a = [
-    {
-      a: 'حدیث 1',
-      id: 123,
-      b: 'دیوار',
-      c: 'مسلمان',
-      d: 'accepted'
-    },
-    {
-      a: 'حدیث 2',
-      b: 'پنجره',
-      c: 'توحید',
-      d: 'pending'
-    },
-    {
-      a: 'حدیث 3',
-      b: 'کامپیوتر',
-      c: 'عدل',
-      d: 'rejected'
-    }
-
-
+  const checkerAdminHeaders = [...headers, {
+    label: 'فرستنده',
+    dataKey: "senderName",
+    valueTransformation: (row) => row["senderName"],
+  },
   ]
+
 
   const handleRowClick = (row) => {
     navigate(`/shared-narrations/${row?.id}?`)
@@ -133,12 +114,12 @@ export const Transfer = ({ }) => {
     <Stack className="justify-center items-center">
 
       <Table
-        data={dat3a}
-        headers={headers}
-        onRowClick={superAdmin ? handleRowClick : null}
-        className='mt-4'
+        data={tableData}
+        headers={checkerAdmin ? checkerAdminHeaders : headers}
+        onRowClick={checkerAdmin ? handleRowClick : null}
+        className='mt-4 mr-8'
         style={{
-          width: '80%',
+          width: '95%',
         }} />
     </Stack>
 

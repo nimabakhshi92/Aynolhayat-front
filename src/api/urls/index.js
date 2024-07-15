@@ -5,6 +5,7 @@ import Imam from "./Imam";
 import subject from "./subject";
 import quran from "./quran";
 import narration from "./narration";
+import transfer from "./transfer";
 
 export default {
   Imam,
@@ -14,4 +15,5 @@ export default {
   subject,
   quran,
   narration,
+  transfer
 };

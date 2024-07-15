@@ -90,7 +90,7 @@ function App() {
                 element={<NarrationEdit />}
               ></Route>
               <Route
-                path="shared-narrations/:narrationId"
+                path="shared-narrations/:sharedNarrationId"
                 element={<NarrationEdit checkOnly={true} />}
               ></Route>
               <Route

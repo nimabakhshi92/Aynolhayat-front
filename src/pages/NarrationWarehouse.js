@@ -2,8 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import {
   useGetNarrationFilterOptions,
   useGetNarrationList,
+  useGetSharedNarrations,
   useGetSubjects,
   useGetSummaryTree,
+  useShareNarration,
+  useUpdateSharedNarration,
 } from "../api/hooks/allHooks";
 import noteIcon from "../assets/images/shapes/Icon-Note.svg";
 import shape_green from "../assets/images/shapes/shape-green.svg";
@@ -36,7 +39,7 @@ import FilterModal, {
 import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
 import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { getUserFromLocalStorage } from "../utils/localStorage";
-import { getFont, isAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
+import { getFont, isAdmin, isCheckerAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
 import { setDataLoaded } from "../features/summaryTree/summaryTreeSlice";
 import { MdBookmarkAdd } from "react-icons/md";
 import axios from "axios";
@@ -53,6 +56,8 @@ import { NarrationSearch } from "./NarrationSearch";
 import { useQueryClient } from "@tanstack/react-query";
 import { Label, PendingNarrationSentLabel, RejectedNarrationSentLabel, SendingNarrationSentLabel, AcceptedNarrationSentLabel } from "../components/ui/Label";
 import { FiSend } from "react-icons/fi";
+import { getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
+import { shareNarrationStatus } from "../utils/enums";
 
 export const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -329,24 +334,28 @@ export const SingleNarration = ({
       actionComponent={
         <div className=" gap-4 items-center flex">
           <>
-            {/* {sentStatus === 'sending' &&
-              <SendingNarrationSentLabel />
-            }
-            {sentStatus === 'pending' &&
+            {isAdmin(user) && !isCheckerAdmin(user) && personal &&
+              <>
+                {sentStatus === 'sending' &&
+                  <SendingNarrationSentLabel />
+                }
+                {sentStatus === 'pending' &&
 
-              <PendingNarrationSentLabel />}
-            {sentStatus === 'accepted' &&
-              <AcceptedNarrationSentLabel />
+                  <PendingNarrationSentLabel />}
+                {sentStatus === 'accepted' &&
+                  <AcceptedNarrationSentLabel />
+                }
+                {sentStatus === 'rejected' &&
+                  <RejectedNarrationSentLabel />
+                }
+                {((!['sending', 'pending', 'accepted'].includes(sentStatus))) && onSend && (
+                  <FiSend
+                    className="cursor-pointer  w-5 h-5"
+                    onClick={onSend}
+                  />
+                )}
+              </>
             }
-            {sentStatus === 'rejected' &&
-              <RejectedNarrationSentLabel />
-            }
-            {(isAdmin(user) && personal && (!['sending', 'pending', 'accepted'].includes(sentStatus))) && onSend && (
-              <FiSend
-                className="cursor-pointer  w-5 h-5"
-                onClick={onSend}
-              />
-            )} */}
             {(isSuperAdmin(user) || personal) && onDelete && (
               <RiDeleteBin2Line
                 className="cursor-pointer w-5 h-5"
@@ -681,8 +690,23 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
   });
   const narrationList = { ...rawNarrationList, results: narrationListResult }
 
-  console.log(rawNarrationList, narrationListResult)
-  console.log(section)
+  const { data: allSentStatus } = useGetSharedNarrations()
+
+  const { mutate } = useShareNarration();
+  const { mutate: updateNarration } = useUpdateSharedNarration();
+
+  const handleSend = async (narrationId) => {
+    if (!narrationId) return
+    const sentStatus = getSingleNarrationSentStatus({ narrationId, allSentStatus })
+    const id = getSharedNarrationIdFromNarrationId({ narrationId, allSentStatus })
+
+    if (!sentStatus) {
+      mutate({ narrationId, });
+    } else {
+      updateNarration({ narrationId, id, data: { status: shareNarrationStatus.PENDING } });
+    }
+  };
+
 
 
   const onBookmarkChange = () =>
@@ -736,8 +760,6 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
   useEffect(() => {
     setSelectedPage(1);
   }, [selectedNode]);
-
-
 
   if (personal && !isLoggedIn(user))
     return (
@@ -836,7 +858,8 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
                               navigate(`/edit narration/${narration?.id}`)
                             }
                             onDelete={(pass) => handleDelete(narration?.id, pass)}
-
+                            onSend={() => handleSend(narration?.id)}
+                            sentStatus={getSingleNarrationSentStatus({ narrationId: narration?.id, allSentStatus })}
                             narration={narration}
                             showSummary={true}
                             lvl1={treeWords[0]}

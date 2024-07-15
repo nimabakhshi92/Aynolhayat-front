@@ -110,7 +110,7 @@ const Row = ({
 }) => {
     return (
         <TableRow
-            className={`relative`}
+            className={`relative ${onRowClick ? 'cursor-pointer' : ''}`}
             sx={{
                 ":hover": {
                     background: "var(--blue-200)",
