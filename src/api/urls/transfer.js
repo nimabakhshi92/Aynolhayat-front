@@ -7,4 +7,5 @@ export default {
         post: () => `${url}/shared_narrations/`,
     },
     duplicateNarration: (narrationId) => `${url}/duplicate_narration/${narrationId}/`,
+    moveNarrationToMainSite: (narrationId) => `${url}/move_narration_to_main_site/${narrationId}/`,
 };

@@ -525,6 +525,12 @@ export const duplicateSharedNarration = async ({ narrationId }) => {
   return resp;
 };
 
+export const moveNarrationToMainSite = async ({ narrationId }) => {
+  const url = apiUrls.transfer.moveNarrationToMainSite(narrationId)
+  const resp = await customApiCall.post({ url });
+  return resp;
+};
+
 
 export const postSharedNarrations = async ({ narrationId }) => {
   const data = { narration_id: narrationId, status: shareNarrationStatus.PENDING }

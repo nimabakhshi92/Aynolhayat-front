@@ -131,7 +131,7 @@ export const SidebarLT = () => {
       displayText: "درخواست ها",
       to: "transfer",
       isActive: pageName === "transfer",
-      show: isAdmin(user),
+      show: isAdmin(user) && !isSuperAdmin(user),
     },
 
 

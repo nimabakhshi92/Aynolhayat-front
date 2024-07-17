@@ -54,7 +54,7 @@ import styled from "@emotion/styled";
 import { tooltipClasses } from "@mui/material/Tooltip";
 import { NarrationSearch } from "./NarrationSearch";
 import { useQueryClient } from "@tanstack/react-query";
-import { Label, PendingNarrationSentLabel, RejectedNarrationSentLabel, SendingNarrationSentLabel, AcceptedNarrationSentLabel } from "../components/ui/Label";
+import { Label, PendingNarrationSentLabel, RejectedNarrationSentLabel, SendingNarrationSentLabel, AcceptedNarrationSentLabel, InsertedNarrationSentLabel } from "../components/ui/Label";
 import { FiSend } from "react-icons/fi";
 import { getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
 import { shareNarrationStatus } from "../utils/enums";
@@ -334,7 +334,7 @@ export const SingleNarration = ({
       actionComponent={
         <div className=" gap-4 items-center flex">
           <>
-            {isAdmin(user) && !isCheckerAdmin(user) && personal &&
+            {isAdmin(user) && personal &&
               <>
                 {sentStatus === 'sending' &&
                   <SendingNarrationSentLabel />
@@ -348,7 +348,7 @@ export const SingleNarration = ({
                 {sentStatus === 'rejected' &&
                   <RejectedNarrationSentLabel />
                 }
-                {((!['sending', 'pending', 'accepted'].includes(sentStatus))) && onSend && (
+                {((!['sending', 'pending', 'accepted', 'inserted'].includes(sentStatus))) && onSend && (
                   <FiSend
                     className="cursor-pointer  w-5 h-5"
                     onClick={onSend}
@@ -706,7 +706,6 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
       updateNarration({ narrationId, id, data: { status: shareNarrationStatus.PENDING } });
     }
   };
-
 
 
   const onBookmarkChange = () =>

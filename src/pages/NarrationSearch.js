@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  duplicateSharedNarration,
+  moveNarrationToMainSite,
   useGetImam,
   useGetNarrationFilterOptions,
   useGetNarrationList,
@@ -39,6 +41,8 @@ import { getUserFromLocalStorage } from "../utils/localStorage";
 import { SingleNarration, removeTashkel } from "./NarrationWarehouse";
 import { getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
 import { shareNarrationStatus } from "../utils/enums";
+import { isCheckerAdmin } from "../utils/acl";
+import { toast } from "react-toastify";
 
 const sort = (array) => {
   if (!array) return array;
@@ -157,11 +161,46 @@ export const NarrationSearch = ({ personal }) => {
     } catch { }
   };
 
-
   const { data: allSentStatus } = useGetSharedNarrations()
 
   const { mutate } = useShareNarration();
   const { mutate: updateNarration } = useUpdateSharedNarration();
+
+  const [openAlertBox, setOpenAlertBox] = useState(false);
+
+  const transferNarration = async (narrationId) => {
+    try {
+      await moveNarrationToMainSite({ narrationId })
+      toast.success('عملیات مورد نظر انجام شد')
+      queryClient.invalidateQueries([
+        "narrationList",
+        selectedPage,
+        {
+          ...selectedOptions,
+          ...serachOptions,
+          ...treeOptions,
+          user_id: personal ? user.id : null,
+        },
+      ]);
+    } catch {
+      toast.error('متاسفانه عملیات مورد نظر انجام نشد')
+    }
+  }
+
+  const narrationIdRef = useRef()
+  const pass = useRef()
+
+  const handleCheckerAdminSend = (narrationId) => {
+    setOpenAlertBox(true)
+    narrationIdRef.current = narrationId
+  }
+
+  const onTransfer = (pass) => {
+    if (pass !== "transfer") return;
+    transferNarration(narrationIdRef?.current)
+  }
+
+
 
   const handleSend = async (narrationId) => {
     if (!narrationId) return
@@ -169,7 +208,6 @@ export const NarrationSearch = ({ personal }) => {
     const id = getSharedNarrationIdFromNarrationId({ narrationId, allSentStatus })
 
     if (!sentStatus) {
-
       mutate({ narrationId, });
     } else {
       updateNarration({ narrationId, id, data: { status: shareNarrationStatus.PENDING } });
@@ -184,6 +222,44 @@ export const NarrationSearch = ({ personal }) => {
 
   return (
     <div className="sm:mr-12">
+      {openAlertBox && (
+        <div
+          className=" fixed top-1/2 left-1/2 "
+          style={{
+            backgroundColor: "white",
+            borderRadius: "8px",
+            transform: "translate(-50%, -50%)",
+            zIndex: 101,
+          }}
+        >
+          <div
+            style={{
+              flexDirection: "column",
+            }}
+            className="relative p-6 flex gap-8  w-100  items-center "
+          >
+            <p className="mt-6">
+              آیا از انتقال حدیث مطمئن هستید؟ لطفا در کادر زیر کلمه transfer را وارد
+              کنید:
+            </p>
+            <InputOld reference={pass} />
+            <Button
+              variant="primary"
+              className="w-30"
+              onClickHandler={() => {
+                setOpenAlertBox(false);
+                onTransfer(pass.current?.value);
+              }}
+            >
+              OK
+            </Button>
+            <AiOutlineClose
+              className="absolute cursor-pointer right-2 top-2"
+              onClick={() => setOpenAlertBox(false)}
+            />
+          </div>
+        </div>
+      )}
       <section
         className={`w-full flex items-center justify-center`}
         style={{
@@ -386,7 +462,7 @@ export const NarrationSearch = ({ personal }) => {
                       key={index}
                       onEdit={() => navigate(`${narration?.id}`)}
                       onDelete={(pass) => handleDelete(narration?.id, pass)}
-                      onSend={() => handleSend(narration?.id)}
+                      onSend={() => isCheckerAdmin(user) ? handleCheckerAdminSend(narration?.id) : handleSend(narration?.id)}
                       sentStatus={getSingleNarrationSentStatus({ narrationId: narration?.id, allSentStatus })}
                       narration={narration}
                       showSummary={false}

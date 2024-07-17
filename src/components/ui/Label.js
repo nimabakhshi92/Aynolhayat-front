@@ -54,6 +54,14 @@ export const AcceptedNarrationSentLabel = ({ ...props }) => {
     )
 }
 
+export const InsertedNarrationSentLabel = ({ ...props }) => {
+    return (
+        <Label variant={'success'} text='افزوده شده' {...props} />
+
+    )
+}
+
+
 export const SendingNarrationSentLabel = ({ ...props }) => {
     return (
         <Label variant={'info'} text='در حال ارسال...' {...props} />
