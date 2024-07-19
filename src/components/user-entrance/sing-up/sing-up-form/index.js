@@ -8,7 +8,6 @@ export default function SingUpForm() {
   const passwordRef = useRef();
 
   function onClickHandler() {
-    console.log(emailRef.current.value, passwordRef.current.value);
   }
 
   return (

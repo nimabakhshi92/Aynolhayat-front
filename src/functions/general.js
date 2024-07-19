@@ -19,7 +19,6 @@ export const addDays = (date, days) => {
 
 export const getSingleNarrationSentStatus = ({ narrationId, allSentStatus }) => {
     const narration = allSentStatus?.find(narrationStatus => narrationStatus?.narration?.id === narrationId)
-    console.log(narration)
     if (narration) return narration?.status
 }
 

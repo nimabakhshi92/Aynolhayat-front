@@ -39,6 +39,7 @@ import { Table } from "../components/ui/Table";
 import { AcceptedNarrationSentLabel, Label, NarrationSentStatusLabel } from "../components/ui/Label";
 import { isAdmin, isCheckerAdmin, isSuperAdmin } from "../utils/acl";
 import { convertGregorianToJalali } from "../functions/general";
+import { shareNarrationStatus } from "../utils/enums";
 
 const sort = (array) => {
   if (!array) return array;
@@ -108,7 +109,8 @@ export const Transfer = ({ }) => {
 
 
   const handleRowClick = (row) => {
-    navigate(`/shared-narrations/${row?.id}?`)
+    if (row['status'] === shareNarrationStatus.PENDING)
+      navigate(`/shared-narrations/${row?.id}?`)
   }
   return (
     <Stack className="justify-center items-center">

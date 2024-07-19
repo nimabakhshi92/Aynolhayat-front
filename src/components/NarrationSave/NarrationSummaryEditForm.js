@@ -169,7 +169,6 @@ export const SingleNarrationSummariesForEdit = ({
       });
   };
   const handleBlur = (key, newValue) => {
-    console.log('handleBlur', newValue)
 
     flag.current = ''
     if (
@@ -258,7 +257,6 @@ export const SingleNarrationSummariesForEdit = ({
             className="w-full"
             onPressEnter={(e) => handleBlur("alphabet", e.target.value)}
             onChange={(e) => {
-              console.log('OnChange', e.target.value)
               handleChange("alphabet", e.target.value);
             }}
             value={summary.alphabet}

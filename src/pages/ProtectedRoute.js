@@ -12,7 +12,6 @@ export const ProtectedRoute = ({ children }) => {
   var { user } = useSelector((store) => store.user);
   // var user = getUserFromLocalStorage();
   const [flag, setFlag] = useState(true);
-  console.log('ProtectedRoute', user)
   useEffect(() => {
     // var user2 = getUserFromLocalStorage();
     const loogIn = async () => {

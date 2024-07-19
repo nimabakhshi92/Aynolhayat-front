@@ -39,7 +39,7 @@ export const SharedLayoutLT = () => {
     <main
       style={{
         backgroundColor: "var(--blue-100)",
-        // fontSize: isSuperAdmin(user) ? getFont(100) + "%" : "100%",
+        // fontSize: isSuperAdmin(user) ? getFont(user,100) + "%" : "100%",
       }}
       className="pb-2 min-h-[100vh] "
     >

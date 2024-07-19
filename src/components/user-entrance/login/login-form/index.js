@@ -34,7 +34,6 @@ export default function LoginForm() {
     setNext(true);
   };
 
-  console.log(user);
   if (user && user?.id !== 2 && next) return <Navigate to={"/"} />;
 
   return (

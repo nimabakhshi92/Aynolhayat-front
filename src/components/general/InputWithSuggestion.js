@@ -39,12 +39,10 @@ export default function InputWithSuggestion({
 
   const suggestionsExist = matchedSuggesttions?.length > 0;
   const onMenuClick = async (item) => {
-    console.log(item, reference, !!onChange, !!onPressEnter)
     if (reference) reference.current.value = item;
     if (reference && onChange) onChange();
     if (!reference && onChange && onPressEnter) {
       // await onChange({ target: { value: item } });
-      console.log(item)
       await onPressEnter({ target: { value: item } });
     }
   };

@@ -10,7 +10,7 @@ export default function Tag({ tag, onClose }) {
     <div
       className={classes.container}
       style={{
-        fontSize: (isSuperAdmin(user) ? getFont(1.4) : "1.4") + "rem",
+        fontSize: getFont(user, 1.4) + "rem",
       }}
     >
       <CgClose className={classes.close} onClick={onClose} />

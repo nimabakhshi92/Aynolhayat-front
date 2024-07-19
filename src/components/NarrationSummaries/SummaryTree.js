@@ -52,7 +52,7 @@ export function SummaryTree({ data, section, selectedNode }) {
                     index3 +
                     "l3" +
                     level3.title ===
-                  clicked.value
+                    clicked.value
                     ? "b-red"
                     : null,
                 children: level2.subjects_3?.map((level4, index4) => {
@@ -123,7 +123,7 @@ export function SummaryTree({ data, section, selectedNode }) {
 
     if (
       node.label.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase()) >
-        -1 ||
+      -1 ||
       children.length
     ) {
       filtered.push({ ...node, children });
@@ -186,26 +186,23 @@ export const SummaryTreeOld = ({ data, section, selectedNode }) => {
       {data.map((item, index) => (
         <Fragment key={index}>
           <div
-            className={`${classes.alphabet_container} ${
-              selectedNode[section] !== item.alphabet
-                ? ""
-                : classes.alphabet_open
-            }`}
+            className={`${classes.alphabet_container} ${selectedNode[section] !== item.alphabet
+              ? ""
+              : classes.alphabet_open
+              }`}
             onClick={() => toggleVisibility(index, item.alphabet)}
           >
             <p>{item.alphabet}</p>
             <MdOutlineArrowForwardIos
-              className={`${classes.arrow} ${
-                selectedNode[section] !== item.alphabet ? "" : classes.arrow__up
-              }`}
+              className={`${classes.arrow} ${selectedNode[section] !== item.alphabet ? "" : classes.arrow__up
+                }`}
             />
           </div>
           <div
-            className={`${
-              selectedNode[section] !== item.alphabet
-                ? classes.subject_container__hidden
-                : classes.subject_container__visible
-            }`}
+            className={`${selectedNode[section] !== item.alphabet
+              ? classes.subject_container__hidden
+              : classes.subject_container__visible
+              }`}
           >
             {item.subjects.map((sub, subIndex) => (
               <p key={subIndex} className={classes.subject}>
@@ -257,15 +254,14 @@ export const TreeItem = ({
         backgroundColor: selected
           ? "#beffc8"
           : !showChildren
-          ? bgColor
-          : children && showChildren && getBGColor(level),
+            ? bgColor
+            : children && showChildren && getBGColor(level),
         cursor: !children && "pointer",
       }}
     >
       <div
-        className={`flex justify-start ${
-          children ? "items-start" : "items-start"
-        }`}
+        className={`flex justify-start ${children ? "items-start" : "items-start"
+          }`}
       >
         {children && (
           <div
@@ -365,7 +361,7 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
                     index3 +
                     "l3" +
                     level3.title ===
-                  clicked.value
+                    clicked.value
                     ? "b-red"
                     : null,
                 children: level2.subjects_3?.map((level4, index4) => {
@@ -413,13 +409,13 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
     if (
       c?.length > 0 &&
       !selectedNode[section] &&
-      c[3]?.children[2]?.children[1]?.value
+      c[0]?.children[0]?.children[0]?.value
     ) {
       dispatch(
         setSelectedNode({
           node: {
             ...selectedNode,
-            [section]: c[3]?.children[2]?.children[1]?.value,
+            [section]: c[0]?.children[0]?.children[0]?.value,
           },
         })
       );

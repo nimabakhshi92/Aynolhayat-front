@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  moveNarrationToMainSite,
   useGetNarrationFilterOptions,
   useGetNarrationList,
   useGetSharedNarrations,
@@ -58,6 +59,7 @@ import { Label, PendingNarrationSentLabel, RejectedNarrationSentLabel, SendingNa
 import { FiSend } from "react-icons/fi";
 import { getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
 import { shareNarrationStatus } from "../utils/enums";
+import { toast } from "react-toastify";
 
 export const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -149,13 +151,9 @@ function ArabicTextComponent({
                       style={{
                         color: isTranslation ? "black" : "#102cc9",
                         fontSize:
-                          (isTranslation
-                            ? isSuperAdmin(user)
-                              ? getFont(1.4)
-                              : 1.4
-                            : isSuperAdmin(user)
-                              ? getFont(1.6)
-                              : 1.6) + "rem",
+                          isTranslation
+                            ? getFont(user, 1.4) + "rem"
+                            : getFont(user, 1.6) + "rem"
                       }}
                     >
                       {[...word].map((char) => {
@@ -310,7 +308,6 @@ export const SingleNarration = ({
     } catch {
     } finally {
       if (onBookmarkChange) {
-        console.log(onBookmarkChange);
         onBookmarkChange();
       }
     }
@@ -458,7 +455,7 @@ export const SingleNarration = ({
               className="w-full"
               style={{
                 fontSize:
-                  (isSuperAdmin(user) ? getFont(1.1) : 1.1) *
+                  (getFont(user, 1.1)) *
                   (isSmallScreen ? 1 : 1.2) +
                   "rem",
                 maxWidth: "calc(100% - 100px)",
@@ -508,7 +505,7 @@ export const SingleNarration = ({
                 style={{
                   cursor: "pointer",
                   color: "var(--secondary-blue-color)",
-                  fontSize: (isSuperAdmin(user) ? getFont(1.4) : 1.4) + "rem",
+                  fontSize: getFont(user, 1.4) + "rem",
                 }}
               >
                 ... نمایش کامل
@@ -520,7 +517,7 @@ export const SingleNarration = ({
                 style={{
                   cursor: "pointer",
                   color: "var(--secondary-blue-color)",
-                  fontSize: (isSuperAdmin(user) ? getFont(1.4) : 1.4) + "rem",
+                  fontSize: getFont(user, 1.4) + "rem",
                 }}
               >
                 ... نمایش کمتر
@@ -536,7 +533,7 @@ export const SingleNarration = ({
             <span
               style={{
                 fontSize:
-                  (isSuperAdmin(user) ? getFont(1.2) : 1.2) *
+                  getFont(user, 1.2) *
                   (isSmallScreen ? 1 : 1.2) +
                   "rem",
                 marginRight: "12px",
@@ -574,7 +571,7 @@ export const SingleNarration = ({
                       style={{
                         color: "var(--primary-color)",
                         fontSize:
-                          (isSuperAdmin(user) ? getFont(1.4) : 1.4) + "rem",
+                          getFont(user, 1.4) + "rem",
                       }}
                     >
                       <img src={noteIcon} alt="icon" />
@@ -591,7 +588,7 @@ export const SingleNarration = ({
                       className=" sm:w-[48%]"
                       style={{
                         fontSize:
-                          (isSuperAdmin(user) ? getFont(1.4) : 1.4) + "rem",
+                          getFont(user, 1.4) + "rem",
                       }}
                     >
                       {contentItem.expression}
@@ -695,6 +692,42 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
   const { mutate } = useShareNarration();
   const { mutate: updateNarration } = useUpdateSharedNarration();
 
+
+  const [openAlertBox, setOpenAlertBox] = useState(false);
+
+  const transferNarration = async (narrationId) => {
+    try {
+      await moveNarrationToMainSite({ narrationId })
+      toast.success('عملیات مورد نظر انجام شد')
+      queryClient.invalidateQueries([
+        "narrationList",
+        selectedPage,
+        {
+          ...selectedOptions,
+          ...serachOptions,
+          ...treeOptions,
+          user_id: personal ? user.id : null,
+        },
+      ]);
+    } catch {
+      toast.error('متاسفانه عملیات مورد نظر انجام نشد')
+    }
+  }
+
+  const narrationIdRef = useRef()
+  const pass = useRef()
+
+  const handleCheckerAdminSend = (narrationId) => {
+    setOpenAlertBox(true)
+    narrationIdRef.current = narrationId
+  }
+
+  const onTransfer = (pass) => {
+    if (pass !== "transfer") return;
+    transferNarration(narrationIdRef?.current)
+  }
+
+
   const handleSend = async (narrationId) => {
     if (!narrationId) return
     const sentStatus = getSingleNarrationSentStatus({ narrationId, allSentStatus })
@@ -784,6 +817,44 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
       {section === "bank" && <NarrationSearch personal={personal} />}
       {section !== "bank" && (
         <>
+          {openAlertBox && (
+            <div
+              className=" fixed top-1/2 left-1/2 "
+              style={{
+                backgroundColor: "white",
+                borderRadius: "8px",
+                transform: "translate(-50%, -50%)",
+                zIndex: 101,
+              }}
+            >
+              <div
+                style={{
+                  flexDirection: "column",
+                }}
+                className="relative p-6 flex gap-8  w-100  items-center "
+              >
+                <p className="mt-6">
+                  آیا از انتقال حدیث مطمئن هستید؟ لطفا در کادر زیر کلمه transfer را وارد
+                  کنید:
+                </p>
+                <InputOld reference={pass} />
+                <Button
+                  variant="primary"
+                  className="w-30"
+                  onClickHandler={() => {
+                    setOpenAlertBox(false);
+                    onTransfer(pass.current?.value);
+                  }}
+                >
+                  OK
+                </Button>
+                <AiOutlineClose
+                  className="absolute cursor-pointer right-2 top-2"
+                  onClick={() => setOpenAlertBox(false)}
+                />
+              </div>
+            </div>
+          )}
           <FilterModalLT
             data={data}
             className={`${!isSmallScreen || treeIsOpen ? "w-full" : "w-0"
@@ -857,7 +928,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
                               navigate(`/edit narration/${narration?.id}`)
                             }
                             onDelete={(pass) => handleDelete(narration?.id, pass)}
-                            onSend={() => handleSend(narration?.id)}
+                            onSend={() => isCheckerAdmin(user) ? handleCheckerAdminSend(narration?.id) : handleSend(narration?.id)}
                             sentStatus={getSingleNarrationSentStatus({ narrationId: narration?.id, allSentStatus })}
                             narration={narration}
                             showSummary={true}

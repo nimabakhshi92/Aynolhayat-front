@@ -145,7 +145,7 @@ const TextCellContent = ({
     return (
         <>
 
-            <span className="t-iran-sans t-semi-large">{value}</span>
+            <span className="t-iran-sans t-extra-large">{value}</span>
         </>
     );
 };

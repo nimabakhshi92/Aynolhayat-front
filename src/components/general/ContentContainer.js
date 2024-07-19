@@ -28,7 +28,7 @@ export const ContentContainer = ({
           className={classes.content_container__title}
           style={
             {
-              // fontSize: getFont(1) + "rem",
+              // fontSize: getFont(user,1) + "rem",
             }
           }
         >
@@ -39,7 +39,7 @@ export const ContentContainer = ({
       <div
         className={classes.content_container}
         style={{
-          fontSize: getFont(1.2) + "rem",
+          fontSize: getFont(undefined, 1.68) + "rem",
         }}
       >
         {children}

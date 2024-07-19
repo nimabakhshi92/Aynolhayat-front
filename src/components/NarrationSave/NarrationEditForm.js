@@ -31,6 +31,7 @@ const emptyNarration = {
   book_vol_no: null,
   book_page_no: null,
   book_narration_no: null,
+  is_complete: null
 };
 
 const SimilarNarrations = ({
@@ -184,7 +185,8 @@ export const NarrationEditForm = ({ narration }) => {
       !updatedNarration.content ||
       !updatedNarration.book_vol_no ||
       !updatedNarration.book_page_no ||
-      !updatedNarration.book_narration_no
+      !updatedNarration.book_narration_no ||
+      updatedNarration.is_complete === undefined
     ) {
       toast.error("پر کردن همه فیلدهای اطلاعات شناسنامه ای الزامی است");
       return;
@@ -199,6 +201,7 @@ export const NarrationEditForm = ({ narration }) => {
       book_vol_no: Number(updatedNarration.book_vol_no),
       book_page_no: Number(updatedNarration.book_page_no),
       book_narration_no: Number(updatedNarration.book_narration_no),
+      is_complete: Number(updatedNarration.is_complete),
     };
 
     dispatch(createNarration(newNarration));
@@ -218,6 +221,12 @@ export const NarrationEditForm = ({ narration }) => {
 
   const [hasSimilar, setHasSimilar] = useState(null);
   const { border, color, subText } = narrationHasSimilarConfig(hasSimilar);
+
+  const isCompletedItems = [
+    { is_complete: 'کامل', id: 0, dataToSend: true },
+    { is_complete: 'ناقص', id: 1, dataToSend: false },
+  ]
+
   return (
     <>
       {isModalOpen && (
@@ -346,6 +355,20 @@ export const NarrationEditForm = ({ narration }) => {
               type="number"
               placeholder="شماره حدیث"
               flag={flag?.current === 'book_narration_no'}
+            />
+          </div>
+          <div className="flex gap-1 " style={{ flexDirection: "column" }}>
+            <p>حدیث کامل است؟</p>
+            <Dropdown
+              selected={!updatedNarration?.is_complete ? isCompletedItems[1] : isCompletedItems[0]}
+              setSelected={(newValue) => {
+                handleChange("is_complete", newValue?.dataToSend);
+                handleBlur("is_complete", newValue?.dataToSend);
+              }}
+              items={isCompletedItems}
+              dataKey="is_complete"
+              placeholder=""
+              flag={flag?.current === 'is_complete'}
             />
           </div>
         </div>

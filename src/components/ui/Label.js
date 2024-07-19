@@ -26,7 +26,7 @@ export const Label = ({ variant, text, style, ...props }) => {
             color: 'white',
             backgroundColor: bgcolor,
             color,
-            fontSize: '0.9rem',
+            fontSize: '1.1rem',
             cursor: props?.onClick && 'pointer',
             ...style
         }} {...props}>{text}</span>
