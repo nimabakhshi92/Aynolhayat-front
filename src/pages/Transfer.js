@@ -109,8 +109,8 @@ export const Transfer = ({ }) => {
 
 
   const handleRowClick = (row) => {
-    if (row['status'] === shareNarrationStatus.PENDING)
-      navigate(`/shared-narrations/${row?.id}?`)
+    // if (row['status'] === shareNarrationStatus.PENDING)
+    navigate(`/shared-narrations/${row?.id}?`)
   }
   return (
     <Stack className="justify-center items-center">
