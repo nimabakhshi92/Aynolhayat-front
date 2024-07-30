@@ -330,8 +330,8 @@ export const SingleNarrationSummariesForEdit = ({
             parentClassName="col-span-7"
             className="w-full"
             value={summary.expression}
-            onBlur={() => handleBlur("expression", summary.expression)}
-            onPressEnter={() => handleBlur("expression", summary.expression)}
+            onBlur={(e) => handleBlur("expression", e.target.value)}
+            onPressEnter={(e) => handleBlur("expression", e.target.value)}
             type="text"
             placeholder="عبارت فارسی"
             onChange={(e) => {
@@ -344,8 +344,8 @@ export const SingleNarrationSummariesForEdit = ({
             parentClassName="col-span-7"
             className="w-full"
             value={summary.summary}
-            onBlur={() => handleBlur("summary", summary.summary)}
-            onPressEnter={() => handleBlur("summary", summary.summary)}
+            onBlur={(e) => handleBlur("summary", e.target.value)}
+            onPressEnter={(e) => handleBlur("summary", e.target.value)}
 
             type="text"
             placeholder="عبارت عربی"
