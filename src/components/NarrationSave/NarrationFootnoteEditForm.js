@@ -10,7 +10,7 @@ import {
   useModifyNarrationFootnote,
 } from "../../api/hooks/allHooks";
 import { InputWithState } from "../general/InputWithState";
-import InputWithSuggestion from "../general/InputWithSuggestion";
+import InputWithSuggestion, { InputWithSuggestionWithDebounceBlur } from "../general/InputWithSuggestion";
 const emptyFootnote0 = {
   expression: "",
   explanation: "",
@@ -96,7 +96,7 @@ export const SingleNarrationFootnoteForEdit = ({
           onBlur={() => handleBlur("expression", footnote.expression)}
         /> */}
 
-        <InputWithSuggestion
+        <InputWithSuggestionWithDebounceBlur
           value={footnote.expression}
           placeholder="عبارت"
           onBlur={(e) => handleBlur("expression", e.target.value)}
@@ -109,7 +109,7 @@ export const SingleNarrationFootnoteForEdit = ({
           key={"i0" + footnote.id}
           flag={flag?.current === 'expression'}
         />
-        <InputWithSuggestion
+        <InputWithSuggestionWithDebounceBlur
           value={footnote.explanation}
           placeholder="توضیح"
           onBlur={(e) => handleBlur("explanation", e.target.value)}

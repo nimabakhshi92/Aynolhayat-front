@@ -19,7 +19,7 @@ import {
 import Dropdown from "../ui/dropdown";
 import Input from "../ui/input";
 import { useQueryClient } from "@tanstack/react-query";
-import InputWithSuggestion from "../general/InputWithSuggestion";
+import { InputWithSuggestionWithDebounceBlur } from "../general/InputWithSuggestion";
 import { toast } from "react-toastify";
 
 const findVerse = (quran, surah_no, verse_no) => {
@@ -215,7 +215,7 @@ export const SingleNarrationSummariesForEdit = ({
         },
       });
     }
-  };
+  }
 
   const handleVerseRemove = () => {
     mutate({
@@ -252,7 +252,7 @@ export const SingleNarrationSummariesForEdit = ({
           }}
           className="grid gap-4 grid-cols-7 grid-rows-4"
         >
-          <InputWithSuggestion
+          <InputWithSuggestionWithDebounceBlur
             suggestions={level1?.sort()}
             className="w-full"
             onPressEnter={(e) => handleBlur("alphabet", e.target.value)}
@@ -267,7 +267,7 @@ export const SingleNarrationSummariesForEdit = ({
             flag={flag?.current === 'alphabet'}
           />
 
-          <InputWithSuggestion
+          <InputWithSuggestionWithDebounceBlur
             suggestions={level2?.sort()}
             parentClassName="col-span-1"
             className="w-full"
@@ -282,7 +282,7 @@ export const SingleNarrationSummariesForEdit = ({
             flag={flag?.current === 'subject'}
           />
 
-          <InputWithSuggestion
+          <InputWithSuggestionWithDebounceBlur
             suggestions={level3?.sort()}
             parentClassName=" col-span-2"
             className="w-full"
@@ -297,7 +297,7 @@ export const SingleNarrationSummariesForEdit = ({
             flag={flag?.current === 'sub_subject'}
           />
 
-          <InputWithSuggestion
+          <InputWithSuggestionWithDebounceBlur
             suggestions={level4?.sort()}
             parentClassName=" col-span-3"
             className="w-full"
@@ -312,7 +312,7 @@ export const SingleNarrationSummariesForEdit = ({
             flag={flag?.current === 'subject_3'}
           />
 
-          <InputWithSuggestion
+          <InputWithSuggestionWithDebounceBlur
             suggestions={level5?.sort()}
             parentClassName=" col-span-7"
             className="w-full"
@@ -326,7 +326,7 @@ export const SingleNarrationSummariesForEdit = ({
             key={"i4" + summary.id}
             flag={flag?.current === 'subject_4'}
           />
-          <InputWithSuggestion
+          <InputWithSuggestionWithDebounceBlur
             parentClassName="col-span-7"
             className="w-full"
             value={summary.expression}
@@ -340,7 +340,7 @@ export const SingleNarrationSummariesForEdit = ({
             flag={flag?.current === 'expression'}
             key={"i5" + summary.id}
           />
-          <InputWithSuggestion
+          <InputWithSuggestionWithDebounceBlur
             parentClassName="col-span-7"
             className="w-full"
             value={summary.summary}
