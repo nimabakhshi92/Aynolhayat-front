@@ -272,9 +272,9 @@ export const useModifyNarrationSummary = () => {
       // ]});
     },
     onSettled: (inputs, error, variables, context) => {
-      queryClient.invalidateQueries({
-        queryKey: ["narrationIndividual", context.narrationId],
-      });
+      // queryClient.invalidateQueries({
+      //   queryKey: ["narrationIndividual", context.narrationId],
+      // });
       if (context.onSettled) context.onSettled();
     },
   });

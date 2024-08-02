@@ -15,7 +15,8 @@ export function InputWithSuggestionWithDebounceBlur({
   value,
   onBlur,
   parentClassName,
-  flag
+  flag,
+  status
 }) {
   const [matchedSuggesttions, setMatchedSuggestions] = useState(suggestions);
   const [openSuggestions, setOpenSuggestions] = useState(false);
@@ -61,14 +62,25 @@ export function InputWithSuggestionWithDebounceBlur({
   //     }, 1000);
   //   }
   // }, [flag])
+  console.log(flag, status)
   useEffect(() => {
+    console.log(flag, status)
     if (flag) {
-      setBGColor('var(--primary-color)')
-      setTimeout(() => {
-        setBGColor('white')
-      }, 1000);
+      if (status === 'isLoading') {
+        setBGColor('var(--orange)')
+      } else if (status === 'success') {
+        setBGColor('var( --primary-color-light)')
+        setTimeout(() => {
+          setBGColor('white')
+        }, 1000);
+      } else if (status === 'error') {
+        setBGColor('var(--error-color)')
+        setTimeout(() => {
+          setBGColor('white')
+        }, 1000);
+      }
     }
-  }, [flag])
+  }, [flag, status])
 
   const debouncedBlur = useMemo(() => debounce(onBlur || (() => { }), 1000), [])
 

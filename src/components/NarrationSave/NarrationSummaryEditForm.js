@@ -117,6 +117,7 @@ export const SingleNarrationSummariesForEdit = ({
     setSummary({ ...summary, [key]: newValue });
   };
   const flag = useRef(false)
+  const status = useRef()
 
   const handleSurahChange = (data) => {
     const maxNoOfVerses = getNoOfVerses(data.surah_name);
@@ -169,13 +170,13 @@ export const SingleNarrationSummariesForEdit = ({
       });
   };
   const handleBlur = (key, newValue) => {
-
-    flag.current = ''
     if (
       !newValue &&
       (key === "alphabet" || key === "subject" || key === "sub_subject")
     )
       return;
+    status.current = 'isLoading'
+    flag.current = key
     let keyForPost = "";
     switch (key) {
       case "subject":
@@ -196,7 +197,10 @@ export const SingleNarrationSummariesForEdit = ({
       },
         {
           onSuccess: () => {
-            flag.current = key
+            status.current = 'success'
+          },
+          onError: () => {
+            status.current = 'error'
           }
         }
       );
@@ -265,6 +269,7 @@ export const SingleNarrationSummariesForEdit = ({
 
             key={"i0" + summary.id}
             flag={flag?.current === 'alphabet'}
+            status={status.current}
           />
 
           <InputWithSuggestionWithDebounceBlur
@@ -280,6 +285,7 @@ export const SingleNarrationSummariesForEdit = ({
             onBlur={(e) => handleBlur("subject", e.target.value)}
             key={"i1" + summary.id}
             flag={flag?.current === 'subject'}
+            status={status.current}
           />
 
           <InputWithSuggestionWithDebounceBlur
@@ -295,6 +301,7 @@ export const SingleNarrationSummariesForEdit = ({
             onBlur={(e) => handleBlur("sub_subject", e.target.value)}
             key={"i2" + summary.id}
             flag={flag?.current === 'sub_subject'}
+            status={status.current}
           />
 
           <InputWithSuggestionWithDebounceBlur
@@ -310,6 +317,7 @@ export const SingleNarrationSummariesForEdit = ({
             onBlur={(e) => handleBlur("subject_3", e.target.value)}
             key={"i3" + summary.id}
             flag={flag?.current === 'subject_3'}
+            status={status.current}
           />
 
           <InputWithSuggestionWithDebounceBlur
@@ -325,6 +333,7 @@ export const SingleNarrationSummariesForEdit = ({
             onBlur={(e) => handleBlur("subject_4", e.target.value)}
             key={"i4" + summary.id}
             flag={flag?.current === 'subject_4'}
+            status={status.current}
           />
           <InputWithSuggestionWithDebounceBlur
             parentClassName="col-span-7"
@@ -339,6 +348,7 @@ export const SingleNarrationSummariesForEdit = ({
             }}
             flag={flag?.current === 'expression'}
             key={"i5" + summary.id}
+            status={status.current}
           />
           <InputWithSuggestionWithDebounceBlur
             parentClassName="col-span-7"
@@ -355,6 +365,7 @@ export const SingleNarrationSummariesForEdit = ({
             }}
             flag={flag?.current === 'summary'}
             key={"i6" + summary.id}
+            status={status.current}
           />
           <div className="relative col-span-2">
             <Dropdown
