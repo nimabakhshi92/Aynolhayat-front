@@ -55,7 +55,7 @@ import styled from "@emotion/styled";
 import { tooltipClasses } from "@mui/material/Tooltip";
 import { NarrationSearch } from "./NarrationSearch";
 import { useQueryClient } from "@tanstack/react-query";
-import { Label, PendingNarrationSentLabel, RejectedNarrationSentLabel, SendingNarrationSentLabel, AcceptedNarrationSentLabel, InsertedNarrationSentLabel } from "../components/ui/Label";
+import { Label, PendingNarrationSentLabel, RejectedNarrationSentLabel, SendingNarrationSentLabel, AcceptedNarrationSentLabel, InsertedNarrationSentLabel, CheckingNarrationSentLabel } from "../components/ui/Label";
 import { FiSend } from "react-icons/fi";
 import { getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
 import { shareNarrationStatus } from "../utils/enums";
@@ -333,24 +333,21 @@ export const SingleNarration = ({
           <>
             {isAdmin(user) && personal &&
               <>
-                {sentStatus === 'sending' &&
-                  <SendingNarrationSentLabel />
-                }
-                {sentStatus === 'pending' &&
+                {sentStatus === 'sending' && <SendingNarrationSentLabel />}
+                {sentStatus === 'pending' && <PendingNarrationSentLabel />}
+                {sentStatus === 'checking' && <CheckingNarrationSentLabel />}
+                {sentStatus === 'rejected' && <RejectedNarrationSentLabel />}
+                {sentStatus === 'accepted' && <AcceptedNarrationSentLabel />}
+                {sentStatus === 'transferred' && <InsertedNarrationSentLabel />}
 
-                  <PendingNarrationSentLabel />}
-                {sentStatus === 'accepted' &&
-                  <AcceptedNarrationSentLabel />
-                }
-                {sentStatus === 'rejected' &&
-                  <RejectedNarrationSentLabel />
-                }
-                {((!['sending', 'pending', 'accepted', 'inserted'].includes(sentStatus))) && onSend && (
-                  <FiSend
-                    className="cursor-pointer  w-5 h-5"
-                    onClick={onSend}
-                  />
-                )}
+                {((['rejected', undefined].includes(sentStatus)) ||
+                  (isCheckerAdmin(user) && [shareNarrationStatus.ACCEPTED, shareNarrationStatus.CHECKING].includes(sentStatus))
+                ) && onSend && (
+                    <FiSend
+                      className="cursor-pointer  w-5 h-5"
+                      onClick={onSend}
+                    />
+                  )}
               </>
             }
             {(isSuperAdmin(user) || personal) && onDelete && (
@@ -929,7 +926,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
                             }
                             onDelete={(pass) => handleDelete(narration?.id, pass)}
                             onSend={() => isCheckerAdmin(user) ? handleCheckerAdminSend(narration?.id) : handleSend(narration?.id)}
-                            sentStatus={getSingleNarrationSentStatus({ narrationId: narration?.id, allSentStatus })}
+                            sentStatus={narration.status ?? getSingleNarrationSentStatus({ narrationId: narration?.id, allSentStatus })}
                             narration={narration}
                             showSummary={true}
                             lvl1={treeWords[0]}

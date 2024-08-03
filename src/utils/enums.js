@@ -3,4 +3,6 @@ export const shareNarrationStatus = {
     ACCEPTED: 'accepted',
     REJECTED: 'rejected',
     SENDING: 'sending',
+    TRANSFERRED: 'transferred',
+    CHECKING: 'checking'
 }

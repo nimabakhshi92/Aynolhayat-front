@@ -1,8 +1,17 @@
+import { shareNarrationStatus } from "../../utils/enums"
+import { HiBadgeCheck } from "react-icons/hi";
+
 export const Label = ({ variant, text, style, ...props }) => {
     let bgcolor, color
     switch (variant) {
-        case 'success':
+        case 'superSuccess':
             bgcolor = 'var(--green-100)'
+            bgcolor = '#0bab6433'
+            color = 'var(--primary-color)'
+            break
+        case 'success':
+            // bgcolor = 'var(--green-100)']
+            bgcolor = '#6AFFAA50'
             color = 'var(--primary-color)'
             break
         case 'error':
@@ -17,6 +26,10 @@ export const Label = ({ variant, text, style, ...props }) => {
             bgcolor = 'var(--yellow-100)'
             color = 'var(--secondary-brown-color)'
             break
+        case 'debug':
+            bgcolor = 'var(--blue-200)'
+            color = 'var(--secondary-blue-color)'
+            break
     }
 
     return (
@@ -28,56 +41,57 @@ export const Label = ({ variant, text, style, ...props }) => {
             color,
             fontSize: '1.1rem',
             cursor: props?.onClick && 'pointer',
+            display: 'flex',
+            gap: '4px',
+            alignItems: 'center',
             ...style
-        }} {...props}>{text}</span>
-    )
-}
-
-export const PendingNarrationSentLabel = ({ ...props }) => {
-    return (
-        <Label variant={'warning'} text='در انتظار تایید' {...props} />
-
-    )
-}
-
-export const RejectedNarrationSentLabel = ({ ...props }) => {
-    return (
-        <Label variant={'error'} text='نیاز به تغییر' {...props} />
-
-    )
-}
-
-export const AcceptedNarrationSentLabel = ({ ...props }) => {
-    return (
-        <Label variant={'success'} text='تایید شده' {...props} />
-
-    )
-}
-
-export const InsertedNarrationSentLabel = ({ ...props }) => {
-    return (
-        <Label variant={'success'} text='افزوده شده' {...props} />
-
+        }} {...props}>{text}
+            {variant === 'superSuccess' &&
+                < HiBadgeCheck style={{ width: 16, height: 16 }} fill="green" />
+            }
+        </span>
     )
 }
 
 
 export const SendingNarrationSentLabel = ({ ...props }) => {
-    return (
-        <Label variant={'info'} text='در حال ارسال...' {...props} />
-
-    )
+    return <Label variant={'info'} text='در حال ارسال...' {...props} />
 }
 
+export const PendingNarrationSentLabel = ({ ...props }) => {
+    return <Label variant={'info'} text='درخواست ارسال شده' {...props} />
+}
+
+export const CheckingNarrationSentLabel = ({ ...props }) => {
+    return <Label variant={'warning'} text='در حال بررسی' {...props} />
+}
+
+export const RejectedNarrationSentLabel = ({ ...props }) => {
+    return <Label variant={'error'} text='نیاز به تغییر' {...props} />
+}
+
+export const AcceptedNarrationSentLabel = ({ ...props }) => {
+    return <Label variant={'success'} text='تایید شده' {...props} />
+}
+
+export const InsertedNarrationSentLabel = ({ ...props }) => {
+    return <Label variant={'superSuccess'} text='انتقال یافته به سایت' {...props} />
+}
+
+
 export const NarrationSentStatusLabel = ({ status }) => {
-    if (status === 'sending')
+    if (status === shareNarrationStatus.SENDING)
         return <SendingNarrationSentLabel />
-    if (status === 'pending')
+    if (status === shareNarrationStatus.PENDING)
         return <PendingNarrationSentLabel />
-    if (status === 'accepted')
+    if (status === shareNarrationStatus.CHECKING)
+        return <CheckingNarrationSentLabel />
+    if (status === shareNarrationStatus.ACCEPTED)
         return <AcceptedNarrationSentLabel />
-    if (status === 'rejected')
+    if (status === shareNarrationStatus.REJECTED)
         return <RejectedNarrationSentLabel />
+    if (status === shareNarrationStatus.TRANSFERRED)
+        return <InsertedNarrationSentLabel />
 }
 
 

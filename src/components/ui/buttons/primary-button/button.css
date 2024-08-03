@@ -3,18 +3,35 @@
   cursor: pointer;
   font-size: 1.6rem;
 }
+
 .btn-primary {
   background-color: var(--primary-color);
   color: #fff;
 }
-.btn-primary:hover {
+
+.btn-info {
+  background-color: var(--yellow-100);
+  color: var(--secondary-brown-color);
+}
+
+
+.btn-warn {
+  background-color: var(--secondary-blue-color);
+  color: #fff;
+}
+
+
+.btn-primary:hover,
+.btn-info:hover {
   opacity: 0.75;
 }
+
 .btn-secondary {
   background-color: #fff;
   border: 1px solid var(--primary-color);
   color: var(--primary-color);
 }
+
 .btn-secondary:hover {
   background-color: var(--primary-color);
   color: #fff;

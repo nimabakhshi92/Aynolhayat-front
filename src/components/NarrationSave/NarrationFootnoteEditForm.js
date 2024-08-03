@@ -23,6 +23,7 @@ export const SingleNarrationFootnoteForEdit = ({
   handleAddInputComponent,
 }) => {
   const flag = useRef(false)
+  const status = useRef()
 
   const [footnote, setFootnote] = useState(inFootnote);
   useEffect(() => {
@@ -46,7 +47,8 @@ export const SingleNarrationFootnoteForEdit = ({
   };
 
   const handleBlur = (key, newValue) => {
-    flag.current = ''
+    flag.current = key
+    status.current = 'isLoading'
     if (footnote?.id)
       modifyFootnote({
         narrationId: narration?.id,
@@ -55,10 +57,12 @@ export const SingleNarrationFootnoteForEdit = ({
       },
         {
           onSuccess: () => {
-            flag.current = key
+            status.current = 'success'
+          },
+          onError: () => {
+            status.current = 'error'
           }
         });
-
     else {
       addFootnote({
         narrationId: narration?.id,
@@ -108,6 +112,7 @@ export const SingleNarrationFootnoteForEdit = ({
 
           key={"i0" + footnote.id}
           flag={flag?.current === 'expression'}
+          status={status.current}
         />
         <InputWithSuggestionWithDebounceBlur
           value={footnote.explanation}
@@ -121,6 +126,7 @@ export const SingleNarrationFootnoteForEdit = ({
 
           key={"i1" + footnote.id}
           flag={flag?.current === 'explanation'}
+          status={status.current}
         />
 
       </div>

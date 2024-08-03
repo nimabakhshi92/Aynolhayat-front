@@ -58,6 +58,19 @@ export const NarrationEdit = ({ checkOnly }) => {
       window.scrollTo({ left: 0, top: window.innerHeight, behavior: "smooth" });
   }, [!!narration]);
 
+  const checkShareRequest = async () => {
+    try {
+      await updateSharedNarrations({ id: sharedNarrationId, data: { status: shareNarrationStatus.CHECKING } })
+      // await duplicateSharedNarration({ narrationId: narration?.id })
+      toast.success('عملیات مورد نظر انجام شد')
+      navigate('/transfer')
+    } catch {
+      toast.error('متاسفانه عملیات مورد نظر انجام نشد')
+      navigate('/transfer')
+    }
+  }
+
+
   const rejectShareRequest = async () => {
     try {
       await updateSharedNarrations({ id: sharedNarrationId, data: { status: shareNarrationStatus.REJECTED } })
@@ -73,13 +86,22 @@ export const NarrationEdit = ({ checkOnly }) => {
   const acceptShareRequest = async () => {
     try {
       await updateSharedNarrations({ id: sharedNarrationId, data: { status: shareNarrationStatus.ACCEPTED } })
-      await duplicateSharedNarration({ narrationId: narration?.id })
+      // await duplicateSharedNarration({ narrationId: narration?.id })
       toast.success('عملیات مورد نظر انجام شد')
       navigate('/transfer')
     } catch {
       toast.error('متاسفانه عملیات مورد نظر انجام نشد')
       navigate('/transfer')
     }
+  }
+
+  const isButtonShown = (status, newStatus) => {
+    if (status === shareNarrationStatus.PENDING)
+      return newStatus === shareNarrationStatus.CHECKING
+    if (status === shareNarrationStatus.CHECKING)
+      return newStatus === shareNarrationStatus.REJECTED || newStatus === shareNarrationStatus.ACCEPTED
+    if (status === shareNarrationStatus.ACCEPTED)
+      return newStatus === shareNarrationStatus.REJECTED
   }
 
 
@@ -115,16 +137,30 @@ export const NarrationEdit = ({ checkOnly }) => {
             <Stack className="w-2/3 px-10 h-15  justify-around items-center"
               flexDirection={'row'}
             >
-              <Button variant={'primary'} className='w-35 h-10'
-                onClickHandler={() => acceptShareRequest()}
-              >
-                ارسال به حفظ
-              </Button>
-              <Button variant={'primary'} className='w-35 h-10' style={{ backgroundColor: 'red' }}
-                onClickHandler={() => rejectShareRequest()}
-              >
-                نیاز به تغییر
-              </Button>
+              {isButtonShown(sharedNarration?.status, shareNarrationStatus.CHECKING) &&
+                <Button variant={'info'} className='w-35 h-10'
+                  onClickHandler={() => checkShareRequest()}
+                >
+                  در حال بررسی
+                </Button>
+              }
+
+              {isButtonShown(sharedNarration?.status, shareNarrationStatus.REJECTED) &&
+                <Button variant={'primary'} className='w-35 h-10' style={{ backgroundColor: 'red' }}
+                  onClickHandler={() => rejectShareRequest()}
+                >
+                  نیاز به تغییر
+                </Button>
+              }
+
+              {isButtonShown(sharedNarration?.status, shareNarrationStatus.ACCEPTED) &&
+                <Button variant={'primary'} className='w-35 h-10'
+                  onClickHandler={() => acceptShareRequest()}
+                >
+                  تایید
+                </Button>
+              }
+
               <Button variant={'secondary'} className='w-35 h-10'
                 onClickHandler={() => navigate(-1)}
               >

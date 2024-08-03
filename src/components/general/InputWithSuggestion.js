@@ -16,7 +16,9 @@ export function InputWithSuggestionWithDebounceBlur({
   onBlur,
   parentClassName,
   flag,
-  status
+  status,
+  textArea
+
 }) {
   const [matchedSuggesttions, setMatchedSuggestions] = useState(suggestions);
   const [openSuggestions, setOpenSuggestions] = useState(false);
@@ -117,6 +119,7 @@ export function InputWithSuggestionWithDebounceBlur({
           if (onChange) onChange(e);
           debouncedBlur(e)
         }}
+        textArea={textArea}
       // onKeyDown={(event) => {
       //   if (event.key === "Enter" || event.key === "NumpadEnter") {
       //     if (onPressEnter && !onBlur) {

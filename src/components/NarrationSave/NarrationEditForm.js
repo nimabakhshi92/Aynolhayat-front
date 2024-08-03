@@ -21,6 +21,7 @@ import { CircularProgress } from "@mui/material";
 import { AiOutlineClose } from "react-icons/ai";
 import apiUrls from "../../api/urls";
 import { SingleNarration } from "../../pages/NarrationWarehouse";
+import { InputWithSuggestionWithDebounceBlur } from "../general/InputWithSuggestion";
 
 const emptyNarration = {
   imam: null,
@@ -160,22 +161,31 @@ export const NarrationEditForm = ({ narration }) => {
   const [trigger, setTrigger] = useState(false);
 
   const flag = useRef(false)
+  const status = useRef()
   const handleBlur = (fieldName, fieldValue) => {
-    flag.current = ''
+    status.current = 'isLoading'
+    flag.current = fieldName
     if (!narration && fieldName === "content" && fieldValue) {
       setIsModalOpen(true);
       setTrigger(!trigger);
     }
-    if (narration)
+    if (narration) {
+      flag.current = fieldName
       mutate({
         narrationId: narration?.id,
         data: { [fieldName]: fieldValue },
       }, {
         onSuccess: () => {
-          flag.current = fieldName
+          status.current = 'success'
+        },
+        onError: () => {
+          status.current = 'error'
         }
       });
+    }
   };
+
+
   const handleSubmit = (e) => {
     if (
       !updatedNarration.imam ||
@@ -242,13 +252,16 @@ export const NarrationEditForm = ({ narration }) => {
         <div className="grid gap-4 grid-cols-3 grid-rows-3">
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
             <p>نام حدیث</p>
-            <Input
+            <InputWithSuggestionWithDebounceBlur
+              className='w-full'
               value={updatedNarration?.name}
               onChange={(e) => handleChange("name", e.target.value)}
-              onBlur={(e) => handleBlur("name", updatedNarration?.name)}
+              onBlur={(e) => handleBlur("name", e.target.value)}
               type="text"
               placeholder="نام حدیث"
               flag={flag?.current === 'name'}
+              status={status.current}
+              key={"i0"}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -264,18 +277,22 @@ export const NarrationEditForm = ({ narration }) => {
               dataKey="name"
               placeholder="نام معصوم"
               flag={flag?.current === 'imam'}
+              key={"i1"}
             />
           </div>
 
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
             <p>راویان حدیث</p>
-            <Input
+            <InputWithSuggestionWithDebounceBlur
+              className='w-full'
               value={updatedNarration?.narrator}
               onChange={(e) => handleChange("narrator", e.target.value)}
-              onBlur={(e) => handleBlur("narrator", updatedNarration?.narrator)}
+              onBlur={(e) => handleBlur("narrator", e.target.value)}
               type="text"
               placeholder="راویان حدیث"
               flag={flag?.current === 'narrator'}
+              status={status.current}
+              key={"i2"}
             />
           </div>
           <div
@@ -283,20 +300,23 @@ export const NarrationEditForm = ({ narration }) => {
             style={{ flexDirection: "column" }}
           >
             <p>متن حدیث</p>
-            <Input
+            <InputWithSuggestionWithDebounceBlur
+              className='w-full'
               style={{
                 height: "100%",
                 border,
               }}
               value={updatedNarration?.content}
               onChange={(e) => handleChange("content", e.target.value)}
-              onBlur={(e) => handleBlur("content", updatedNarration?.content)}
+              onBlur={(e) => handleBlur("content", e.target.value)}
               type="text"
               subText={subText}
               color={color}
               placeholder="متن حدیث"
               flag={flag?.current === 'content'}
+              status={status.current}
               textArea={true}
+              key={"i3"}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -311,37 +331,45 @@ export const NarrationEditForm = ({ narration }) => {
               dataKey="name"
               placeholder="نام کتاب"
               flag={flag?.current === 'book'}
+              key={"i4"}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
             <p>شماره جلد کتاب</p>
-            <Input
+            <InputWithSuggestionWithDebounceBlur
+              className='w-full'
               value={updatedNarration?.book_vol_no}
               onChange={(e) => handleChange("book_vol_no", e.target.value)}
               onBlur={(e) =>
-                handleBlur("book_vol_no", updatedNarration?.book_vol_no)
+                handleBlur("book_vol_no", e.target.value)
               }
               type="number"
               placeholder="شماره جلد کتاب"
               flag={flag?.current === 'book_vol_no'}
+              status={status.current}
+              key={"i5"}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
             <p>شماره صفحه</p>
-            <Input
+            <InputWithSuggestionWithDebounceBlur
+              className='w-full'
               value={updatedNarration?.book_page_no}
               onChange={(e) => handleChange("book_page_no", e.target.value)}
               onBlur={(e) =>
-                handleBlur("book_page_no", updatedNarration?.book_page_no)
+                handleBlur("book_page_no", e.target.value)
               }
               type="number"
               placeholder="شماره صفحه"
               flag={flag?.current === 'book_page_no'}
+              status={status.current}
+              key={"i6"}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
             <p>شماره حدیث</p>
-            <Input
+            <InputWithSuggestionWithDebounceBlur
+              className='w-full'
               value={updatedNarration?.book_narration_no}
               onChange={(e) =>
                 handleChange("book_narration_no", e.target.value)
@@ -349,12 +377,14 @@ export const NarrationEditForm = ({ narration }) => {
               onBlur={(e) =>
                 handleBlur(
                   "book_narration_no",
-                  updatedNarration?.book_narration_no
+                  e.target.value
                 )
               }
               type="number"
               placeholder="شماره حدیث"
+              status={status.current}
               flag={flag?.current === 'book_narration_no'}
+              key={"i7"}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -369,6 +399,7 @@ export const NarrationEditForm = ({ narration }) => {
               dataKey="is_complete"
               placeholder=""
               flag={flag?.current === 'is_complete'}
+              key={"i8"}
             />
           </div>
         </div>

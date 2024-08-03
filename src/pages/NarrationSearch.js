@@ -463,7 +463,7 @@ export const NarrationSearch = ({ personal }) => {
                       onEdit={() => navigate(`${narration?.id}`)}
                       onDelete={(pass) => handleDelete(narration?.id, pass)}
                       onSend={() => isCheckerAdmin(user) ? handleCheckerAdminSend(narration?.id) : handleSend(narration?.id)}
-                      sentStatus={getSingleNarrationSentStatus({ narrationId: narration?.id, allSentStatus })}
+                      sentStatus={narration.status ?? getSingleNarrationSentStatus({ narrationId: narration?.id, allSentStatus })}
                       narration={narration}
                       showSummary={false}
                       personal={personal}

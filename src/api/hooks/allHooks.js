@@ -266,10 +266,7 @@ export const useModifyNarrationSummary = () => {
         ["narrationIndividual", context.narrationId],
         context.previousData
       );
-      // queryClient.invalidateQueries({queryKey:[
-      //   "narrationIndividual",
-      //   context.narrationId,
-      // ]});
+
     },
     onSettled: (inputs, error, variables, context) => {
       // queryClient.invalidateQueries({

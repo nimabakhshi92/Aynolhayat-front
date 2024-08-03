@@ -137,6 +137,12 @@ export const SingleNarrationSummariesForEdit = ({
         queryClient.refetchQueries({
           queryKey: ["verse", data?.surah_no, verse_no],
         });
+        queryClient.refetchQueries({
+          queryKey: [
+            "narrationIndividual",
+            narration?.id,
+          ]
+        });
       },
     },
     );
@@ -157,6 +163,12 @@ export const SingleNarrationSummariesForEdit = ({
         queryClient.refetchQueries({
           queryKey: ["verse", summary.verse?.surah_no, newValue],
         });
+        queryClient.refetchQueries({
+          queryKey: [
+            "narrationIndividual",
+            narration?.id,
+          ]
+        })
       },
     });
   };
@@ -226,6 +238,15 @@ export const SingleNarrationSummariesForEdit = ({
       narrationId: narration?.id,
       summaryId: summary?.id,
       data: { quran_verse: -1 },
+    }, {
+      onSettled: () => {
+        queryClient.refetchQueries({
+          queryKey: [
+            "narrationIndividual",
+            narration?.id,
+          ]
+        })
+      }
     });
   };
 
