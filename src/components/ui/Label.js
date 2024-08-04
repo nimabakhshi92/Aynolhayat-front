@@ -44,6 +44,7 @@ export const Label = ({ variant, text, style, ...props }) => {
             display: 'flex',
             gap: '4px',
             alignItems: 'center',
+            justifyContent: 'space-between',
             ...style
         }} {...props}>{text}
             {variant === 'superSuccess' &&

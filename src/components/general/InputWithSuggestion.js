@@ -17,8 +17,8 @@ export function InputWithSuggestionWithDebounceBlur({
   parentClassName,
   flag,
   status,
-  textArea
-
+  textArea,
+  debounceDependency
 }) {
   const [matchedSuggesttions, setMatchedSuggestions] = useState(suggestions);
   const [openSuggestions, setOpenSuggestions] = useState(false);
@@ -64,9 +64,9 @@ export function InputWithSuggestionWithDebounceBlur({
   //     }, 1000);
   //   }
   // }, [flag])
-  console.log(flag, status)
+  // console.log(flag, status)
   useEffect(() => {
-    console.log(flag, status)
+    // console.log(flag, status)
     if (flag) {
       if (status === 'isLoading') {
         setBGColor('var(--orange)')
@@ -84,7 +84,7 @@ export function InputWithSuggestionWithDebounceBlur({
     }
   }, [flag, status])
 
-  const debouncedBlur = useMemo(() => debounce(onBlur || (() => { }), 1000), [])
+  const debouncedBlur = useMemo(() => debounce(onBlur || (() => { }), 1000), [debounceDependency])
 
   return (
     <div className={`relative ${parentClassName}`} ref={ref}

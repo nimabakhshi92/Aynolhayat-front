@@ -229,7 +229,17 @@ export const SingleNarrationSummariesForEdit = ({
           quran_verse: 0,
           narration: narration?.id,
         },
-      });
+      }
+        , {
+          onSuccess: () => {
+            status.current = 'success'
+          },
+          onError: () => {
+            status.current = 'error'
+          }
+        }
+
+      );
     }
   }
 
@@ -288,9 +298,10 @@ export const SingleNarrationSummariesForEdit = ({
             placeholder="سطح 1"
             onBlur={(e) => handleBlur("alphabet", e.target.value)}
 
-            key={"i0" + summary.id}
+            key={"i0"}
             flag={flag?.current === 'alphabet'}
             status={status.current}
+            debounceDependency={summary.id}
           />
 
           <InputWithSuggestionWithDebounceBlur

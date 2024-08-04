@@ -49,6 +49,11 @@ export const NarrationEdit = ({ checkOnly }) => {
 
   const narration = checkOnly ? sharedNarration?.narration : narrationIndividual
 
+  console.log('checkOnly: ', checkOnly)
+  console.log('narration: ', narration)
+  console.log('sharedNarration: ', sharedNarration)
+  console.log('narrationIndividual: ', narrationIndividual)
+
   useEffect(() => {
     if (
       narration &&

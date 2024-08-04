@@ -162,6 +162,7 @@ export const NarrationEditForm = ({ narration }) => {
 
   const flag = useRef(false)
   const status = useRef()
+
   const handleBlur = (fieldName, fieldValue) => {
     status.current = 'isLoading'
     flag.current = fieldName
@@ -182,6 +183,8 @@ export const NarrationEditForm = ({ narration }) => {
           status.current = 'error'
         }
       });
+    } else {
+      flag.current = undefined
     }
   };
 
@@ -262,6 +265,7 @@ export const NarrationEditForm = ({ narration }) => {
               flag={flag?.current === 'name'}
               status={status.current}
               key={"i0"}
+              debounceDependency={narration?.id}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -278,6 +282,7 @@ export const NarrationEditForm = ({ narration }) => {
               placeholder="نام معصوم"
               flag={flag?.current === 'imam'}
               key={"i1"}
+              debounceDependency={narration?.id}
             />
           </div>
 
@@ -293,6 +298,7 @@ export const NarrationEditForm = ({ narration }) => {
               flag={flag?.current === 'narrator'}
               status={status.current}
               key={"i2"}
+              debounceDependency={narration?.id}
             />
           </div>
           <div
@@ -317,6 +323,7 @@ export const NarrationEditForm = ({ narration }) => {
               status={status.current}
               textArea={true}
               key={"i3"}
+              debounceDependency={narration?.id}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -332,6 +339,7 @@ export const NarrationEditForm = ({ narration }) => {
               placeholder="نام کتاب"
               flag={flag?.current === 'book'}
               key={"i4"}
+              debounceDependency={narration?.id}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -348,6 +356,7 @@ export const NarrationEditForm = ({ narration }) => {
               flag={flag?.current === 'book_vol_no'}
               status={status.current}
               key={"i5"}
+              debounceDependency={narration?.id}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -364,6 +373,7 @@ export const NarrationEditForm = ({ narration }) => {
               flag={flag?.current === 'book_page_no'}
               status={status.current}
               key={"i6"}
+              debounceDependency={narration?.id}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -385,6 +395,7 @@ export const NarrationEditForm = ({ narration }) => {
               status={status.current}
               flag={flag?.current === 'book_narration_no'}
               key={"i7"}
+              debounceDependency={narration?.id}
             />
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
@@ -399,7 +410,7 @@ export const NarrationEditForm = ({ narration }) => {
               dataKey="is_complete"
               placeholder=""
               flag={flag?.current === 'is_complete'}
-              key={"i8"}
+              key={"i8" + narration?.id}
             />
           </div>
         </div>

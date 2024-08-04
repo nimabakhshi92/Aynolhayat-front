@@ -70,7 +70,16 @@ export const SingleNarrationFootnoteForEdit = ({
           [key]: newValue,
           narration: narration?.id,
         },
-      });
+      },
+        {
+          onSuccess: () => {
+            status.current = 'success'
+          },
+          onError: () => {
+            status.current = 'error'
+          }
+        }
+      );
     }
   };
   return (
@@ -110,7 +119,7 @@ export const SingleNarrationFootnoteForEdit = ({
             handleChange("expression", e.target.value);
           }}
 
-          key={"i0" + footnote.id}
+          key={"f0" + footnote.id}
           flag={flag?.current === 'expression'}
           status={status.current}
         />
@@ -123,12 +132,10 @@ export const SingleNarrationFootnoteForEdit = ({
           onChange={(e) => {
             handleChange("explanation", e.target.value);
           }}
-
-          key={"i1" + footnote.id}
+          key={"f1" + footnote.id}
           flag={flag?.current === 'explanation'}
           status={status.current}
         />
-
       </div>
       {handleAddInputComponent && footnote.id && (
         <AiOutlinePlusCircle
@@ -171,7 +178,7 @@ export const NarrationFootnoteEditForm = ({ narration }) => {
     >
       {allFootnotes?.map((footnote, index) => (
         <SingleNarrationFootnoteForEdit
-          key={index}
+          key={footnote?.id + index}
           handleAddInputComponent={
             index === allFootnotes.length - 1 && handleAddInputComponent
           }
