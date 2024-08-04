@@ -170,6 +170,8 @@ export const NarrationEditForm = ({ narration }) => {
       setIsModalOpen(true);
       setTrigger(!trigger);
     }
+    if (!fieldValue || fieldValue == ' ')
+      return;
     if (narration) {
       flag.current = fieldName
       mutate({

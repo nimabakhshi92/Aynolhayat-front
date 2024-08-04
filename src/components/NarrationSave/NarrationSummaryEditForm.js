@@ -183,7 +183,7 @@ export const SingleNarrationSummariesForEdit = ({
   };
   const handleBlur = (key, newValue) => {
     if (
-      !newValue &&
+      (!newValue || newValue == ' ') &&
       (key === "alphabet" || key === "subject" || key === "sub_subject")
     )
       return;

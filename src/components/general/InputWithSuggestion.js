@@ -18,7 +18,8 @@ export function InputWithSuggestionWithDebounceBlur({
   flag,
   status,
   textArea,
-  debounceDependency
+  debounceDependency,
+  type
 }) {
   const [matchedSuggesttions, setMatchedSuggestions] = useState(suggestions);
   const [openSuggestions, setOpenSuggestions] = useState(false);
@@ -94,7 +95,7 @@ export function InputWithSuggestionWithDebounceBlur({
         style={{ ...style, backgroundColor: bgColor }}
         reference={reference}
         className={className}
-        type="text"
+        type={type ?? "text"}
         placeholder={placeholder}
         onClick={() => setOpenSuggestions(true)}
         onMouseEnter={(e) => {
