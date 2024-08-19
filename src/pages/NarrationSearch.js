@@ -140,6 +140,15 @@ export const NarrationSearch = ({ personal }) => {
   ]);
   const [selectedSubSubject, setSelectedSubSubject] = useState();
 
+
+  const [progress, setProgress] = useState(0);
+
+  const onDownloadProgress = progressEvent => {
+    const total = progressEvent.total;
+    const current = progressEvent.loaded;
+    const percentage = Math.floor((current / total) * 100);
+    setProgress(percentage);
+  }
   const { data: narrationList, isLoading } = useGetNarrationList(selectedPage, {
     // ...selectedOptions,
     alphabet: selectedSubject,
@@ -147,7 +156,9 @@ export const NarrationSearch = ({ personal }) => {
     ...serachOptions,
     user_id: personal ? user.id : null,
     // ...treeOptions,
-  });
+  },
+    onDownloadProgress
+  );
   const handleSelect = (newValue, category) => {
     setSelectedOptions({ ...selectedOptions, [category]: newValue });
   };
@@ -372,7 +383,23 @@ export const NarrationSearch = ({ personal }) => {
                 color="success"
               />
             )}
-            {!isLoading && (
+            {isLoading && progress < 100 && !narrationList?.results?.length &&
+              <div className="text-center flex justify-center items-center flex-col">
+
+                <h1>{progress} %</h1>
+
+                <div className="w-1/2 h-[10px] absolute bg-[white] flex items-center mt-6 rounded" style={{
+                  border: '1px solid #ddd',
+                  overflow: 'hidden',
+                  zIndex: 4,
+                }}>
+                  <div style={{
+                    width: progress + '%'
+                  }} className="h-2 bg-[green]"></div>
+                </div>
+              </div>
+            }
+            {!isLoading && narrationList?.results?.length >= 0 && (
               <>
                 <div
                   className="p-3  px-2  sm:px-4 mb-4 mx-4 flex items-center justify-between"

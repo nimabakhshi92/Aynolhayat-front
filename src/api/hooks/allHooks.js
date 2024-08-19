@@ -31,11 +31,11 @@ const useGeneralGetHook = ({ defaultDataValue, cacheName, getFunction }) => {
   return { data: resultData, isLoading, isError };
 };
 
-const use2GeneralGetHook = (cacheName, url, configs = {}) => {
+const use2GeneralGetHook = (cacheName, url, configs = {}, onDownloadProgress) => {
   const { user } = useSelector((store) => store.user);
 
   const fn = async () => {
-    const resp = await customApiCall.get({ url });
+    const resp = await customApiCall.get({ url, onDownloadProgress });
     return resp;
   };
 
@@ -89,9 +89,9 @@ export const useGetNarrationIndividual = (narrationId, user) => {
   const url = apiUrls.narration.get(narrationId, user?.id);
   return use2GeneralGetHook(["narrationIndividual", Number(narrationId)], url);
 };
-export const useGetNarrationList = (pageNo, selectedOptions) => {
+export const useGetNarrationList = (pageNo, selectedOptions, onDownloadProgress) => {
   const url = apiUrls.narration.list(pageNo, selectedOptions, 10);
-  return use2GeneralGetHook(["narrationList", pageNo, selectedOptions], url);
+  return use2GeneralGetHook(["narrationList", pageNo, selectedOptions], url, {}, onDownloadProgress);
 };
 export const useGetNarrationFilterOptions = () => {
   const url = apiUrls.narration.filterOptions;

@@ -39,13 +39,13 @@ export const customApiCall = {
     const resp = await axios.delete(url, config);
     return resp.data;
   },
-  get: async function ({ url, headers = {}, useToken = true }) {
+  get: async function ({ url, headers = {}, useToken = true, onDownloadProgress }) {
     const user = getUserFromLocalStorage();
     if (user && useToken) {
       headers["Authorization"] = `Bearer ${user.access || user.access_token}`;
     }
 
-    let config = { headers };
+    let config = { headers, onDownloadProgress };
     const resp = await axios.get(url, config);
     return resp.data;
   },
