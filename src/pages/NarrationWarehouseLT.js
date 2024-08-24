@@ -1,4 +1,21 @@
+import styled from "@emotion/styled";
+import {
+  CircularProgress,
+  Tooltip,
+  useMediaQuery
+} from "@mui/material";
+import { tooltipClasses } from "@mui/material/Tooltip";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
+import { AiOutlineClose } from "react-icons/ai";
+import { BsChatLeftText } from "react-icons/bs";
+import { FaBookmark } from "react-icons/fa";
+import { FiSend } from "react-icons/fi";
+import { LuBookmarkPlus } from "react-icons/lu";
+import { RiDeleteBin2Line, RiEdit2Line } from "react-icons/ri";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   moveNarrationToMainSite,
   useGetNarrationFilterOptions,
@@ -9,57 +26,27 @@ import {
   useShareNarration,
   useUpdateSharedNarration,
 } from "../api/hooks/allHooks";
+import apiUrls from "../api/urls";
 import noteIcon from "../assets/images/shapes/Icon-Note.svg";
 import shape_green from "../assets/images/shapes/shape-green.svg";
+import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { Pagination } from "../components/Pagination";
 import { ContentContainer } from "../components/general/ContentContainer";
-import Dropdown, { DropdownSingleSelect } from "../components/ui/dropdown";
-import Input, { InputOld } from "../components/ui/input";
-import { InputWithState } from "../components/general/InputWithState";
-import InputWithSuggestion from "../components/general/InputWithSuggestion";
+import { CustomModal2 } from "../components/general/CustomModal";
 import {
-  Box,
-  CircularProgress,
-  Popper,
-  Tooltip,
-  useMediaQuery,
-} from "@mui/material";
-import { AiFillDelete, AiFillEdit, AiOutlineClose } from "react-icons/ai";
-import apiUrls from "../api/urls";
-import { useNavigate } from "react-router-dom";
-import { customApiCall } from "../utils/axios";
-import Button from "../components/ui/buttons/primary-button";
-import { BiCloset, BiNote } from "react-icons/bi";
-import { useDispatch, useSelector } from "react-redux";
-import { FaComment, FaRegCommentDots, FaRegStickyNote } from "react-icons/fa";
-import { CustomModal, CustomModal2 } from "../components/general/CustomModal";
-import { BsChatLeftText } from "react-icons/bs";
-import FilterModal, {
   FilterModalLT,
 } from "../components/show-traditions/filter-modal";
-import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
-import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
-import { getUserFromLocalStorage } from "../utils/localStorage";
-import { getFont, isAdmin, isCheckerAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
+import { AcceptedNarrationSentLabel, CheckingNarrationSentLabel, InsertedNarrationSentLabel, PendingNarrationSentLabel, RejectedNarrationSentLabel, SendingNarrationSentLabel } from "../components/ui/Label";
+import Button from "../components/ui/buttons/primary-button";
+import { InputOld } from "../components/ui/input";
 import { setDataLoaded } from "../features/summaryTree/summaryTreeSlice";
-import { MdBookmarkAdd } from "react-icons/md";
-import axios from "axios";
-import { TextAndAction } from "./Bookmarks";
-import { CiBookmarkPlus } from "react-icons/ci";
-import { RiDeleteBin2Line } from "react-icons/ri";
-import { CiEdit } from "react-icons/ci";
-import { FaBookmark } from "react-icons/fa";
-import { LuBookmarkPlus } from "react-icons/lu";
-import { RiEdit2Line } from "react-icons/ri";
-import styled from "@emotion/styled";
-import { tooltipClasses } from "@mui/material/Tooltip";
-import { NarrationSearch } from "./NarrationSearch";
-import { useQueryClient } from "@tanstack/react-query";
-import { Label, PendingNarrationSentLabel, RejectedNarrationSentLabel, SendingNarrationSentLabel, AcceptedNarrationSentLabel, InsertedNarrationSentLabel, CheckingNarrationSentLabel } from "../components/ui/Label";
-import { FiSend } from "react-icons/fi";
 import { getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
+import { getFont, isAdmin, isCheckerAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
+import { customApiCall } from "../utils/axios";
 import { shareNarrationStatus } from "../utils/enums";
-import { toast } from "react-toastify";
+import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
+import { TextAndAction } from "./Bookmarks";
+import { NarrationSearch } from "./NarrationSearch";
 
 export const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
@@ -606,10 +593,7 @@ export const SingleNarration = ({
 export const NarrationWarehouseLT = ({ personal = false }) => {
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(1);
-  const [showSummary, setShowSummary] = useState(false);
   const queryClient = useQueryClient();
-  const searchTerm = useRef();
-  const searchSubject = useRef();
   const { section, selectedNode } = useSelector((store) => store.summaryTree);
   const { user } = useSelector((store) => store.user);
   const { data: rawData, isLoading: tableOfContentsIsLoading } = useGetSummaryTree(section, user, personal);
@@ -622,40 +606,16 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
     section,
     section !== "surah" ? "alphabet" : "surah_name"
   );
-  // const [searchSubject, setSearchSubject] = useState("");
-  const emptyOptions = {
-    alphabet: null,
-    subject: null,
-    sub_subject: null,
-    narration_name: null,
-    imam_name: null,
-    surah_name: null,
-    verse_no: null,
-  };
-  const displayOptions = {
-    alphabet: "الفبا",
-    subject: "موضوع",
-    sub_subject: "زیرموضوع",
-    narration_name: "نام حدیث",
-    imam_name: "نام امام",
-    surah_name: "نام سوره",
-    verse_no: "شماره آیه",
-  };
 
-  const serachOptions = {
-    subjects_search: searchSubject?.current?.value || "",
-    texts_search: searchTerm?.current?.value || "",
-  };
-  const [selectedOptions, setSelectedOptions] = useState(emptyOptions);
-  const { data: options } = useGetNarrationFilterOptions();
   const treeOptions = makeTreeOptions(treeWords, section);
 
   const { data: rawNarrationList, isLoading } = useGetNarrationList(selectedPage, {
-    ...selectedOptions,
-    ...serachOptions,
     ...treeOptions,
     user_id: personal ? user.id : null,
-  });
+  },
+    undefined,
+    { enabled: !!treeOptions?.alphabet || !!treeOptions?.surah_name }
+  );
 
   const narrationListResult = rawNarrationList?.results?.filter((e) => {
     if (section === "bank")
@@ -700,8 +660,6 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
         "narrationList",
         selectedPage,
         {
-          ...selectedOptions,
-          ...serachOptions,
           ...treeOptions,
           user_id: personal ? user.id : null,
         },
@@ -743,16 +701,11 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
       "narrationList",
       selectedPage,
       {
-        ...selectedOptions,
-        ...serachOptions,
         ...treeOptions,
         user_id: personal ? user.id : null,
       },
     ]);
 
-  const handleSelect = (newValue, category) => {
-    setSelectedOptions({ ...selectedOptions, [category]: newValue });
-  };
 
   const handleDelete = async (narrationId, pass) => {
     if (pass !== "delete") return;
@@ -765,8 +718,6 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
         "narrationList",
         selectedPage,
         {
-          ...selectedOptions,
-          ...serachOptions,
           ...treeOptions,
           user_id: personal ? user.id : null,
         },

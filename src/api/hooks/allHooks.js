@@ -89,9 +89,9 @@ export const useGetNarrationIndividual = (narrationId, user) => {
   const url = apiUrls.narration.get(narrationId, user?.id);
   return use2GeneralGetHook(["narrationIndividual", Number(narrationId)], url);
 };
-export const useGetNarrationList = (pageNo, selectedOptions, onDownloadProgress) => {
+export const useGetNarrationList = (pageNo, selectedOptions, onDownloadProgress, configs = {}) => {
   const url = apiUrls.narration.list(pageNo, selectedOptions, 10);
-  return use2GeneralGetHook(["narrationList", pageNo, selectedOptions], url, {}, onDownloadProgress);
+  return use2GeneralGetHook(["narrationList", pageNo, selectedOptions], url, configs, onDownloadProgress);
 };
 export const useGetNarrationFilterOptions = () => {
   const url = apiUrls.narration.filterOptions;

@@ -38,7 +38,7 @@ import FilterModal, {
 import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
 import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { getUserFromLocalStorage } from "../utils/localStorage";
-import { SingleNarration, removeTashkel } from "./NarrationWarehouse";
+import { SingleNarration, removeTashkel } from "./NarrationWarehouseLT";
 import { getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
 import { shareNarrationStatus } from "../utils/enums";
 import { isCheckerAdmin } from "../utils/acl";
@@ -70,11 +70,8 @@ export const NarrationSearch = ({ personal }) => {
   const [selectedSortOptionNew, setSelectedSortOptionNew] = useState(
     sortOptionsNew[0]
   );
-  const [selectedSortOption, setSelectedSortOption] = useState(dropdown[0]);
-  const [selectedSortType, setSelectedSortType] = useState(sortTypeOptions[0]);
   const navigate = useNavigate();
   const [selectedPage, setSelectedPage] = useState(1);
-  const [showSummary, setShowSummary] = useState(false);
   const queryClient = useQueryClient();
   const searchTerm = useRef();
   const searchSubject = useRef();
@@ -93,26 +90,6 @@ export const NarrationSearch = ({ personal }) => {
   }, [selectedPage]);
 
 
-  // const [searchSubject, setSearchSubject] = useState("");
-  const emptyOptions = {
-    alphabet: null,
-    subject: null,
-    sub_subject: null,
-    narration_name: null,
-    imam_name: null,
-    surah_name: null,
-    verse_no: null,
-  };
-  const displayOptions = {
-    alphabet: "الفبا",
-    subject: "موضوع",
-    sub_subject: "زیرموضوع",
-    narration_name: "نام حدیث",
-    imam_name: "نام امام",
-    surah_name: "نام سوره",
-    verse_no: "شماره آیه",
-  };
-
   const serachOptions = {
     subjects_search: searchSubject?.current?.value || "",
     texts_search: removeTashkel(searchTerm?.current?.value || ""),
@@ -120,7 +97,6 @@ export const NarrationSearch = ({ personal }) => {
     sort_by: selectedSortOptionNew?.id === 3 ? 'modified' : "created",
     sort_type: selectedSortOptionNew?.id === 2 ? "asc" : "desc",
   };
-  const [selectedOptions, setSelectedOptions] = useState(emptyOptions);
   const { data: options } = useGetNarrationFilterOptions();
   const treeOptions = makeTreeOptions(treeWords, section);
 
@@ -149,19 +125,16 @@ export const NarrationSearch = ({ personal }) => {
     const percentage = Math.floor((current / total) * 100);
     setProgress(percentage);
   }
-  const { data: narrationList, isLoading } = useGetNarrationList(selectedPage, {
-    // ...selectedOptions,
-    alphabet: selectedSubject,
-    subject: selectedSubSubject,
-    ...serachOptions,
-    user_id: personal ? user.id : null,
-    // ...treeOptions,
-  },
-    onDownloadProgress
+  const { data: narrationList, isLoading } = useGetNarrationList(
+    selectedPage,
+    {
+      alphabet: selectedSubject,
+      subject: selectedSubSubject,
+      ...serachOptions,
+      user_id: personal ? user.id : null,
+    },
+    onDownloadProgress,
   );
-  const handleSelect = (newValue, category) => {
-    setSelectedOptions({ ...selectedOptions, [category]: newValue });
-  };
 
   const handleDelete = async (narrationId, pass) => {
     if (pass !== "delete") return;
@@ -187,7 +160,6 @@ export const NarrationSearch = ({ personal }) => {
         "narrationList",
         selectedPage,
         {
-          ...selectedOptions,
           ...serachOptions,
           ...treeOptions,
           user_id: personal ? user.id : null,
@@ -310,6 +282,7 @@ export const NarrationSearch = ({ personal }) => {
             >
               <Button
                 onClickHandler={() => {
+                  setProgress(0);
                   setFlag(!flag);
                   setSearchStarted(true);
                   setSelectedPage(1);
@@ -340,39 +313,9 @@ export const NarrationSearch = ({ personal }) => {
 
       {searchStarted && (
         <div className="mt-3">
-          {/* <article
-          style={{
-            backgroundColor: "white",
-            height: "fit-content",
-            minHeight: "400px",
-            paddingBottom: "32px",
-            borderRadius: "8px",
-            overflow: "hidden",
-            minHeight: "75vh",
-            position: "sticky",
-            top: "140px",
-          }}
-        >
-          {Object.keys(emptyOptions).map((category, index) => {
-            return (
-              <DropdownSingleSelect
-                key={index}
-                items={sort([
-                  ...new Set(options?.map((option) => option[category])),
-                ])}
-                label={displayOptions[category]}
-                selected={selectedOptions[category]}
-                setSelected={(newValue) => handleSelect(newValue, category)}
-              />
-            );
-          })}
-        </article> */}
 
           <article
             style={{
-              // display: "flex",
-              // flexDirection: "column",
-              // justifyContent: "space-between",
               minHeight: "80vh",
               position: "relative",
             }}

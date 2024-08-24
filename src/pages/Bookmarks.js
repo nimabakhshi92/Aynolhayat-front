@@ -31,7 +31,7 @@ import FilterModal, {
 import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
 import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { getUserFromLocalStorage } from "../utils/localStorage";
-import { SingleNarration } from "./NarrationWarehouse";
+import { SingleNarration } from "./NarrationWarehouseLT";
 import { isLoggedIn } from "../utils/acl";
 
 export const TextAndAction = ({
@@ -88,8 +88,8 @@ export const Bookmarks = () => {
         const url = apiUrls.narration.bookmark;
         const response = await customApiCall.get({ url });
         setBookmarkedNarrations(response);
-      } catch {}
-    } catch {}
+      } catch { }
+    } catch { }
   };
   const navigate = useNavigate();
 
@@ -100,7 +100,7 @@ export const Bookmarks = () => {
       const url = apiUrls.narration.bookmark;
       const response = await customApiCall.get({ url });
       setBookmarkedNarrations(response);
-    } catch {}
+    } catch { }
   };
   // queryClient.invalidateQueries([
   //   "narrationList",
@@ -163,7 +163,7 @@ export const Bookmarks = () => {
                       key={bookmark.id}
                       narration={narration}
                       onBookmarkChange={onBookmarkChange}
-                      // onBookmark={() => handleDeleteBookmark(bookmark.id)}
+                    // onBookmark={() => handleDeleteBookmark(bookmark.id)}
                     />
                   );
                 })}

@@ -20,7 +20,7 @@ import { customApiCall } from "../../utils/axios";
 import { CircularProgress } from "@mui/material";
 import { AiOutlineClose } from "react-icons/ai";
 import apiUrls from "../../api/urls";
-import { SingleNarration } from "../../pages/NarrationWarehouse";
+import { SingleNarration } from "../../pages/NarrationWarehouseLT";
 import { InputWithSuggestionWithDebounceBlur } from "../general/InputWithSuggestion";
 
 const emptyNarration = {

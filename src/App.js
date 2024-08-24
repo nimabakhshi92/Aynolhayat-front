@@ -15,7 +15,7 @@ import { NarrationEdit } from "./pages/NarrationEdit";
 import { NarrationSearch } from "./pages/NarrationSearch";
 import {
   NarrationWarehouseLT
-} from "./pages/NarrationWarehouse";
+} from "./pages/NarrationWarehouseLT";
 import { ProtectedRoute } from "./pages/ProtectedRoute";
 import { SharedLayoutLT } from "./pages/SharedLayout";
 import { store } from "./store";

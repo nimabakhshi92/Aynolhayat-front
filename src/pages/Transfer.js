@@ -34,19 +34,35 @@ import FilterModal, {
 import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
 import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { getUserFromLocalStorage } from "../utils/localStorage";
-import { SingleNarration, removeTashkel } from "./NarrationWarehouse";
+import { SingleNarration, removeTashkel } from "./NarrationWarehouseLT";
 import { Table } from "../components/ui/Table";
 import { AcceptedNarrationSentLabel, Label, NarrationSentStatusLabel } from "../components/ui/Label";
 import { isAdmin, isCheckerAdmin, isSuperAdmin } from "../utils/acl";
 import { convertGregorianToJalali } from "../functions/general";
 import { shareNarrationStatus } from "../utils/enums";
 
-const sort = (array) => {
-  if (!array) return array;
-  const newArray = [...array];
-  newArray.sort();
-  return newArray;
-};
+
+const checkerAdminStatusRanks = {
+  [shareNarrationStatus.TRANSFERRED]: 1,
+  [shareNarrationStatus.ACCEPTED]: 2,
+  [shareNarrationStatus.REJECTED]: 3,
+  [shareNarrationStatus.CHECKING]: 4,
+  [shareNarrationStatus.PENDING]: 5,
+}
+
+const nonCheckerAdminStatusRanks = {
+  [shareNarrationStatus.TRANSFERRED]: 1,
+  [shareNarrationStatus.ACCEPTED]: 2,
+  [shareNarrationStatus.PENDING]: 3,
+  [shareNarrationStatus.CHECKING]: 4,
+  [shareNarrationStatus.REJECTED]: 5,
+}
+
+const getStatusRank = (checkerAdmin, status) => {
+  const rankStatusMapping = checkerAdmin ? checkerAdminStatusRanks : nonCheckerAdminStatusRanks
+  return rankStatusMapping[status] || 0
+}
+
 
 export const Transfer = ({ }) => {
   const { user } = useSelector((store) => store.user);
@@ -64,11 +80,24 @@ export const Transfer = ({ }) => {
       name: narration?.name,
       content: narration?.content?.substr(0, 150) + '...',
       created: convertGregorianToJalali(narrationStatus?.created),
+      modified: convertGregorianToJalali(narrationStatus?.modified),
       status: narrationStatus?.status,
       book: narration?.book?.name + ' ' + bookVolText + ' ' + bookPageText,
       senderName: narrationStatus?.sender?.username,
       narrationId: narration?.id
     }
+  })
+
+
+
+  tableData?.sort((a, b) => {
+    const aStatusRank = getStatusRank(checkerAdmin, a?.status)
+    const bStatusRank = getStatusRank(checkerAdmin, b?.status)
+    if (aStatusRank !== bStatusRank) return bStatusRank - aStatusRank
+    else {
+      return b?.modified - a?.modified
+    }
+
   })
 
   const headers = [
