@@ -49,4 +49,28 @@ export const customApiCall = {
     const resp = await axios.get(url, config);
     return resp.data;
   },
+  download: async function ({ url, headers = {}, useToken = true,
+    onDownloadProgress, filename, filetype = 'application/zip' }) {
+    const user = getUserFromLocalStorage();
+    if (user && useToken) {
+      headers["Authorization"] = `Bearer ${user.access || user.access_token}`;
+    }
+    headers['responseType'] = 'blob'
+
+    let config = { headers, onDownloadProgress };
+    const resp = await axios.get(url, config);
+    const blob = new Blob([resp.data], { type: filetype });
+
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+
+    link.parentNode.removeChild(link);
+    window.URL.revokeObjectURL(downloadUrl);
+    return resp.data;
+  },
 };

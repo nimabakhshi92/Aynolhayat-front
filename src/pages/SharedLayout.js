@@ -11,6 +11,7 @@ import { BiEnvelope } from "react-icons/bi";
 import bismilah from "../assets/images/bismilah.png";
 import { BsEnvelope, BsEnvelopeAtFill, BsEnvelopeFill } from "react-icons/bs";
 import { useMediaQuery } from "@mui/material";
+import { downloadNarrations } from "../api/hooks/allHooks";
 
 export const SharedLayout = () => {
   return (
@@ -60,7 +61,10 @@ export const SharedLayoutLT = () => {
             color: "white",
           }}
         >
-          <span>سه شنبه 1402/02/12 - 23:34:57</span>
+          <div className="p-2 cursor-pointer"
+            onClick={() => downloadNarrations([])}>
+            <span>سه شنبه 1402/02/12 - 23:34:57</span>
+          </div>
           <img src={bismilah} />
           <span className="flex items-center gap-8">
             <span>تماس با ما</span>

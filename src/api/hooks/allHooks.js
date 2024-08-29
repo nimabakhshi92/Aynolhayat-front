@@ -85,6 +85,8 @@ export const useGetVerse = (surahNo, verseNo) => {
     config = { ...config, ...longCacheConfig };
   return use2GeneralGetHook(["verse", surahNo, verseNo], url, config);
 };
+
+// Narration
 export const useGetNarrationIndividual = (narrationId, user) => {
   const url = apiUrls.narration.get(narrationId, user?.id);
   return use2GeneralGetHook(["narrationIndividual", Number(narrationId)], url);
@@ -93,6 +95,15 @@ export const useGetNarrationList = (pageNo, selectedOptions, onDownloadProgress,
   const url = apiUrls.narration.list(pageNo, selectedOptions, 10);
   return use2GeneralGetHook(["narrationList", pageNo, selectedOptions], url, configs, onDownloadProgress);
 };
+
+export const downloadNarrations = (narrationIds) => {
+  const url = apiUrls.narration.download(narrationIds)
+  try {
+    customApiCall.download({ url, filename: 'Test.zip' })
+  } catch {
+  }
+}
+
 export const useGetNarrationFilterOptions = () => {
   const url = apiUrls.narration.filterOptions;
   return use2GeneralGetHook(["filterOptions"], url);

@@ -35,4 +35,5 @@ export default {
   similar: `${url}/similar_narrations/`,
   bookmark: `${url}/bookmark/`,
   bookmarkRemove: (id) => `${url}/bookmark/${id}/`,
+  download: (narrationIds) => `${url}/download_narrations/?ids=${narrationIds.join(',')}`,
 };
