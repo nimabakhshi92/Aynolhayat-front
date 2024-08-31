@@ -96,13 +96,32 @@ export const useGetNarrationList = (pageNo, selectedOptions, onDownloadProgress,
   return use2GeneralGetHook(["narrationList", pageNo, selectedOptions], url, configs, onDownloadProgress);
 };
 
-export const downloadNarrations = (narrationIds) => {
+export const downloadNarrations = async (narrationIds) => {
   const url = apiUrls.narration.download(narrationIds)
   try {
-    customApiCall.download({ url, filename: 'Test.zip' })
+    const now = new Date();
+    const datetime = now.toISOString().slice(0, 19).replace(/[:T]/g, '-');
+    const filename = `all_${datetime}`;
+    await customApiCall.download({ url, filename })
   } catch {
   }
 }
+
+
+export const useGetDownloadNarrationsBackupList = () => {
+  const url = apiUrls.narration.downloadBackup.list()
+  return use2GeneralGetHook(["downloadNarrationsBackupList"], url,);
+};
+
+
+export const downloadNarrationsBackupFile = async ({ filename, onDownloadProgress }) => {
+  const url = apiUrls.narration.downloadBackup.get()
+  try {
+    await customApiCall.download({ url, filename, onDownloadProgress })
+  } catch {
+  }
+}
+
 
 export const useGetNarrationFilterOptions = () => {
   const url = apiUrls.narration.filterOptions;

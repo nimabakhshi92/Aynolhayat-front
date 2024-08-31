@@ -36,4 +36,8 @@ export default {
   bookmark: `${url}/bookmark/`,
   bookmarkRemove: (id) => `${url}/bookmark/${id}/`,
   download: (narrationIds) => `${url}/download_narrations/?ids=${narrationIds.join(',')}`,
+  downloadBackup: {
+    list: () => `${url}/download_narrations_backup/`,
+    get: (id) => `${url}/download_narrations_backup/1`
+  }
 };

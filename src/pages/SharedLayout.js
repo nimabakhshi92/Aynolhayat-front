@@ -62,7 +62,10 @@ export const SharedLayoutLT = () => {
           }}
         >
           <div className="p-2 cursor-pointer"
-            onClick={() => downloadNarrations([])}>
+            // onClick={() => downloadNarrations([308])}>
+            // onClick={() => downloadNarrations([283, 180, 181, 183, 184, 212, 215, 308, 310])}>
+            onClick={() => downloadNarrations([296, 300, 305, 308, 310, 313])}>
+            {/* onClick={() => downloadNarrations([])}> */}
             <span>سه شنبه 1402/02/12 - 23:34:57</span>
           </div>
           <img src={bismilah} />

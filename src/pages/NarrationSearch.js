@@ -52,15 +52,6 @@ const sort = (array) => {
 };
 
 export const NarrationSearch = ({ personal }) => {
-  const dropdown = [
-    { id: 1, title: "تاریخ ایجاد" },
-    { id: 2, title: "تاریخ ویرایش" },
-  ];
-  const sortTypeOptions = [
-    { id: 1, title: "نزولی" },
-    { id: 2, title: "صعودی" },
-  ];
-
   const sortOptionsNew = [
     { id: 1, title: "آخرین" },
     { id: 2, title: "اولین" },

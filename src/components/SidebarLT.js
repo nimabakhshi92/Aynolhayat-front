@@ -15,6 +15,7 @@ import { MdBookmarkAdd } from "react-icons/md";
 import { PiFolderUser } from "react-icons/pi";
 import { TbArrowsTransferDown } from "react-icons/tb";
 import { FiSend } from "react-icons/fi";
+import { MdOutlineCloudDownload } from "react-icons/md";
 
 const NavIcon = ({ iconName, isActive, ...props }) => {
   const icons = {
@@ -23,7 +24,8 @@ const NavIcon = ({ iconName, isActive, ...props }) => {
     save: BiSave,
     saved: BiBookmark,
     "my-narrations": PiFolderUser,
-    transfer: FiSend
+    transfer: FiSend,
+    download: MdOutlineCloudDownload
   };
   const SelectedIcon = icons[iconName];
   return (
@@ -33,38 +35,7 @@ const NavIcon = ({ iconName, isActive, ...props }) => {
       {...props}
     />
   );
-  if (iconName === "search")
-    return (
-      <BiSearch
-        color={isActive ? "green" : "#999"}
-        style={{ width: "24px", height: "24px" }}
-        {...props}
-      />
-    );
-  if (iconName === "allNarrations")
-    return (
-      <BiCylinder
-        color={isActive ? "green" : "#999"}
-        style={{ width: "24px", height: "24px" }}
-        {...props}
-      />
-    );
-  if (iconName === "saved")
-    return (
-      <BiBookmark
-        color={isActive ? "green" : "#999"}
-        style={{ width: "24px", height: "24px" }}
-        {...props}
-      />
-    );
-  if (iconName === "save")
-    return (
-      <BiSave
-        color={isActive ? "green" : "#999"}
-        style={{ width: "24px", height: "24px" }}
-        {...props}
-      />
-    );
+
 };
 
 export const SidebarLT = () => {
@@ -79,7 +50,9 @@ export const SidebarLT = () => {
           ? "transfer"
           : pathname.includes("my-narrations")
             ? "my-narrations"
-            : "";
+            : pathname.includes("download")
+              ? "download"
+              : "";
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const { user } = useSelector((store) => store.user);
 
@@ -132,6 +105,14 @@ export const SidebarLT = () => {
       to: "transfer",
       isActive: pageName === "transfer",
       show: isAdmin(user) && !isSuperAdmin(user),
+    },
+    {
+      icon: <MdOutlineCloudDownload />,
+      name: "download",
+      displayText: "دانلود",
+      to: "download",
+      isActive: pageName === "download",
+      show: isSuperAdmin(user),
     },
 
 

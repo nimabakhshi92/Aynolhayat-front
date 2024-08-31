@@ -26,6 +26,7 @@ import {
   PersistQueryClientProvider
 } from "@tanstack/react-query-persist-client";
 import { Transfer } from "./pages/Transfer";
+import { Download } from "./pages/Download";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -109,6 +110,7 @@ function App() {
                 <Route path="saved/" element={<Bookmarks />}></Route>
                 <Route path="search/" element={<NarrationSearch />}></Route>
                 <Route path="transfer/" element={<Transfer />}></Route>
+                <Route path="download/" element={<Download />}></Route>
               </Route>
             </Routes>
           </BrowserRouter>

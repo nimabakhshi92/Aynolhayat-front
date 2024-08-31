@@ -57,6 +57,15 @@ body {
   font-family: IRANSansWeb;
 }
 
+.t-4x-large {
+  font-size: 2.6rem;
+}
+
+.t-2x-large {
+  font-size: 2rem;
+}
+
+
 .t-extra-large {
   font-size: 1.3rem;
 }

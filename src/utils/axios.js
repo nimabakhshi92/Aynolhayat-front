@@ -1,6 +1,7 @@
 import axios from "axios";
 // import { toast } from "react-toastify";
 import { getUserFromLocalStorage } from "./localStorage";
+import { saveAs } from 'file-saver';
 
 export const customRequestErrorHandler = ({ error, callbacks, thunkAPI }) => {
   // if (error.response.status === 401) {
@@ -49,28 +50,41 @@ export const customApiCall = {
     const resp = await axios.get(url, config);
     return resp.data;
   },
-  download: async function ({ url, headers = {}, useToken = true,
+  download: function ({ url, headers = {}, useToken = true,
     onDownloadProgress, filename, filetype = 'application/zip' }) {
     const user = getUserFromLocalStorage();
     if (user && useToken) {
       headers["Authorization"] = `Bearer ${user.access || user.access_token}`;
     }
-    headers['responseType'] = 'blob'
 
-    let config = { headers, onDownloadProgress };
-    const resp = await axios.get(url, config);
-    const blob = new Blob([resp.data], { type: filetype });
+    let config = { headers, responseType: 'blob', onDownloadProgress };
+    axios.get(url, config).then(resp => {
+      const blob = new Blob([resp.data], { type: filetype });
 
-    const downloadUrl = window.URL.createObjectURL(blob);
+      saveAs(blob, filename);
+      // saveAs(blob, 'stories.zip');
+    }
 
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
 
-    link.parentNode.removeChild(link);
-    window.URL.revokeObjectURL(downloadUrl);
-    return resp.data;
+    )
+    // Create a Blob from the response data with the correct MIME type
+
+
+    // // Create a temporary URL for the blob
+    // const downloadUrl = window.URL.createObjectURL(blob);
+
+    // // Create a temporary link element to trigger the download
+    // const link = document.createElement('a');
+    // link.href = downloadUrl;
+    // // link.setAttribute('download', filename);  // Set the filename with datetime
+    // link.setAttribute('download', 'stories.zip');  // Set the filename with datetime
+
+    // // Append the link to the document and trigger the download
+    // document.body.appendChild(link);
+    // link.click();
+
+    // // Clean up by removing the link and revoking the object URL
+    // link.parentNode.removeChild(link);
+    // window.URL.revokeObjectURL(downloadUrl);
   },
 };
