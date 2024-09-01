@@ -13,6 +13,7 @@ import { logoutUser } from "../../features/user/userSlice";
 import axios from "axios";
 import { isAdmin } from "../../utils/acl";
 import { shareNarrationStatus } from "../../utils/enums";
+import { convertGregorianToJalali } from "../../functions/general";
 
 // ==========================
 // Hooks Skleton
@@ -96,15 +97,9 @@ export const useGetNarrationList = (pageNo, selectedOptions, onDownloadProgress,
   return use2GeneralGetHook(["narrationList", pageNo, selectedOptions], url, configs, onDownloadProgress);
 };
 
-export const downloadNarrations = async (narrationIds) => {
-  const url = apiUrls.narration.download(narrationIds)
-  try {
-    const now = new Date();
-    const datetime = now.toISOString().slice(0, 19).replace(/[:T]/g, '-');
-    const filename = `all_${datetime}`;
-    await customApiCall.download({ url, filename })
-  } catch {
-  }
+export const downloadNarrations = async ({ userId, narrationIds, filename, onDownloadProgress }) => {
+  const url = apiUrls.narration.download(narrationIds, userId)
+  return await customApiCall.download({ url, filename, onDownloadProgress })
 }
 
 
@@ -116,10 +111,7 @@ export const useGetDownloadNarrationsBackupList = () => {
 
 export const downloadNarrationsBackupFile = async ({ filename, onDownloadProgress }) => {
   const url = apiUrls.narration.downloadBackup.get()
-  try {
-    await customApiCall.download({ url, filename, onDownloadProgress })
-  } catch {
-  }
+  await customApiCall.download({ url, filename, onDownloadProgress })
 }
 
 
@@ -447,9 +439,9 @@ export const useModifyNarrationFootnote = () => {
       // ]});
     },
     onSettled: (inputs, error, variables, context) => {
-      queryClient.invalidateQueries({
-        queryKey: ["narrationIndividual", context.narrationId],
-      });
+      // queryClient.invalidateQueries({
+      //   queryKey: ["narrationIndividual", context.narrationId],
+      // });
     },
   });
 };

@@ -1,17 +1,14 @@
+import { useMediaQuery } from "@mui/material";
+import { useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
+import bismilah from "../assets/images/bismilah.png";
+import MainBG from "../assets/images/MainBG.png";
+import TopHeader from "../assets/images/TopHeader.jpg";
+import { DatetimeVisualizer } from "../components/general/DatetimeVisualizer";
 import Header from "../components/header";
 import { HeaderLT } from "../components/HeaderLT";
 import { SidebarLT } from "../components/SidebarLT";
-import { getFont, isSuperAdmin } from "../utils/acl";
-import { useSelector } from "react-redux";
-import TopHeader from "../assets/images/TopHeader.jpg";
-import MainBG from "../assets/images/MainBG.png";
-import zIndex from "@mui/material/styles/zIndex";
-import { BiEnvelope } from "react-icons/bi";
-import bismilah from "../assets/images/bismilah.png";
-import { BsEnvelope, BsEnvelopeAtFill, BsEnvelopeFill } from "react-icons/bs";
-import { useMediaQuery } from "@mui/material";
-import { downloadNarrations } from "../api/hooks/allHooks";
+import { isSuperAdmin } from "../utils/acl";
 
 export const SharedLayout = () => {
   return (
@@ -61,13 +58,9 @@ export const SharedLayoutLT = () => {
             color: "white",
           }}
         >
-          <div className="p-2 cursor-pointer"
-            // onClick={() => downloadNarrations([308])}>
-            // onClick={() => downloadNarrations([283, 180, 181, 183, 184, 212, 215, 308, 310])}>
-            onClick={() => downloadNarrations([296, 300, 305, 308, 310, 313])}>
-            {/* onClick={() => downloadNarrations([])}> */}
-            <span>سه شنبه 1402/02/12 - 23:34:57</span>
-          </div>
+
+
+          <DatetimeVisualizer />
           <img src={bismilah} />
           <span className="flex items-center gap-8">
             <span>تماس با ما</span>

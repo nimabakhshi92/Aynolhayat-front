@@ -35,7 +35,12 @@ export default {
   similar: `${url}/similar_narrations/`,
   bookmark: `${url}/bookmark/`,
   bookmarkRemove: (id) => `${url}/bookmark/${id}/`,
-  download: (narrationIds) => `${url}/download_narrations/?ids=${narrationIds.join(',')}`,
+  download: (narrationIds, userId) => {
+    const base = `${url}/download_narrations/?ids=${narrationIds.join(',')}`
+    if (userId)
+      return base + `&user=${userId}`
+  },
+
   downloadBackup: {
     list: () => `${url}/download_narrations_backup/`,
     get: (id) => `${url}/download_narrations_backup/1`

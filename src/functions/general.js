@@ -40,3 +40,9 @@ export const convertGregorianToJalali = (gregorianDate) => {
     return `${jy}-${jm}-${jd}`;
 }
 
+
+export const getCurrentJalaliDate = () => {
+    const updated = new Date()
+    const jalali = convertGregorianToJalali(updated)
+    return jalali
+}

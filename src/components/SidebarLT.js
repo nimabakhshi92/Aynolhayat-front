@@ -112,7 +112,7 @@ export const SidebarLT = () => {
       displayText: "دانلود",
       to: "download",
       isActive: pageName === "download",
-      show: isSuperAdmin(user),
+      show: true,
     },
 
 

@@ -219,3 +219,7 @@ a {
 .main-bg {
   background-image: url("assets/images/MainBG.png");
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+}
