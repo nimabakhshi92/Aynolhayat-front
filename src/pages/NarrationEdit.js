@@ -28,13 +28,13 @@ import { NarrationEditForm } from "../components/NarrationSave/NarrationEditForm
 import { NarrationSubjectEditForm } from "../components/NarrationSave/NarrationSubjectEditForm";
 import { NarrationSummaryEditForm } from "../components/NarrationSave/NarrationSummaryEditForm";
 import { NarrationFootnoteEditForm } from "../components/NarrationSave/NarrationFootnoteEditForm";
-import { isAdmin, isCheckerAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
+import { isAdmin, isCheckerAdmin, isLoggedIn, isSuperAdmin, isTaggerAdmin } from "../utils/acl";
 import { TextAndAction } from "./Bookmarks";
 import Modal from '@mui/material/Modal';
 import { Stack } from "@mui/material";
 import { shareNarrationStatus } from "../utils/enums";
 
-export const NarrationEdit = ({ checkOnly }) => {
+export const NarrationEdit = ({ checkOnly, myNarrations = false, saveNarration = false }) => {
   const { narrationId, sharedNarrationId } = useParams();
   const { user } = useSelector((store) => store.user);
 
@@ -42,17 +42,11 @@ export const NarrationEdit = ({ checkOnly }) => {
 
   const { data: narrationIndividual, isLoading } = useGetNarrationIndividual(
     narrationId || 0,
-    !isSuperAdmin(user) ? user : undefined
+    ((isSuperAdmin(user) || isTaggerAdmin(user)) && !myNarrations) ? undefined : user
   );
-
   const { data: sharedNarration } = useGetSingleSharedNarration(sharedNarrationId);
 
   const narration = checkOnly ? sharedNarration?.narration : narrationIndividual
-
-  console.log('checkOnly: ', checkOnly)
-  console.log('narration: ', narration)
-  console.log('sharedNarration: ', sharedNarration)
-  console.log('narrationIndividual: ', narrationIndividual)
 
   useEffect(() => {
     if (
@@ -106,7 +100,7 @@ export const NarrationEdit = ({ checkOnly }) => {
     if (status === shareNarrationStatus.CHECKING)
       return newStatus === shareNarrationStatus.REJECTED || newStatus === shareNarrationStatus.ACCEPTED
     if (status === shareNarrationStatus.ACCEPTED)
-      return newStatus === shareNarrationStatus.REJECTED
+      return false
   }
 
 

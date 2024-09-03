@@ -17,5 +17,5 @@ export const DatetimeVisualizer = () => {
         return () => clearInterval(timer)
     }, [])
 
-    return <span className="inline-block w-40" style={{ direction: 'ltr' }}>{now}</span>
+    return <span className="inline-block w-45" style={{ direction: 'ltr' }}>{now}</span>
 }

@@ -72,7 +72,7 @@ function App() {
               <Route path="login" element={<Login />}></Route>
               <Route path="signup" element={<SingUp />}></Route>
               <Route path=":narrationId" element={<NarrationEdit />}></Route>
-              <Route path="save narration/" element={<NarrationEdit />}></Route>
+              <Route path="save narration/" element={<NarrationEdit saveNarration={true} />}></Route>
               <Route
                 path="save narration/:narrationId"
                 element={<NarrationEdit />}
@@ -88,7 +88,7 @@ function App() {
               ></Route>
               <Route
                 path="my-narrations/:narrationId"
-                element={<NarrationEdit />}
+                element={<NarrationEdit myNarrations={true} />}
               ></Route>
               <Route
                 path="shared-narrations/:sharedNarrationId"

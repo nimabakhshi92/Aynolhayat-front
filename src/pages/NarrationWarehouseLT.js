@@ -41,7 +41,7 @@ import Button from "../components/ui/buttons/primary-button";
 import { InputOld } from "../components/ui/input";
 import { setDataLoaded } from "../features/summaryTree/summaryTreeSlice";
 import { getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
-import { getFont, isAdmin, isCheckerAdmin, isLoggedIn, isSuperAdmin } from "../utils/acl";
+import { getFont, isAdmin, isCheckerAdmin, isLoggedIn, isSuperAdmin, isTaggerAdmin } from "../utils/acl";
 import { customApiCall } from "../utils/axios";
 import { shareNarrationStatus } from "../utils/enums";
 import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
@@ -337,18 +337,24 @@ export const SingleNarration = ({
                   )}
               </>
             }
-            {(isSuperAdmin(user) || personal) && onDelete && (
-              <RiDeleteBin2Line
-                className="cursor-pointer w-5 h-5"
-                onClick={() => setOpen(true)}
-              />
-            )}
-            {(isSuperAdmin(user) || personal) && onEdit && (
-              <RiEdit2Line
-                className="cursor-pointer  w-5 h-5"
-                onClick={onEdit}
-              />
-            )}
+            {(isSuperAdmin(user)
+              || (personal && (isCheckerAdmin(user) || ![shareNarrationStatus.CHECKING, shareNarrationStatus.PENDING].includes(sentStatus)))
+            )
+              && onDelete
+              && (
+                <RiDeleteBin2Line
+                  className="cursor-pointer w-5 h-5"
+                  onClick={() => setOpen(true)}
+                />
+              )}
+            {((isSuperAdmin(user) || (isTaggerAdmin(user) && !personal))
+              || (personal && (isCheckerAdmin(user) || ![shareNarrationStatus.CHECKING, shareNarrationStatus.PENDING].includes(sentStatus)))
+            ) && onEdit && (
+                <RiEdit2Line
+                  className="cursor-pointer  w-5 h-5"
+                  onClick={onEdit}
+                />
+              )}
             {isLoggedIn(user) && (
               // && hasBookmark
               <>

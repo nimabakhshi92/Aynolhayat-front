@@ -41,27 +41,32 @@ const SimilarNarrations = ({
   isOpen,
   setHasSimilar,
   trigger,
+  setTrigger
 }) => {
   const [similar, setSimilar] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const url = apiUrls.narration.similar;
   useEffect(() => {
     const fn = async () => {
+      setTrigger(false)
       setIsLoading(true);
       try {
         const data = { text: narrationContent };
         const resp = await customApiCall.post({ data, url });
         setSimilar(resp);
         setHasSimilar(!!resp.length);
+        // if (resp?.length)
+        //   setTrigger(true)
       } catch {
       } finally {
         setIsLoading(false);
       }
     };
-    if (isOpen) fn();
-  }, [trigger]);
+    if (trigger)
+      fn();
+  }, [trigger, narrationContent]);
 
-  if (similar.length)
+  if (similar.length && isOpen)
     return (
       <div
         className="w-full h-full fixed "
@@ -93,7 +98,6 @@ const SimilarNarrations = ({
             }}
             className="relative p-6 flex gap-8  items-center "
           >
-            {!isLoading && !similar.length > 0 && <p>این حدیث تکراری نیست</p>}
             {similar.length > 0 && (
               <>
                 <p>{similar.length} حدیث مشابه یافت شد</p>
@@ -108,14 +112,20 @@ const SimilarNarrations = ({
             <Button
               variant="primary"
               className="w-30"
-              onClickHandler={() => setIsOpen(false)}
+              onClickHandler={() => {
+                setTrigger(false)
+                setIsOpen(false)
+              }}
             >
               بستن
             </Button>
           </div>
           <AiOutlineClose
             className="absolute cursor-pointer right-2 top-2"
-            onClick={() => setIsOpen(false)}
+            onClick={() => {
+              setTrigger(false)
+              setIsOpen(false)
+            }}
           />
         </div>
       </div>
@@ -143,6 +153,7 @@ const narrationHasSimilarConfig = (hasSimilar) => {
 };
 
 export const NarrationEditForm = ({ narration }) => {
+  const [trigger, setTrigger] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [updatedNarration, setUpdatedNarration] = useState(emptyNarration);
   const { narration: storeNarration } = useSelector((store) => store.narration);
@@ -158,17 +169,17 @@ export const NarrationEditForm = ({ narration }) => {
   };
   const { mutate } = useModifyNarrationInfo();
   const navigate = useNavigate();
-  const [trigger, setTrigger] = useState(false);
 
   const flag = useRef(false)
   const status = useRef()
 
   const handleBlur = (fieldName, fieldValue) => {
     status.current = 'isLoading'
-    flag.current = fieldName
-    if (!narration && fieldName === "content" && fieldValue) {
-      setIsModalOpen(true);
-      setTrigger(!trigger);
+    if (narration)
+      flag.current = fieldName
+    if (fieldName === "content" && fieldValue) {
+      // setIsModalOpen(true);
+      setTrigger(true);
     }
     if (!fieldValue || fieldValue == ' ')
       return;
@@ -224,7 +235,7 @@ export const NarrationEditForm = ({ narration }) => {
   useEffect(() => {
     if (storeNarration?.id) {
       dispatch(clearNarration());
-      navigate(`${storeNarration?.id}`, {
+      navigate(`/my-narrations/${storeNarration?.id}`, {
         preventScrollReset: false,
       });
     }
@@ -244,13 +255,15 @@ export const NarrationEditForm = ({ narration }) => {
 
   return (
     <>
-      {isModalOpen && (
+      {(
         <SimilarNarrations
           narrationContent={updatedNarration.content}
           setIsOpen={setIsModalOpen}
           isOpen={isModalOpen}
           setHasSimilar={setHasSimilar}
           trigger={trigger}
+          setTrigger={setTrigger}
+
         />
       )}
       <ContentContainer className="mb-4" title="اطلاعات شناسنامه‌ای حدیث">
@@ -327,6 +340,28 @@ export const NarrationEditForm = ({ narration }) => {
               key={"i3"}
               debounceDependency={narration?.id}
             />
+            {hasSimilar !== null &&
+              <p className="t-semi-large">
+                {hasSimilar &&
+                  <>
+                    <span className="text-[red]">
+                      حدیث ممکن است تکراری باشد.
+                      برای دیدن احادیث مشابه احتمالی
+                    </span>
+                    <span onClick={() => setIsModalOpen(true)}
+                      className="underline inline-block mx-1 text-[blue] cursor-pointer">
+                      کلیک کنید
+                    </span>
+                  </>
+                }
+                {!hasSimilar && <>
+                  {<p className="text-[green]">این حدیث تکراری نیست</p>}
+
+                </>
+
+                }
+              </p>
+            }
           </div>
           <div className="flex gap-1 " style={{ flexDirection: "column" }}>
             <p>نام کتاب</p>
