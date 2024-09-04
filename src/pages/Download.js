@@ -70,7 +70,7 @@ export const Download = ({ }) => {
     setAdminProgress(0);
     try {
       await downloadNarrations({
-        narrationIds: [343], userId: user.id, filename: 'My Files - ' + filename,
+        narrationIds: [], userId: user.id, filename: 'My Files - ' + filename,
         onDownloadProgress: onDownloadAdminProgress
       })
       toast.success('فایل با موفقیت ارسال شد')
@@ -88,7 +88,7 @@ export const Download = ({ }) => {
     setProgressInstruction(0);
     try {
       await downloadInstruction({
-        filename: 'Rahnama.mp4',
+        filename: 'Rahnama.zip',
         onDownloadProgress: onDownloadInstructionProgress
       })
       toast.success('فایل با موفقیت ارسال شد')
@@ -182,7 +182,7 @@ export const Download = ({ }) => {
         </>
       }
 
-      <>
+      {/* <>
         <div className="mt-8">
           <span className=" t-2x-large text-[black]">
             راهنمای دانلود
@@ -215,13 +215,7 @@ export const Download = ({ }) => {
 
 
 
-      </>
-      {/* <div className="p-2 cursor-pointer"
-            // onClick={() => downloadNarrations([308])}>
-            // onClick={() => downloadNarrations([283, 180, 181, 183, 184, 212, 215, 308, 310])}>
-            onClick={() => downloadNarrations([296, 300, 305, 308, 310, 313])}>
-            <span>سه شنبه 1402/02/12 - 23:34:57</span>
-          </div> */}
+      </> */}
 
     </Stack>
 
