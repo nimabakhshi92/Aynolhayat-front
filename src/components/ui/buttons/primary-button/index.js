@@ -7,6 +7,7 @@ export default function Button({
   variant,
   type,
   style,
+  ...props
 }) {
   return (
     <button
@@ -14,6 +15,7 @@ export default function Button({
       type={type}
       className={`btn p-2 py-1 rounded btn-${variant} ${className}`}
       onClick={onClickHandler}
+      {...props}
     >
       {children}
     </button>

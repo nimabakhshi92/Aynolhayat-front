@@ -44,5 +44,8 @@ export default {
   downloadBackup: {
     list: () => `${url}/download_narrations_backup/`,
     get: (id) => `${url}/download_narrations_backup/1`
+  },
+  downloadInstruction: {
+    get: () => `${url}/download_instruction/1`
   }
 };

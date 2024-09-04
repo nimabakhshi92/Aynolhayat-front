@@ -102,6 +102,10 @@ export const downloadNarrations = async ({ userId, narrationIds, filename, onDow
   return await customApiCall.download({ url, filename, onDownloadProgress })
 }
 
+export const downloadInstruction = async ({ filename, onDownloadProgress }) => {
+  const url = apiUrls.narration.downloadInstruction.get()
+  return await customApiCall.download({ url, filename, onDownloadProgress })
+}
 
 export const useGetDownloadNarrationsBackupList = () => {
   const url = apiUrls.narration.downloadBackup.list()

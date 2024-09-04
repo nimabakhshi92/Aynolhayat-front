@@ -4,6 +4,11 @@
   font-size: 1.6rem;
 }
 
+.btn:disabled {
+  cursor: none;
+  background-color: gray;
+}
+
 .btn-primary {
   background-color: var(--primary-color);
   color: #fff;

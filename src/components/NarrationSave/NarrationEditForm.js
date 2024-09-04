@@ -156,7 +156,7 @@ export const NarrationEditForm = ({ narration }) => {
   const [trigger, setTrigger] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [updatedNarration, setUpdatedNarration] = useState(emptyNarration);
-  const { narration: storeNarration } = useSelector((store) => store.narration);
+  const { narration: storeNarration, isLoading } = useSelector((store) => store.narration);
   let { data: imam } = useGetImam();
   imam = imam || [];
   let { data: book } = useGetBooks();
@@ -455,6 +455,7 @@ export const NarrationEditForm = ({ narration }) => {
       {!narration && (
         <div className="flex justify-end gap-4 my-8">
           <Button
+            key={'cancel'}
             variant="secondary"
             type="button"
             className="w-40 h-8"
@@ -464,11 +465,13 @@ export const NarrationEditForm = ({ narration }) => {
             انصراف
           </Button>
           <Button
+            key={'submit'}
             type="button"
             variant="primary"
             className="w-40 h-8"
             style={{ fontSize: "14px" }}
             onClickHandler={handleSubmit}
+            disabled={isLoading}
           >
             ذخیره
           </Button>

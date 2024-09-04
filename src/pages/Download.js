@@ -2,6 +2,7 @@ import { Stack } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
+  downloadInstruction,
   downloadNarrations,
   downloadNarrationsBackupFile,
   useGetDownloadNarrationsBackupList,
@@ -25,6 +26,9 @@ export const Download = ({ }) => {
   const [progress, setProgress] = useState(undefined);
   const [aminProgress, setAdminProgress] = useState(undefined);
 
+  const [isInstructionsDisabled, setIsInstructionsDisabled] = useState(false)
+  const [progressInstruction, setProgressInstruction] = useState(undefined);
+
   const onDownloadProgress = progressEvent => {
     const total = progressEvent.total;
     const current = progressEvent.loaded;
@@ -38,6 +42,14 @@ export const Download = ({ }) => {
     const percentage = Math.floor((current / total) * 100);
     setAdminProgress(percentage);
   }
+
+  const onDownloadInstructionProgress = progressEvent => {
+    const total = progressEvent.total;
+    const current = progressEvent.loaded;
+    const percentage = Math.floor((current / total) * 100);
+    setProgressInstruction(percentage);
+  }
+
 
   const handleClick = async (filename) => {
     setIsDisabled(true)
@@ -58,7 +70,7 @@ export const Download = ({ }) => {
     setAdminProgress(0);
     try {
       await downloadNarrations({
-        narrationIds: [], userId: user.id, filename: 'My Files - ' + filename,
+        narrationIds: [343], userId: user.id, filename: 'My Files - ' + filename,
         onDownloadProgress: onDownloadAdminProgress
       })
       toast.success('فایل با موفقیت ارسال شد')
@@ -69,6 +81,27 @@ export const Download = ({ }) => {
       setAdminProgress(undefined);
     }
   }
+
+
+  const handleDownloadInstruction = async () => {
+    setIsInstructionsDisabled(true)
+    setProgressInstruction(0);
+    try {
+      await downloadInstruction({
+        filename: 'Rahnama.mp4',
+        onDownloadProgress: onDownloadInstructionProgress
+      })
+      toast.success('فایل با موفقیت ارسال شد')
+    } catch {
+      toast.error('مشکلی از سمت ما پیش آمده. لطفا بعدا امتحان کنید')
+    } finally {
+      setIsInstructionsDisabled(false)
+      setProgressInstruction(undefined);
+    }
+  }
+
+
+
 
 
   const adminFilename = getCurrentJalaliDate()
@@ -148,6 +181,41 @@ export const Download = ({ }) => {
 
         </>
       }
+
+      <>
+        <div className="mt-8">
+          <span className=" t-2x-large text-[black]">
+            راهنمای دانلود
+          </span>
+        </div>
+        <div className="w-full h-[2px] " style={{ background: 'var(--neutral-color-600)' }} />
+        <Stack className="" alignItems={'center'} gap={2} direction={'row'} >
+          <a >برای دریافت راهنما کلیک کنید</a>
+          {!isInstructionsDisabled &&
+            <Button variant={'primary'} onClickHandler={() => handleDownloadInstruction()}>دانلود</Button>
+          }
+        </Stack>
+
+        {progressInstruction < 100 && progressInstruction >= 0 &&
+          <div className="text-center flex justify-center items-center flex-col">
+
+            <h1>{progressInstruction} %</h1>
+
+            <div className="w-1/2 h-[10px] absolute bg-[white] flex items-center mt-6 rounded" style={{
+              border: '1px solid #ddd',
+              overflow: 'hidden',
+              zIndex: 4,
+            }}>
+              <div style={{
+                width: progressInstruction + '%'
+              }} className="h-2 bg-[green]"></div>
+            </div>
+          </div>
+        }
+
+
+
+      </>
       {/* <div className="p-2 cursor-pointer"
             // onClick={() => downloadNarrations([308])}>
             // onClick={() => downloadNarrations([283, 180, 181, 183, 184, 212, 215, 308, 310])}>
