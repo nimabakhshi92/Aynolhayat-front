@@ -416,7 +416,7 @@ export const SingleNarrationSummariesForEdit = ({
                 ...surah,
                 surahWithNo: surah.surah_no + "- " + surah.surah_name,
               }))}
-              dataKey="surah_name"
+              dataKey="surahWithNo"
               placeholder="نام سوره"
               key={"i7" + summary.id}
             />
