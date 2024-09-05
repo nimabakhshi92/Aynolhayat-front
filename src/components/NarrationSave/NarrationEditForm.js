@@ -177,7 +177,7 @@ export const NarrationEditForm = ({ narration }) => {
     status.current = 'isLoading'
     if (narration)
       flag.current = fieldName
-    if (fieldName === "content" && fieldValue) {
+    if (!narration && fieldName === "content" && fieldValue) {
       // setIsModalOpen(true);
       setTrigger(true);
     }
