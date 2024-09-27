@@ -192,11 +192,7 @@ export const NarrationEdit = ({ checkOnly, myNarrations = false, saveNarration =
             className="w-40 h-8"
             style={{ fontSize: "14px" }}
             onClickHandler={() => {
-              if (!isSuperAdmin(user))
-                navigate("/my-narrations")
-              else {
-                navigate("/")
-              }
+              navigate(-1)
             }
             }
           >
