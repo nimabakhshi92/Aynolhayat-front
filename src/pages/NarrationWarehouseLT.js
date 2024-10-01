@@ -18,13 +18,12 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   moveNarrationToMainSite,
-  useGetNarrationFilterOptions,
   useGetNarrationList,
   useGetSharedNarrations,
   useGetSubjects,
   useGetSummaryTree,
   useShareNarration,
-  useUpdateSharedNarration,
+  useUpdateSharedNarration
 } from "../api/hooks/allHooks";
 import apiUrls from "../api/urls";
 import noteIcon from "../assets/images/shapes/Icon-Note.svg";

@@ -1,49 +1,32 @@
+import { CircularProgress, useMediaQuery } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
+import { AiOutlineClose } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
-  duplicateSharedNarration,
   moveNarrationToMainSite,
-  useGetImam,
   useGetNarrationFilterOptions,
   useGetNarrationList,
   useGetSharedNarrations,
   useGetSubjects,
   useGetSummaryTree,
-  useGetVerse,
   useShareNarration,
-  useUpdateSharedNarration,
+  useUpdateSharedNarration
 } from "../api/hooks/allHooks";
-import noteIcon from "../assets/images/shapes/Icon-Note.svg";
-import shape_green from "../assets/images/shapes/shape-green.svg";
-import { Pagination } from "../components/Pagination";
-import { ContentContainer } from "../components/general/ContentContainer";
-import Dropdown, { DropdownSingleSelect } from "../components/ui/dropdown";
-import Input, { InputOld } from "../components/ui/input";
-import { InputWithState } from "../components/general/InputWithState";
-import InputWithSuggestion from "../components/general/InputWithSuggestion";
-import { useQueryClient } from "@tanstack/react-query";
-import { CircularProgress, useMediaQuery } from "@mui/material";
-import { AiFillDelete, AiFillEdit, AiOutlineClose } from "react-icons/ai";
 import apiUrls from "../api/urls";
-import { useNavigate } from "react-router-dom";
-import { customApiCall } from "../utils/axios";
+import { Pagination } from "../components/Pagination";
+import InputWithSuggestion from "../components/general/InputWithSuggestion";
 import Button from "../components/ui/buttons/primary-button";
-import { BiCloset, BiNote } from "react-icons/bi";
-import { useDispatch, useSelector } from "react-redux";
-import { FaComment, FaRegCommentDots, FaRegStickyNote } from "react-icons/fa";
-import { CustomModal, CustomModal2 } from "../components/general/CustomModal";
-import { BsChatLeftText } from "react-icons/bs";
-import FilterModal, {
-  FilterModalLT,
-} from "../components/show-traditions/filter-modal";
-import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
-import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
-import { getUserFromLocalStorage } from "../utils/localStorage";
-import { SingleNarration, removeTashkel } from "./NarrationWarehouseLT";
+import Dropdown from "../components/ui/dropdown";
+import { InputOld } from "../components/ui/input";
 import { getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
-import { shareNarrationStatus } from "../utils/enums";
 import { isCheckerAdmin } from "../utils/acl";
-import { toast } from "react-toastify";
-import { updateState } from "../features/states/states";
+import { customApiCall } from "../utils/axios";
+import { shareNarrationStatus } from "../utils/enums";
+import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
+import { SingleNarration, removeTashkel } from "./NarrationWarehouseLT";
 
 const sort = (array) => {
   if (!array) return array;

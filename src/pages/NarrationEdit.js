@@ -1,38 +1,21 @@
-import { useEffect, useRef, useState } from "react";
-import { ContentContainer } from "../components/general/ContentContainer";
-import Input from "../components/ui/input";
-import Tag from "../components/ui/tag";
-import { AiOutlinePlus, AiOutlinePlusCircle } from "react-icons/ai";
-import Dropdown from "../components/ui/dropdown";
-import {
-  duplicateSharedNarration,
-  updateSharedNarrations,
-  useGetBooks,
-  useGetImam,
-  useGetNarrationFilterOptions,
-  useGetNarrationIndividual,
-  useGetSingleSharedNarration,
-  useGetSubjects,
-  useGetSurah,
-  useGetVerse,
-} from "../api/hooks/allHooks";
-import InputWithSuggestion from "../components/general/InputWithSuggestion";
-import { AllNarrationFootnotes } from "../components/NarrationSave/NarrationFootnotes";
-import { AllNarrationSummaries } from "../components/NarrationSave/NarrationSummaries";
-import Button from "../components/ui/buttons/primary-button";
+import { Stack } from "@mui/material";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
-import { createNarration } from "../features/narrationSave/narrationSlice";
+import {
+  updateSharedNarrations,
+  useGetNarrationIndividual,
+  useGetSingleSharedNarration
+} from "../api/hooks/allHooks";
 import { NarrationEditForm } from "../components/NarrationSave/NarrationEditForm";
+import { NarrationFootnoteEditForm } from "../components/NarrationSave/NarrationFootnoteEditForm";
 import { NarrationSubjectEditForm } from "../components/NarrationSave/NarrationSubjectEditForm";
 import { NarrationSummaryEditForm } from "../components/NarrationSave/NarrationSummaryEditForm";
-import { NarrationFootnoteEditForm } from "../components/NarrationSave/NarrationFootnoteEditForm";
-import { isAdmin, isCheckerAdmin, isLoggedIn, isSuperAdmin, isTaggerAdmin } from "../utils/acl";
-import { TextAndAction } from "./Bookmarks";
-import Modal from '@mui/material/Modal';
-import { Stack } from "@mui/material";
+import Button from "../components/ui/buttons/primary-button";
+import { isCheckerAdmin, isLoggedIn, isSuperAdmin, isTaggerAdmin } from "../utils/acl";
 import { shareNarrationStatus } from "../utils/enums";
+import { TextAndAction } from "./Bookmarks";
 
 export const NarrationEdit = ({ checkOnly, myNarrations = false, saveNarration = false }) => {
   const { narrationId, sharedNarrationId } = useParams();

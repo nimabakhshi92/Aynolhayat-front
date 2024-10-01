@@ -215,7 +215,8 @@ export const SummaryTreeOld = ({ data, section, selectedNode }) => {
     </div>
   );
 };
-const getBGColor = (level) => (level === 1 ? "#eefff850" : "#eefff8");
+const getBGColor = (level) => (level === 1 ? "#eefff850" : "rgb(235 255 235)");
+// const getBGColor = (level) => (level === 1 ? "#eefff850" : "#eefff8");
 
 export const TreeItem = ({
   children,
@@ -237,7 +238,8 @@ export const TreeItem = ({
 
   return (
     <li
-      className={` ${!children && "hover:bg-[#deffe8]"} cursor-pointer`}
+      className={` ${!children && "hover:bg-[#deffe8]"} cursor-pointer`
+      }
       // onMouseEnter={() => setShowChildren(true)}
       // onMouseLeave={() => setShowChildren(false)}
       onClick={(e) => {
@@ -250,13 +252,17 @@ export const TreeItem = ({
       style={{
         // transition: "all 0.3s linear",
         paddingRight: "7%",
-        color: showChildren && "var(--primary-color)",
+        color: !children ? '#006600' : (level === 2) ? 'var(--primary-color)' : (showChildren && "black"),
         backgroundColor: selected
           ? "#beffc8"
           : !showChildren
             ? bgColor
             : children && showChildren && getBGColor(level),
         cursor: !children && "pointer",
+        fontSize: !children && 13,
+        borderBottom: (level === 2) && '1px solid #ddd',
+        paddingBottom: (level === 2) && 8,
+        paddingTop: (level === 2) && 8,
       }}
     >
       <div

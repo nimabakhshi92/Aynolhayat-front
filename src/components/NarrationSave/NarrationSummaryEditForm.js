@@ -1,26 +1,24 @@
 import { useEffect, useRef, useState } from "react";
 import { ContentContainer } from "../general/ContentContainer";
 
-import { InputWithState } from "../general/InputWithState";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   AiFillDelete,
   AiOutlineClose,
   AiOutlinePlusCircle,
 } from "react-icons/ai";
+import { toast } from "react-toastify";
 import {
   useAddNarrationSummary,
   useDeleteNarrationSummary,
   useGetNarrationFilterOptions,
-  useGetSummaryTree,
   useGetSurah,
   useGetVerse,
-  useModifyNarrationSummary,
+  useModifyNarrationSummary
 } from "../../api/hooks/allHooks";
+import { InputWithSuggestionWithDebounceBlur } from "../general/InputWithSuggestion";
 import Dropdown from "../ui/dropdown";
 import Input from "../ui/input";
-import { useQueryClient } from "@tanstack/react-query";
-import { InputWithSuggestionWithDebounceBlur } from "../general/InputWithSuggestion";
-import { toast } from "react-toastify";
 
 const findVerse = (quran, surah_no, verse_no) => {
   const newVerse = quran.find(
