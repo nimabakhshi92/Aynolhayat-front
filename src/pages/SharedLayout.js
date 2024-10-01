@@ -58,8 +58,6 @@ export const SharedLayoutLT = () => {
             color: "white",
           }}
         >
-
-
           <DatetimeVisualizer />
           <img src={bismilah} />
           <span className="flex items-center gap-8">

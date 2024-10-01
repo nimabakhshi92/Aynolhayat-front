@@ -28,7 +28,7 @@ import { useNavigate } from "react-router-dom";
 import { customApiCall } from "../utils/axios";
 import Button from "../components/ui/buttons/primary-button";
 import { BiCloset, BiNote } from "react-icons/bi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaComment, FaRegCommentDots, FaRegStickyNote } from "react-icons/fa";
 import { CustomModal, CustomModal2 } from "../components/general/CustomModal";
 import { BsChatLeftText } from "react-icons/bs";
@@ -43,6 +43,7 @@ import { getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } fro
 import { shareNarrationStatus } from "../utils/enums";
 import { isCheckerAdmin } from "../utils/acl";
 import { toast } from "react-toastify";
+import { updateState } from "../features/states/states";
 
 const sort = (array) => {
   if (!array) return array;
@@ -52,20 +53,60 @@ const sort = (array) => {
 };
 
 export const NarrationSearch = ({ personal }) => {
+  const dispatch = useDispatch()
+
+  // const history = useHisto
+
   const sortOptionsNew = [
     { id: 1, title: "آخرین" },
     { id: 2, title: "اولین" },
     { id: 3, title: 'به روز ترین' }
   ];
-
-  const [selectedSortOptionNew, setSelectedSortOptionNew] = useState(
-    sortOptionsNew[0]
-  );
   const navigate = useNavigate();
-  const [selectedPage, setSelectedPage] = useState(1);
+
+  const [selectedSortOptionNewId, setSelectedSortOptionNewId] = useState(1);
+
+  const selectedSortOptionNew = sortOptionsNew.find(option => option.id === (selectedSortOptionNewId || 1))
+
+  const setSelectedSortOptionNew = (newValue) => {
+    const newSortId = newValue?.id
+    const params = new URLSearchParams(window.location.search);
+    params.set('sortId', newSortId);
+    window.location.search = params.toString()
+
+    setSelectedSortOptionNewId(newSortId)
+  }
+
+  const [selectedPage, setSelectedPageTemp] = useState(1);
+  const setSelectedPage = (newPageNo) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('pageNo', newPageNo);
+    window.location.search = params.toString()
+    // setSelectedPageTemp(newPageNo)
+  }
+
+  const setSearchTermAndSubject = () => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('searchTerm', searchTerm?.current?.value);
+    params.set('searchSubject', searchSubject?.current?.value);
+    params.set('pageNo', 1);
+    window.location.search = params.toString()
+  }
+
   const queryClient = useQueryClient();
   const searchTerm = useRef();
   const searchSubject = useRef();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setSelectedPageTemp(parseInt(params.get('pageNo') ?? 1));
+    setSelectedSortOptionNewId(parseInt(params.get('sortId') ?? 1));
+
+    searchTerm.current.value = params.get('searchTerm');
+    searchSubject.current.value = params.get('searchSubject');
+  }, []);
+
+
   const { section, selectedNode } = useSelector((store) => store.summaryTree);
   const { user } = useSelector((store) => store.user);
   const { data } = useGetSummaryTree(section);
@@ -76,9 +117,9 @@ export const NarrationSearch = ({ personal }) => {
     section !== "surah" ? "alphabet" : "surah_name"
   );
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [selectedPage]);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, [selectedPage]);
 
 
   const serachOptions = {
@@ -273,10 +314,11 @@ export const NarrationSearch = ({ personal }) => {
             >
               <Button
                 onClickHandler={() => {
+                  // setSelectedPageTemp(1);
+                  setSearchTermAndSubject()
                   setProgress(0);
                   setFlag(!flag);
                   setSearchStarted(true);
-                  setSelectedPage(1);
                   queryClient.refetchQueries();
                 }}
                 variant="primary"
@@ -348,12 +390,16 @@ export const NarrationSearch = ({ personal }) => {
                   <div style={{ fontSize: isSmallScreen ? "10px" : "14px" }}>
                     <span>{narrationList?.number_of_records || 0}</span>
                     &nbsp;
-                    <span>حدیث یافت شد </span>
+                    <span>حدیث یافت شد.  </span>
+                    &nbsp;
+                    <span> صفحه  {selectedPage}</span>
+                    &nbsp;
+                    <span>از {narrationList.last}</span>
                   </div>
                   <div className="flex gap-3 items-center">
                     <div className="flex gap-1 items-center">
                       <p className="hidden sm:block">فیلتر :</p>
-                      <div className="w-20 sm:w-50 relative">
+                      {/* <div className="w-20 sm:w-50 relative">
                         <Dropdown
                           className="h-8 "
                           selected={selectedSubject}
@@ -368,8 +414,8 @@ export const NarrationSearch = ({ personal }) => {
                             setSelectedSubject("");
                           }}
                         />
-                      </div>
-                      <div className="w-25 sm:w-50 ml-0 sm:ml-8 relative">
+                      </div> */}
+                      {/* <div className="w-25 sm:w-50 ml-0 sm:ml-8 relative">
                         <Dropdown
                           className="h-8 "
                           selected={selectedSubSubject}
@@ -384,7 +430,7 @@ export const NarrationSearch = ({ personal }) => {
                             setSelectedSubSubject("");
                           }}
                         />
-                      </div>
+                      </div> */}
                       <p className="hidden sm:block">مرتب سازی :</p>
                       <div className="w-20 sm:w-30">
                         <Dropdown

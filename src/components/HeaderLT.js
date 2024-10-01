@@ -37,6 +37,7 @@ export const HeaderLT = () => {
       }
     }
   }, [dataLoaded]);
+
   return (
     <header
       className="p-3 sm:pt-6 sm:px-12 px-4 bg-white sm:h-20 pt-2 fixed w-full sm:top-12 top-0 right-0"
@@ -64,8 +65,9 @@ export const HeaderLT = () => {
         )}
         <img
           src={LogoPng}
-          className="sm:w-24 w-16 sm:h-16 h-10 relative sm:-top-4 top-0"
+          className="sm:w-24 w-16 sm:h-16 h-10 relative sm:-top-4 top-0 cursor-pointer"
           style={{}}
+          onClick={() => navigate('/')}
         />
         {!isSmallScreen && (
           <>
