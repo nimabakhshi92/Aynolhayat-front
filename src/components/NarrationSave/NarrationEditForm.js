@@ -237,6 +237,7 @@ export const NarrationEditForm = ({ narration }) => {
       dispatch(clearNarration());
       navigate(`/my-narrations/${storeNarration?.id}`, {
         preventScrollReset: false,
+        replace: true
       });
     }
   }, [storeNarration]);
@@ -460,7 +461,7 @@ export const NarrationEditForm = ({ narration }) => {
             type="button"
             className="w-40 h-8"
             style={{ fontSize: "14px" }}
-            onClickHandler={() => navigate("/", { preventScrollReset: false })}
+            onClickHandler={() => navigate(-1, { preventScrollReset: false })}
           >
             انصراف
           </Button>
