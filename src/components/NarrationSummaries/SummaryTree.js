@@ -259,7 +259,7 @@ export const TreeItem = ({
             ? bgColor
             : children && showChildren && getBGColor(level),
         cursor: !children && "pointer",
-        fontSize: !children && 13,
+        fontSize: (level === 2) ? 15 : !children && 13,
         borderBottom: (level === 2) && '1px solid #ddd',
         paddingBottom: (level === 2) && 8,
         paddingTop: (level === 2) && 8,
@@ -486,7 +486,7 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
     return false;
   };
   return (
-    <div className={classes.alphabet}>
+    <div className={classes.alphabet} style={{ paddingBottom: '40px' }}>
       <p style={{ fontSize: 18 }}>فهرست موضوعات</p>
       <Input
         className="w-full my-2"

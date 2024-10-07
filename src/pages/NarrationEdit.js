@@ -100,7 +100,7 @@ export const NarrationEdit = ({ checkOnly, myNarrations = false, saveNarration =
     );
 
   return (
-    <section className="mt-8 pb-4 px-2 sm:px-4 ">
+    <section className="mt-8 pb-20 px-2 sm:px-4 ">
       <div></div>
       {checkOnly &&
         <div className="-mt-8 " style={{
@@ -168,11 +168,11 @@ export const NarrationEdit = ({ checkOnly, myNarrations = false, saveNarration =
         </>
       )}
       {narration && (
-        <div className="flex justify-end gap-4 mt-4">
+        <div className="flex justify-end gap-4 mt-4 fixed bottom-8 left-8 shadow-lg">
           <Button
             type="button"
             variant="primary"
-            className="w-40 h-8"
+            className="w-40 h-8 "
             style={{ fontSize: "14px" }}
             onClickHandler={() => {
               navigate(-1)

@@ -1,5 +1,5 @@
 import { Stack, useMediaQuery } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BiBookmark,
   BiCylinder,
@@ -138,6 +138,8 @@ export const SidebarLT = () => {
     setNavItems(newNavlinks);
   };
 
+  const openRef = useRef(false)
+
   return (
     <nav
       className={`bg-white fixed right-0 ${isSmallScreen ? "bottom-0" : "top-32 h-full"
@@ -150,8 +152,22 @@ export const SidebarLT = () => {
         zIndex: 99,
         boxShadow: open ? "-10px 10px 30px gray" : "-5px 5px 10px gray",
       }}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={() => {
+        openRef.current = true
+        setTimeout(() => {
+          if (openRef.current === true)
+            setOpen(true)
+        }, 300)
+      }
+      }
+      onMouseLeave={() => {
+        openRef.current = false
+        if (openRef.current === false)
+          setTimeout(() => {
+            setOpen(false)
+          }, 300)
+      }
+      }
     >
       <Stack
         justifyContent={isSmallScreen ? "center" : "flex-start"}
