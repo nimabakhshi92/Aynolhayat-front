@@ -47,6 +47,9 @@ const use2GeneralGetHook = (cacheName, url, configs = {}, onDownloadProgress) =>
     ...configs,
   });
 };
+const allTimeCacheConfig = {
+  staleTime: 1000 * 60 * 60 * 24 * 365,
+}
 
 const longCacheConfig = {
   // gcTime: 1000 * 60 * 60 * 24 * 7,
@@ -73,7 +76,7 @@ export const useGetSubjects = () => {
 };
 export const useGetSurah = () => {
   const url = apiUrls.quran.surah;
-  return use2GeneralGetHook(["surah"], url, longCacheConfig);
+  return use2GeneralGetHook(["surah"], url, allTimeCacheConfig);
 };
 export const useGetVerse = (surahNo, verseNo) => {
   const url = apiUrls.quran.verse(
