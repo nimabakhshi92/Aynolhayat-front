@@ -99,7 +99,7 @@ export const SingleNarrationSummariesForEdit = ({
   useEffect(() => {
     setSummary(addNoOfVerses(inSummary));
     setSelectedVerse(inSummary?.verse?.verse_no);
-  }, [inSummary]);
+  }, [inSummary, surah]);
 
   const level1 = uniqueArray3(ss?.map((s) => s.alphabet));
   const level2 = uniqueArray3(ss?.map((s) => s.subject));
@@ -462,6 +462,8 @@ export const NarrationSummaryEditForm = ({ summaries, narration }) => {
   const queryClient = useQueryClient();
   let { data: surah } = useGetSurah();
   surah = surah || [];
+
+  console.log(summaries)
 
   const { data: quran } = useGetVerse("all", "all");
 
