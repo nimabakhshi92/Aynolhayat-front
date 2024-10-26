@@ -6,11 +6,13 @@ import subject from "./subject";
 import quran from "./quran";
 import narration from "./narration";
 import transfer from "./transfer";
+import narrationSummary from "./narrationSummary";
 
 export default {
   Imam,
   user,
   narrationSummaries,
+  narrationSummary,
   book,
   subject,
   quran,

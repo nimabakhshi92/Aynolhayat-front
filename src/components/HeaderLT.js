@@ -67,7 +67,9 @@ export const HeaderLT = () => {
           src={LogoPng}
           className="sm:w-24 w-16 sm:h-16 h-10 relative sm:-top-4 top-0 cursor-pointer"
           style={{}}
-          onClick={() => navigate('/')}
+          onClick={() => {
+            window.open(`/`, '_self')
+          }}
         />
         {!isSmallScreen && (
           <>

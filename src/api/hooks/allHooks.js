@@ -100,6 +100,12 @@ export const useGetNarrationList = (pageNo, selectedOptions, onDownloadProgress,
   return use2GeneralGetHook(["narrationList", pageNo, selectedOptions], url, configs, onDownloadProgress);
 };
 
+export const useGetNarrationSummaryList = (pageNo, selectedOptions, onDownloadProgress, configs = {}) => {
+  const url = apiUrls.narrationSummary.list(pageNo, selectedOptions, 10);
+  return use2GeneralGetHook(["narrationSummaryList", pageNo, selectedOptions], url, configs, onDownloadProgress);
+};
+
+
 export const downloadNarrations = async ({ userId, narrationIds, filename, onDownloadProgress }) => {
   const url = apiUrls.narration.download(narrationIds, userId)
   return await customApiCall.download({ url, filename, onDownloadProgress })

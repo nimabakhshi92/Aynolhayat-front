@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   moveNarrationToMainSite,
-  useGetNarrationList,
+  useGetNarrationSummaryList,
   useGetSharedNarrations,
   useGetSubjects,
   useGetSummaryTree,
@@ -255,9 +255,9 @@ export const SingleNarration = ({
       if (section !== "surah")
         return (
           contentItem.alphabet === lvl1 &&
-          contentItem.alphabet !== "بیان" &&
-          contentItem.subject === lvl2 &&
-          contentItem.sub_subject === lvl3
+          contentItem.alphabet !== "بیان"// &&
+          // contentItem.subject === lvl2 &&
+          // contentItem.sub_subject === lvl3
         );
       else
         return (
@@ -310,6 +310,7 @@ export const SingleNarration = ({
   }, [openTooltip]);
   const r = useRef();
 
+  const navigate = useNavigate()
   return (
     <ContentContainer
       // title={`${narration.book.name}`}
@@ -532,7 +533,11 @@ export const SingleNarration = ({
             </span>
             <Button
               className="absolute left-0 "
-              onClickHandler={() => setIsShowSummary(false)}
+              // onClickHandler={() => setIsShowSummary(false)}
+              onClickHandler={() => {
+                window.open(`/narration-detail/${narration?.id}${personal ? "?personal=true" : ''}`)
+              }
+              }
               variant="secondary"
               style={{ fontSize: isSmallScreen ? "10px" : "12px" }}
             >
@@ -614,7 +619,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
 
   const treeOptions = makeTreeOptions(treeWords, section);
 
-  const { data: rawNarrationList, isLoading } = useGetNarrationList(selectedPage, {
+  const { data: rawNarrationList, isLoading } = useGetNarrationSummaryList(selectedPage, {
     ...treeOptions,
     user_id: personal ? user.id : null,
   },
@@ -631,15 +636,15 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
       (item?.verse?.surah_name === treeOptions?.surah_name)
     ))
     const hasOtherThanBayan = e?.content_summary_tree?.some(item => (
-      (item.alphabet !== "بیان") &&
-      (item.alphabet === treeOptions.alphabet) &&
-      (item?.subject === treeOptions?.subject) &&
-      (item?.sub_subject === treeOptions?.sub_subject)
+      (item.alphabet !== "بیان") //&&
+      // (item.alphabet === treeOptions.alphabet) &&
+      // (item?.subject === treeOptions?.subject) &&
+      // (item?.sub_subject === treeOptions?.sub_subject)
     ))
     const hasRelevantVerse = e?.content_summary_tree?.some(item => (
-      (item.alphabet === treeOptions.alphabet) &&
-      (item.subject === treeOptions.subject) &&
-      (item.sub_subject === treeOptions.sub_subject) &&
+      // (item.alphabet === treeOptions.alphabet) &&
+      // (item.subject === treeOptions.subject) &&
+      // (item.sub_subject === treeOptions.sub_subject) &&
       (item?.verse?.verse_no) &&
       (item?.verse?.surah_name)
     ))
@@ -662,7 +667,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
       await moveNarrationToMainSite({ narrationId })
       toast.success('عملیات مورد نظر انجام شد')
       queryClient.invalidateQueries([
-        "narrationList",
+        "narrationSummaryList",
         selectedPage,
         {
           ...treeOptions,
@@ -703,7 +708,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
 
   const onBookmarkChange = () =>
     queryClient.invalidateQueries([
-      "narrationList",
+      "narrationSummaryList",
       selectedPage,
       {
         ...treeOptions,
@@ -720,7 +725,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
     } catch { }
     finally {
       queryClient.invalidateQueries([
-        "narrationList",
+        "narrationSummaryList",
         selectedPage,
         {
           ...treeOptions,

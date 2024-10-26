@@ -27,6 +27,7 @@ import {
 } from "@tanstack/react-query-persist-client";
 import { Transfer } from "./pages/Transfer";
 import { Download } from "./pages/Download";
+import { NarrationDetail } from "./pages/NarrationDetail";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -89,6 +90,10 @@ function App() {
               <Route
                 path="my-narrations/:narrationId"
                 element={<NarrationEdit myNarrations={true} />}
+              ></Route>
+              <Route
+                path="narration-detail/:narrationId"
+                element={<NarrationDetail />}
               ></Route>
               <Route
                 path="shared-narrations/:sharedNarrationId"

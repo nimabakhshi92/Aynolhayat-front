@@ -39,6 +39,7 @@ const NavIcon = ({ iconName, isActive, ...props }) => {
 };
 
 export const SidebarLT = () => {
+  console.log('sidebar')
   const { pathname } = useLocation();
   const pageName = pathname.includes("search")
     ? "search"
@@ -130,6 +131,10 @@ export const SidebarLT = () => {
     }
   }, []);
 
+  useEffect(() => {
+    setNavItems(navItemsDefault)
+  }, [pageName])
+
   const changeLink = (clickedNavLinkName) => {
     const newNavlinks = navItems?.map((item) => {
       if (item.name === clickedNavLinkName) return { ...item, isActive: true };
@@ -139,6 +144,7 @@ export const SidebarLT = () => {
   };
 
   const openRef = useRef(false)
+  console.log(pageName)
 
   return (
     <nav

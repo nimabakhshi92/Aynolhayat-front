@@ -37,6 +37,7 @@ const sort = (array) => {
 
 export const NarrationSearch = ({ personal }) => {
   const dispatch = useDispatch()
+  const [enableDataGetting, setEnableDataGetting] = useState(false)
 
   // const history = useHisto
 
@@ -68,6 +69,19 @@ export const NarrationSearch = ({ personal }) => {
     // setSelectedPageTemp(newPageNo)
   }
 
+
+  const onBookmarkChange = () =>
+    queryClient.invalidateQueries([
+      "narrationList",
+      selectedPage,
+      {
+        ...serachOptions,
+        ...treeOptions,
+        user_id: personal ? user.id : null,
+      },
+    ]);
+
+
   const setSearchTermAndSubject = () => {
     const params = new URLSearchParams(window.location.search);
     params.set('searchTerm', searchTerm?.current?.value);
@@ -84,9 +98,12 @@ export const NarrationSearch = ({ personal }) => {
     const params = new URLSearchParams(window.location.search);
     setSelectedPageTemp(parseInt(params.get('pageNo') ?? 1));
     setSelectedSortOptionNewId(parseInt(params.get('sortId') ?? 1));
+    if (!enableDataGetting)
+      setEnableDataGetting(true)
 
     searchTerm.current.value = params.get('searchTerm');
     searchSubject.current.value = params.get('searchSubject');
+
   }, []);
 
 
@@ -149,6 +166,7 @@ export const NarrationSearch = ({ personal }) => {
       user_id: personal ? user.id : null,
     },
     onDownloadProgress,
+    { enabled: enableDataGetting }
   );
 
   const handleDelete = async (narrationId, pass) => {
@@ -457,6 +475,7 @@ export const NarrationSearch = ({ personal }) => {
                       narration={narration}
                       showSummary={false}
                       personal={personal}
+                      onBookmarkChange={onBookmarkChange}
                     />
                   ))}
                 </section>
