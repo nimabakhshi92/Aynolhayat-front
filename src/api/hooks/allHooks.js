@@ -594,15 +594,15 @@ export const useShareNarration = () => {
     mutationFn: postSharedNarrations,
     onMutate: async (inputs) => {
       const { narrationId } = inputs;
-      await queryClient.cancelQueries(["sharedNarrations", narrationId]);
+      await queryClient.cancelQueries(["sharedNarrations", undefined]);
       const previousData = queryClient.getQueryData([
-        "sharedNarrations",
+        "sharedNarrations", undefined
       ]);
       queryClient.setQueryData(
-        ["sharedNarrations"],
+        ["sharedNarrations", undefined],
         (oldData) => {
           return [
-            ...oldData,
+            ...(oldData || []),
             { id: -1, status: shareNarrationStatus.SENDING, narration: { id: narrationId } },
           ];
         }

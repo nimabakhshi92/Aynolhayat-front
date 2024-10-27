@@ -40,7 +40,7 @@ export const Transfer = ({ }) => {
   const navigate = useNavigate();
   const [selectedStatus, setSelectedStatus] = useState(shareNarrationStatus.PENDING)
 
-  const { data: allSentStatus } = useGetSharedNarrations(selectedStatus)
+  const { data: allSentStatus, isLoading } = useGetSharedNarrations(selectedStatus)
 
   const tableData = allSentStatus?.map(narrationStatus => {
     const narration = narrationStatus?.narration
@@ -157,7 +157,7 @@ export const Transfer = ({ }) => {
               width: '95%',
             }} />
         }
-        {!tableData?.length > 0 &&
+        {!tableData?.length > 0 && !isLoading &&
           <Stack className="h-70 justify-center items-center gap-1" flexDirection={'row'}>
             <span>در حال حاضر هیچ   </span>
             <NarrationSentStatusLabel status={selectedStatus}
