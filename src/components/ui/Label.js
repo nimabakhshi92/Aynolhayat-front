@@ -80,19 +80,19 @@ export const InsertedNarrationSentLabel = ({ ...props }) => {
 }
 
 
-export const NarrationSentStatusLabel = ({ status }) => {
+export const NarrationSentStatusLabel = ({ status, ...props }) => {
     if (status === shareNarrationStatus.SENDING)
-        return <SendingNarrationSentLabel />
+        return <SendingNarrationSentLabel {...props} />
     if (status === shareNarrationStatus.PENDING)
-        return <PendingNarrationSentLabel />
+        return <PendingNarrationSentLabel {...props} />
     if (status === shareNarrationStatus.CHECKING)
-        return <CheckingNarrationSentLabel />
+        return <CheckingNarrationSentLabel {...props} />
     if (status === shareNarrationStatus.ACCEPTED)
-        return <AcceptedNarrationSentLabel />
+        return <AcceptedNarrationSentLabel {...props} />
     if (status === shareNarrationStatus.REJECTED)
-        return <RejectedNarrationSentLabel />
+        return <RejectedNarrationSentLabel {...props} />
     if (status === shareNarrationStatus.TRANSFERRED)
-        return <InsertedNarrationSentLabel />
+        return <InsertedNarrationSentLabel {...props} />
 }
 
 

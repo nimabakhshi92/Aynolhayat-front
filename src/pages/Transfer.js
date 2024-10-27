@@ -7,8 +7,9 @@ import {
 import { NarrationSentStatusLabel } from "../components/ui/Label";
 import { Table } from "../components/ui/Table";
 import { convertGregorianToJalali } from "../functions/general";
-import { isCheckerAdmin } from "../utils/acl";
+import { isCheckerAdmin, isSuperAdmin } from "../utils/acl";
 import { shareNarrationStatus } from "../utils/enums";
+import { useState } from "react";
 
 
 const checkerAdminStatusRanks = {
@@ -37,8 +38,9 @@ export const Transfer = ({ }) => {
   const { user } = useSelector((store) => store.user);
   const checkerAdmin = isCheckerAdmin(user)
   const navigate = useNavigate();
+  const [selectedStatus, setSelectedStatus] = useState(shareNarrationStatus.PENDING)
 
-  const { data: allSentStatus } = useGetSharedNarrations()
+  const { data: allSentStatus } = useGetSharedNarrations(selectedStatus)
 
   const tableData = allSentStatus?.map(narrationStatus => {
     const narration = narrationStatus?.narration
@@ -53,7 +55,8 @@ export const Transfer = ({ }) => {
       status: narrationStatus?.status,
       book: narration?.book?.name + ' ' + bookVolText + ' ' + bookPageText,
       senderName: narrationStatus?.sender?.username,
-      narrationId: narration?.id
+      narrationId: narration?.id,
+      firstTime: new Date(narrationStatus?.modified) - new Date(narrationStatus?.created) < 5000
     }
   })
 
@@ -69,7 +72,7 @@ export const Transfer = ({ }) => {
 
   })
 
-  const headers = [
+  let headers = [
     {
       label: 'عنوان حدیث',
       dataKey: "name",
@@ -95,7 +98,6 @@ export const Transfer = ({ }) => {
       dataKey: "created",
       valueTransformation: (row) => row["created"],
     },
-
   ];
 
   const checkerAdminHeaders = [...headers, {
@@ -103,6 +105,11 @@ export const Transfer = ({ }) => {
     dataKey: "senderName",
     valueTransformation: (row) => row["senderName"],
   },
+  {
+    label: 'دیده شده',
+    dataKey: "firstTime",
+    valueTransformation: (row) => row["firstTime"] ? 'خیر' : 'بله',
+  }
   ]
 
 
@@ -110,18 +117,56 @@ export const Transfer = ({ }) => {
     // if (row['status'] === shareNarrationStatus.PENDING)
     navigate(`/shared-narrations/${row?.id}?`)
   }
-  return (
-    <Stack className="justify-center items-center">
 
-      <Table
-        data={tableData}
-        headers={checkerAdmin ? checkerAdminHeaders : headers}
-        onRowClick={checkerAdmin ? handleRowClick : null}
-        className='mt-4 mr-8'
-        style={{
-          width: '95%',
-        }} />
-    </Stack>
+  const allAvailableStatuses = [shareNarrationStatus.PENDING, shareNarrationStatus.REJECTED, shareNarrationStatus.CHECKING
+    , shareNarrationStatus.ACCEPTED, shareNarrationStatus.TRANSFERRED]
+
+  const selectedSectionStyels = {
+    padding: 12, outline: '1px solid #bbb', display: 'flex', jusfityContent: 'center', alignItems: 'center',
+    borderRadius: 8,
+
+  }
+  return (
+    <div className="absolute mr-12 w-[80%]">
+      <Stack className="mt-8 mr-8  gap-4 bg-[white] flex-wrap" flexDirection={'row'}>
+        {allAvailableStatuses.map(status => {
+          const isSelected = status === selectedStatus
+          return <div
+            onClick={() => setSelectedStatus(status)}
+            className={"cursor-pointer  rounded "}
+
+            style={isSelected ? selectedSectionStyels : {
+              padding: 12,
+            }}>
+
+            <NarrationSentStatusLabel status={status}
+              className={`${isSelected ? "shadow" : ""}`}
+            />
+          </div>
+        })}
+
+      </Stack>
+      <Stack className="justify-center items-center mt-4 mb-16">
+        {tableData?.length > 0 &&
+          <Table
+            data={tableData}
+            headers={checkerAdmin ? checkerAdminHeaders : headers}
+            onRowClick={checkerAdmin ? handleRowClick : null}
+            className='mt-4 mr-8'
+            style={{
+              width: '95%',
+            }} />
+        }
+        {!tableData?.length > 0 &&
+          <Stack className="h-70 justify-center items-center gap-1" flexDirection={'row'}>
+            <span>در حال حاضر هیچ   </span>
+            <NarrationSentStatusLabel status={selectedStatus}
+            />
+            <span>ای ندارید</span>
+          </Stack>
+        }
+      </Stack>
+    </div>
 
   );
 };

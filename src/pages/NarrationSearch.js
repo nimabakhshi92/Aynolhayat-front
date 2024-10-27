@@ -129,23 +129,23 @@ export const NarrationSearch = ({ personal }) => {
     sort_by: selectedSortOptionNew?.id === 3 ? 'modified' : "created",
     sort_type: selectedSortOptionNew?.id === 2 ? "asc" : "desc",
   };
-  const { data: options } = useGetNarrationFilterOptions();
+  // const { data: options } = useGetNarrationFilterOptions();
   const treeOptions = makeTreeOptions(treeWords, section);
 
-  const subjectOptions = sort([
-    ...new Set(options?.map((option) => option?.alphabet)),
-  ]);
+  // const subjectOptions = sort([
+  //   ...new Set(options?.map((option) => option?.alphabet)),
+  // ]);
   const [selectedSubject, setSelectedSubject] = useState();
 
-  const subSubjectOptions = sort([
-    ...new Set(
-      options
-        ?.filter(
-          (option) => option.alphabet === selectedSubject || !selectedSubject
-        )
-        ?.map((option) => option?.subject)
-    ),
-  ]);
+  // const subSubjectOptions = sort([
+  //   ...new Set(
+  //     options
+  //       ?.filter(
+  //         (option) => option.alphabet === selectedSubject || !selectedSubject
+  //       )
+  //       ?.map((option) => option?.subject)
+  //   ),
+  // ]);
   const [selectedSubSubject, setSelectedSubSubject] = useState();
 
 

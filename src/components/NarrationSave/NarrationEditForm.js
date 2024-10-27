@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import Button from "../ui/buttons/primary-button";
 import { useNavigate } from "react-router-dom";
 import { customApiCall } from "../../utils/axios";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, useMediaQuery } from "@mui/material";
 import { AiOutlineClose } from "react-icons/ai";
 import apiUrls from "../../api/urls";
 import { SingleNarration } from "../../pages/NarrationWarehouseLT";
@@ -254,6 +254,9 @@ export const NarrationEditForm = ({ narration }) => {
     { is_complete: 'ناقص', id: 1, dataToSend: false },
   ]
 
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const smallInputsClassName = isSmallScreen ? 'col-span-3' : 'col-span-1'
+
   return (
     <>
       {(
@@ -269,7 +272,7 @@ export const NarrationEditForm = ({ narration }) => {
       )}
       <ContentContainer className="mb-4" title="اطلاعات شناسنامه‌ای حدیث">
         <div className="grid gap-4 grid-cols-3 grid-rows-3">
-          <div className="flex gap-1 " style={{ flexDirection: "column" }}>
+          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
             <p>نام حدیث</p>
             <InputWithSuggestionWithDebounceBlur
               className='w-full'
@@ -284,7 +287,7 @@ export const NarrationEditForm = ({ narration }) => {
               debounceDependency={narration?.id}
             />
           </div>
-          <div className="flex gap-1 " style={{ flexDirection: "column" }}>
+          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
             <p>نام معصوم</p>
             <Dropdown
               selected={updatedNarration?.imam}
@@ -302,7 +305,7 @@ export const NarrationEditForm = ({ narration }) => {
             />
           </div>
 
-          <div className="flex gap-1 " style={{ flexDirection: "column" }}>
+          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
             <p>راویان حدیث</p>
             <InputWithSuggestionWithDebounceBlur
               className='w-full'
@@ -318,7 +321,7 @@ export const NarrationEditForm = ({ narration }) => {
             />
           </div>
           <div
-            className="flex gap-1 col-span-2 sm:col-span-3 sm:row-span-2"
+            className={"flex gap-1 row-span-2 col-span-3"}
             style={{ flexDirection: "column" }}
           >
             <p>متن حدیث</p>
@@ -364,7 +367,7 @@ export const NarrationEditForm = ({ narration }) => {
               </p>
             }
           </div>
-          <div className="flex gap-1 " style={{ flexDirection: "column" }}>
+          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
             <p>نام کتاب</p>
             <Dropdown
               selected={updatedNarration?.book}
@@ -380,7 +383,7 @@ export const NarrationEditForm = ({ narration }) => {
               debounceDependency={narration?.id}
             />
           </div>
-          <div className="flex gap-1 " style={{ flexDirection: "column" }}>
+          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
             <p>شماره جلد کتاب</p>
             <InputWithSuggestionWithDebounceBlur
               className='w-full'
@@ -397,7 +400,7 @@ export const NarrationEditForm = ({ narration }) => {
               debounceDependency={narration?.id}
             />
           </div>
-          <div className="flex gap-1 " style={{ flexDirection: "column" }}>
+          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
             <p>شماره صفحه</p>
             <InputWithSuggestionWithDebounceBlur
               className='w-full'
@@ -414,7 +417,7 @@ export const NarrationEditForm = ({ narration }) => {
               debounceDependency={narration?.id}
             />
           </div>
-          <div className="flex gap-1 " style={{ flexDirection: "column" }}>
+          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
             <p>شماره حدیث</p>
             <InputWithSuggestionWithDebounceBlur
               className='w-full'
@@ -436,7 +439,7 @@ export const NarrationEditForm = ({ narration }) => {
               debounceDependency={narration?.id}
             />
           </div>
-          <div className="flex gap-1 " style={{ flexDirection: "column" }}>
+          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
             <p>حدیث کامل است؟</p>
             <Dropdown
               selected={!updatedNarration?.is_complete ? isCompletedItems[1] : isCompletedItems[0]}

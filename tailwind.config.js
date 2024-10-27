@@ -234,8 +234,8 @@ module.exports = {
       screens: {
         lg: "1024px",
         xs: "0px",
-        sm: "600px",
-        md: "900px",
+        sm: "1000px",
+        md: "1100px",
         lg2: "1230px",
         xl: "1330px",
         xl2: "1400px",

@@ -578,9 +578,9 @@ export const updateSharedNarrations = async ({ id, data }) => {
 };
 
 
-export const useGetSharedNarrations = () => {
-  const url = apiUrls.transfer.sharedNarrations.list()
-  return use2GeneralGetHook(["sharedNarrations"], url);
+export const useGetSharedNarrations = (status) => {
+  const url = apiUrls.transfer.sharedNarrations.list(status)
+  return use2GeneralGetHook(["sharedNarrations", status], url);
 };
 
 export const useGetSingleSharedNarration = (sharedNarrationId) => {

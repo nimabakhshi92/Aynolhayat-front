@@ -19,6 +19,7 @@ import {
 import { InputWithSuggestionWithDebounceBlur } from "../general/InputWithSuggestion";
 import Dropdown from "../ui/dropdown";
 import Input from "../ui/input";
+import { useMediaQuery } from "@mui/material";
 
 const findVerse = (quran, surah_no, verse_no) => {
   const newVerse = quran.find(
@@ -38,6 +39,7 @@ export const SingleNarrationSummariesForEdit = ({
   surah = surah || [];
   const sortedSurah = surah?.sort((a, b) => a.surah_no - b.surah_no);
   const [selectedSurah, setSelectedSurah] = useState(null);
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   const [summary, setSummary] = useState({
     alphabet: "",
@@ -116,6 +118,7 @@ export const SingleNarrationSummariesForEdit = ({
   };
   const flag = useRef(false)
   const status = useRef()
+
 
   const handleSurahChange = (data) => {
     const maxNoOfVerses = getNoOfVerses(data.surah_name);
@@ -266,6 +269,12 @@ export const SingleNarrationSummariesForEdit = ({
   //   }
   // }, [selectedVerse]);
 
+  const smallInputsClassName = isSmallScreen ? 'col-span-7' : 'col-span-1'
+  const mediumInputsClassName = isSmallScreen ? 'col-span-7' : 'col-span-2'
+  const largeInputsClassName = isSmallScreen ? 'col-span-7' : 'col-span-3'
+  const xLargeInputsClassName = isSmallScreen ? 'col-span-7' : 'col-span-4'
+
+
   return (
     <>
       <div className="flex gap-2 items-start">
@@ -283,11 +292,12 @@ export const SingleNarrationSummariesForEdit = ({
             marginBottom: "32px",
             paddingBottom: "32px",
           }}
-          className="grid gap-4 grid-cols-7 grid-rows-4"
+          className="grid gap-4 grid-cols-7 grid-rows-4 w-full"
         >
           <InputWithSuggestionWithDebounceBlur
             suggestions={level1?.sort()}
             className="w-full"
+            parentClassName={smallInputsClassName}
             onPressEnter={(e) => handleBlur("alphabet", e.target.value)}
             onChange={(e) => {
               handleChange("alphabet", e.target.value);
@@ -304,7 +314,7 @@ export const SingleNarrationSummariesForEdit = ({
 
           <InputWithSuggestionWithDebounceBlur
             suggestions={level2?.sort()}
-            parentClassName="col-span-1"
+            parentClassName={smallInputsClassName}
             className="w-full"
             onPressEnter={(e) => handleBlur("subject", e.target.value)}
             onChange={(e) => {
@@ -320,7 +330,7 @@ export const SingleNarrationSummariesForEdit = ({
 
           <InputWithSuggestionWithDebounceBlur
             suggestions={level3?.sort()}
-            parentClassName=" col-span-2"
+            parentClassName={mediumInputsClassName}
             className="w-full"
             onPressEnter={(e) => handleBlur("sub_subject", e.target.value)}
             onChange={(e) => {
@@ -336,7 +346,7 @@ export const SingleNarrationSummariesForEdit = ({
 
           <InputWithSuggestionWithDebounceBlur
             suggestions={level4?.sort()}
-            parentClassName=" col-span-3"
+            parentClassName={largeInputsClassName}
             className="w-full"
             onPressEnter={(e) => handleBlur("subject_3", e.target.value)}
             onChange={(e) => {
@@ -397,7 +407,7 @@ export const SingleNarrationSummariesForEdit = ({
             key={"i6" + summary.id}
             status={status.current}
           />
-          <div className="relative col-span-2">
+          <div className={`relative  ${mediumInputsClassName}`}>
             <Dropdown
               className="h-full"
               selected={summary?.verse}
@@ -441,9 +451,10 @@ export const SingleNarrationSummariesForEdit = ({
             items={verseNos}
             placeholder="شماره آیه"
             key={"i8" + summary.id}
+            className={smallInputsClassName}
           />
           <Input
-            className="col-span-4"
+            className={xLargeInputsClassName}
             type="text"
             placeholder={verse?.verse_content || "متن آیه"}
             disabled={true}

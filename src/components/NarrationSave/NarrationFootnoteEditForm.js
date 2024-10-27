@@ -11,6 +11,7 @@ import {
 } from "../../api/hooks/allHooks";
 import { InputWithState } from "../general/InputWithState";
 import InputWithSuggestion, { InputWithSuggestionWithDebounceBlur } from "../general/InputWithSuggestion";
+import { useMediaQuery } from "@mui/material";
 const emptyFootnote0 = {
   expression: "",
   explanation: "",
@@ -82,6 +83,10 @@ export const SingleNarrationFootnoteForEdit = ({
       );
     }
   };
+
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const inputSizeClassName = isSmallScreen ? 'col-span-2' : 'col-span-1'
+
   return (
     <div className="flex gap-2 items-start">
       <AiFillDelete
@@ -118,6 +123,7 @@ export const SingleNarrationFootnoteForEdit = ({
           onChange={(e) => {
             handleChange("expression", e.target.value);
           }}
+          parentClassName={inputSizeClassName}
 
           key={"f0" + footnote.id}
           flag={flag?.current === 'expression'}
@@ -129,6 +135,7 @@ export const SingleNarrationFootnoteForEdit = ({
           onBlur={(e) => handleBlur("explanation", e.target.value)}
           type="text"
           className="w-full"
+          parentClassName={inputSizeClassName}
           onChange={(e) => {
             handleChange("explanation", e.target.value);
           }}
