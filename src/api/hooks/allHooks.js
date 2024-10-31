@@ -43,6 +43,7 @@ const use2GeneralGetHook = (cacheName, url, configs = {}, onDownloadProgress) =>
   return useQuery({
     queryKey: cacheName,
     queryFn: fn,
+    // staleTime: isAdmin(user) ? 0 : 0, // 30 Minutes
     staleTime: isAdmin(user) ? 0 : 1800000, // 30 Minutes
     ...configs,
   });
@@ -598,27 +599,27 @@ export const useShareNarration = () => {
       const previousData = queryClient.getQueryData([
         "sharedNarrations", undefined
       ]);
-      queryClient.setQueryData(
-        ["sharedNarrations", undefined],
-        (oldData) => {
-          return [
-            ...(oldData || []),
-            { id: -1, status: shareNarrationStatus.SENDING, narration: { id: narrationId } },
-          ];
-        }
-      );
+      // queryClient.setQueryData(
+      //   ["sharedNarrations", undefined],
+      //   (oldData) => {
+      //     return [
+      //       ...(oldData || []),
+      //       { id: -1, status: shareNarrationStatus.SENDING, narration: { id: narrationId } },
+      //     ];
+      //   }
+      // );
       return { previousData, narrationId };
     },
     onError: (error, _output, context) => {
       toast.error("تغییر مورد نظر انجام نشد");
       queryClient.setQueryData(
-        ["sharedNarrations"],
+        ["sharedNarrations", undefined],
         context.previousData
       );
     },
     onSettled: (inputs, error, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: ["sharedNarrations"],
+        queryKey: ["sharedNarrations", undefined],
       });
     },
   });
@@ -631,15 +632,15 @@ export const useUpdateSharedNarration = () => {
     mutationFn: updateSharedNarrations,
     onMutate: async (inputs) => {
       const { id, narrationId, data } = inputs;
-      await queryClient.cancelQueries(["sharedNarrations"]);
+      await queryClient.cancelQueries(["sharedNarrations", undefined]);
       const previousData = queryClient.getQueryData([
-        "sharedNarrations",
+        "sharedNarrations", , undefined
       ]);
       queryClient.setQueryData(
-        ["sharedNarrations"],
+        ["sharedNarrations", undefined],
         (oldData) => {
           return [
-            ...oldData,
+            ...(oldData),
             { id: -1, status: shareNarrationStatus.SENDING, narration: { id: narrationId } },
           ];
         }
@@ -649,13 +650,13 @@ export const useUpdateSharedNarration = () => {
     onError: (error, _output, context) => {
       toast.error("تغییر مورد نظر انجام نشد");
       queryClient.setQueryData(
-        ["sharedNarrations"],
+        ["sharedNarrations", undefined],
         context.previousData
       );
     },
     onSettled: (inputs, error, variables, context) => {
       queryClient.invalidateQueries({
-        queryKey: ["sharedNarrations"],
+        queryKey: ["sharedNarrations", undefined],
       });
     },
   });
