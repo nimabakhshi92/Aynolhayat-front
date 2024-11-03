@@ -110,8 +110,8 @@ export default function Dropdown({
   const displayValue = !selected
     ? placeholder
     : dataKey
-    ? selected[dataKey]
-    : selected;
+      ? selected[dataKey]
+      : selected;
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(!open);

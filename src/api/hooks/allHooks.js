@@ -94,6 +94,7 @@ export const useGetVerse = (surahNo, verseNo) => {
 // Narration
 export const useGetNarrationIndividual = (narrationId, user) => {
   const url = apiUrls.narration.get(narrationId, user?.id);
+
   return use2GeneralGetHook(["narrationIndividual", Number(narrationId)], url);
 };
 export const useGetNarrationList = (pageNo, selectedOptions, onDownloadProgress, configs = {}) => {

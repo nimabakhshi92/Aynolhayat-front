@@ -173,7 +173,7 @@ export const NarrationEditForm = ({ narration }) => {
   const flag = useRef(false)
   const status = useRef()
 
-  const handleBlur = (fieldName, fieldValue) => {
+  const handleBlur = (fieldName, fieldValue, triggerRefetch = false) => {
     status.current = 'isLoading'
     if (narration)
       flag.current = fieldName
@@ -191,6 +191,8 @@ export const NarrationEditForm = ({ narration }) => {
       }, {
         onSuccess: () => {
           status.current = 'success'
+          if (triggerRefetch)
+            queryClient.invalidateQueries({ queryKey: ["narrationIndividual", Number(narration?.id)] })
         },
         onError: () => {
           status.current = 'error'
@@ -293,7 +295,7 @@ export const NarrationEditForm = ({ narration }) => {
               selected={updatedNarration?.imam}
               setSelected={(newValue) => {
                 handleChange("imam", newValue);
-                handleBlur("imam", newValue.id);
+                handleBlur("imam", newValue.id, true);
               }}
               // onBlur={(e) => handleBlur("imam", updatedNarration?.imam.id)}
               items={imam}
@@ -373,7 +375,7 @@ export const NarrationEditForm = ({ narration }) => {
               selected={updatedNarration?.book}
               setSelected={(newValue) => {
                 handleChange("book", newValue);
-                handleBlur("book", newValue.id);
+                handleBlur("book", newValue.id, true);
               }}
               items={book}
               dataKey="name"
