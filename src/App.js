@@ -116,6 +116,7 @@ function App() {
                 <Route path="search/" element={<NarrationSearch />}></Route>
                 <Route path="transfer/" element={<Transfer />}></Route>
                 <Route path="download/" element={<Download />}></Route>
+                <Route path="download2/" element={<Download test={true} />}></Route>
               </Route>
             </Routes>
           </BrowserRouter>

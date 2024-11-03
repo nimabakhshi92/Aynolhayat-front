@@ -102,6 +102,13 @@ export const useGetNarrationList = (pageNo, selectedOptions, onDownloadProgress,
   return use2GeneralGetHook(["narrationList", pageNo, selectedOptions], url, configs, onDownloadProgress);
 };
 
+export const useGetNarrationList2 = (pageNo, selectedOptions, onDownloadProgress, configs = {}) => {
+  console.log(configs)
+  let url = apiUrls.narration.list(pageNo, selectedOptions, 10);
+  url = url.replace('narration2', 'narration')
+  return use2GeneralGetHook(["narrationList2", pageNo, selectedOptions], url, configs, onDownloadProgress);
+};
+
 export const useGetNarrationSummaryList = (pageNo, selectedOptions, onDownloadProgress, configs = {}) => {
   const url = apiUrls.narrationSummary.list(pageNo, selectedOptions, 10);
   return use2GeneralGetHook(["narrationSummaryList", pageNo, selectedOptions], url, configs, onDownloadProgress);

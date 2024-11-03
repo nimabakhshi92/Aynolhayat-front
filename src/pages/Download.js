@@ -6,14 +6,16 @@ import {
   downloadInstruction,
   downloadNarrations,
   downloadNarrationsBackupFile,
-  useGetDownloadNarrationsBackupList
+  useGetDownloadNarrationsBackupList,
+  useGetNarrationList,
+  useGetNarrationList2
 } from "../api/hooks/allHooks";
 import zipFileImage from '../assets/zip.png';
 import Button from "../components/ui/buttons/primary-button";
 import { getCurrentJalaliDate } from "../functions/general";
 import { isAdmin } from "../utils/acl";
 
-export const Download = ({ }) => {
+export const Download = ({ test }) => {
   const { user } = useSelector((store) => store.user);
   const { data } = useGetDownloadNarrationsBackupList()
 
@@ -24,6 +26,10 @@ export const Download = ({ }) => {
 
   const [isInstructionsDisabled, setIsInstructionsDisabled] = useState(false)
   const [progressInstruction, setProgressInstruction] = useState(undefined);
+
+
+  const { data: narrations } = useGetNarrationList2(1, undefined, undefined, { enabled: test === true })
+
 
   const onDownloadProgress = progressEvent => {
     const total = progressEvent.total;
