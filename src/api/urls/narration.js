@@ -1,9 +1,9 @@
 const url = process.env.REACT_APP_API_URL;
 const url0 = process.env.REACT_APP_API_URL0;
 export default {
-  post: `${url}/narration/`,
+  post: `${url}/narration2/`,
   list: (pageNo, selectedOptions, pageSize = 10) => {
-    let baseUrl = `${url}/narration/?`;
+    let baseUrl = `${url}/narration2/?`;
     let index = 0;
     for (const key in selectedOptions) {
       if (selectedOptions[key]) {
@@ -16,7 +16,7 @@ export default {
   },
   get: (narrationId, userId) => {
     const userIdClause = userId ? `?user_id=${userId}` : "";
-    return `${url}/narration/${narrationId}/${userIdClause}`;
+    return `${url}/narration2/${narrationId}/${userIdClause}`;
   },
 
   filterOptions: `${url}/filter_options/`,

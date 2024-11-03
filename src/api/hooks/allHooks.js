@@ -43,8 +43,8 @@ const use2GeneralGetHook = (cacheName, url, configs = {}, onDownloadProgress) =>
   return useQuery({
     queryKey: cacheName,
     queryFn: fn,
-    // staleTime: isAdmin(user) ? 0 : 0, // 30 Minutes
-    staleTime: isAdmin(user) ? 0 : 1800000, // 30 Minutes
+    staleTime: isAdmin(user) ? 0 : 0, // 30 Minutes
+    // staleTime: isAdmin(user) ? 0 : 1800000, // 30 Minutes
     ...configs,
   });
 };
