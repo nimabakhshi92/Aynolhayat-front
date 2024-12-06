@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { ContentContainer } from "../general/ContentContainer";
 
 import { useQueryClient } from "@tanstack/react-query";
@@ -161,9 +161,9 @@ export const SingleNarrationSummariesForEdit = ({
       summaryId: summary?.id,
       data: { quran_verse: newVerse.id },
       onSettled: () => {
-        queryClient.refetchQueries({
-          queryKey: ["verse", summary.verse?.surah_no, newValue],
-        });
+        // queryClient.refetchQueries({
+        //   queryKey: ["verse", summary.verse?.surah_no, newValue],
+        // });
         queryClient.refetchQueries({
           queryKey: [
             "narrationIndividual",
@@ -474,8 +474,6 @@ export const NarrationSummaryEditForm = ({ summaries, narration }) => {
   let { data: surah } = useGetSurah();
   surah = surah || [];
 
-  console.log(summaries)
-
   const { data: quran } = useGetVerse("all", "all");
 
   const [showEmpty, setShowEmpty] = useState(false);
@@ -532,14 +530,20 @@ export const NarrationSummaryEditForm = ({ summaries, narration }) => {
       )}
       {reversed.map((summary, index) => {
         return (
-          <SingleNarrationSummariesForEdit
-            key={index + "j" + summary.id}
-            narration={narration}
-            inSummary={summary}
-            ss={ss}
-            quran={quran}
-          // onInputChange={(newValues) => handleOnInputChange(index, newValues)}
-          />
+          <>
+            {/* <Suspense fallback={<div>Loading...</div>} > */}
+            <h5 className="text-center">{reversed?.length - index} </h5>
+            <SingleNarrationSummariesForEdit
+              // key={index + "j" + summary.id}
+              key={"j" + summary.id}
+              narration={narration}
+              inSummary={summary}
+              ss={ss}
+              quran={quran}
+            // onInputChange={(newValues) => handleOnInputChange(index, newValues)}
+            />
+            {/* </Suspense> */}
+          </>
         );
       })}
     </ContentContainer>

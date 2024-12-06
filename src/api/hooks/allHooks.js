@@ -84,10 +84,12 @@ export const useGetVerse = (surahNo, verseNo) => {
     surahNo === "all" ? "" : surahNo || -1,
     verseNo === "all" ? "" : verseNo || -1
   );
+  // if ((!surahNo || !verseNo)) return []
+
   const enabled = !!surahNo && !!verseNo;
-  let config = { enabled: true };
-  if (surahNo === "all" && verseNo === "all")
-    config = { ...config, ...longCacheConfig };
+  let config = { enabled };
+  // if (surahNo === "all" && verseNo === "all")
+  config = { ...config, ...longCacheConfig };
   return use2GeneralGetHook(["verse", surahNo, verseNo], url, config);
 };
 
