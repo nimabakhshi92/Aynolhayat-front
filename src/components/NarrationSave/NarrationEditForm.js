@@ -17,11 +17,12 @@ import { toast } from "react-toastify";
 import Button from "../ui/buttons/primary-button";
 import { useNavigate } from "react-router-dom";
 import { customApiCall } from "../../utils/axios";
-import { CircularProgress, useMediaQuery } from "@mui/material";
+import { CircularProgress, Stack, useMediaQuery } from "@mui/material";
 import { AiOutlineClose } from "react-icons/ai";
 import apiUrls from "../../api/urls";
 import { SingleNarration } from "../../pages/NarrationWarehouseLT";
 import { InputWithSuggestionWithDebounceBlur } from "../general/InputWithSuggestion";
+import { BiLoader } from "react-icons/bi";
 
 const emptyNarration = {
   imam: null,
@@ -41,10 +42,11 @@ const SimilarNarrations = ({
   isOpen,
   setHasSimilar,
   trigger,
-  setTrigger
+  setTrigger,
+  isLoading,
+  setIsLoading
 }) => {
   const [similar, setSimilar] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const url = apiUrls.narration.similar;
   useEffect(() => {
     const fn = async () => {
@@ -259,6 +261,8 @@ export const NarrationEditForm = ({ narration }) => {
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const smallInputsClassName = isSmallScreen ? 'col-span-3' : 'col-span-1'
 
+  const [similarNarrationsIsLoading, setSimilarNarrationsIsLoading] = useState(false);
+
   return (
     <>
       {(
@@ -269,6 +273,8 @@ export const NarrationEditForm = ({ narration }) => {
           setHasSimilar={setHasSimilar}
           trigger={trigger}
           setTrigger={setTrigger}
+          isLoading={similarNarrationsIsLoading}
+          setIsLoading={setSimilarNarrationsIsLoading}
 
         />
       )}
@@ -348,7 +354,14 @@ export const NarrationEditForm = ({ narration }) => {
             />
             {hasSimilar !== null &&
               <p className="t-semi-large">
-                {hasSimilar &&
+                {similarNarrationsIsLoading && (
+                  <div className="flex gap-1 items-center text-2xl text-orange-500">
+                    <BiLoader className="w-6 h-6 animate-spin" />
+                    <span>در حال بررسی تکراری بودن حدیث. لطفا صبر کنید...</span>
+                  </div >
+                )
+                }
+                {!similarNarrationsIsLoading && hasSimilar &&
                   <>
                     <span className="text-[red]">
                       حدیث ممکن است تکراری باشد.
@@ -360,7 +373,7 @@ export const NarrationEditForm = ({ narration }) => {
                     </span>
                   </>
                 }
-                {!hasSimilar && <>
+                {!similarNarrationsIsLoading && !hasSimilar && <>
                   {<p className="text-[green]">این حدیث تکراری نیست</p>}
 
                 </>
