@@ -232,6 +232,10 @@ export const useAddNarrationSubject = () => {
       queryClient.invalidateQueries({
         queryKey: ["narrationIndividual", context.narrationId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["subject"],
+      });
+
     },
   });
 };
@@ -265,10 +269,14 @@ export const useDeleteNarrationSubject = () => {
       );
     },
     onSettled: (inputs) => {
-      const { narrationId, data } = inputs;
+      // const { narrationId, data } = inputs;
+      // queryClient.invalidateQueries({
+      //   queryKey: ["narrationIndividual", narrationId],
+      // });
       queryClient.invalidateQueries({
-        queryKey: ["narrationIndividual", narrationId],
+        queryKey: ["subject"],
       });
+
     },
   });
 };
@@ -412,9 +420,9 @@ export const useDeleteNarrationSummary = () => {
       );
     },
     onSettled: (inputs, error, variables, context) => {
-      queryClient.invalidateQueries({
-        queryKey: ["narrationIndividual", context.narrationId],
-      });
+      // queryClient.invalidateQueries({
+      //   queryKey: ["narrationIndividual", context.narrationId],
+      // });
     },
   });
 };
@@ -554,9 +562,9 @@ export const useDeleteNarrationFootnote = () => {
       );
     },
     onSettled: (inputs, error, variables, context) => {
-      queryClient.invalidateQueries({
-        queryKey: ["narrationIndividual", context.narrationId],
-      });
+      // queryClient.invalidateQueries({
+      //   queryKey: ["narrationIndividual", context.narrationId],
+      // });
     },
   });
 };
