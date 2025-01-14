@@ -9,6 +9,8 @@ import Header from "../components/header";
 import { HeaderLT } from "../components/HeaderLT";
 import { SidebarLT } from "../components/SidebarLT";
 import { isSuperAdmin } from "../utils/acl";
+import NoInternetAlarm from "../components/general/NoInternetDetector";
+import WeakInternetDetector from "../components/general/WeakInternetDetector";
 
 export const SharedLayout = () => {
   return (

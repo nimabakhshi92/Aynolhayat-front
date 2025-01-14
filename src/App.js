@@ -28,6 +28,8 @@ import {
 import { Transfer } from "./pages/Transfer";
 import { Download } from "./pages/Download";
 import { NarrationDetail } from "./pages/NarrationDetail";
+import NoInternetAlarm from "./components/general/NoInternetDetector";
+import WeakInternetDetector from "./components/general/WeakInternetDetector";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,6 +68,9 @@ function App() {
           // queryClient={queryClient}
           persistOptions={{ persister }}
         >
+          <NoInternetAlarm />
+          <WeakInternetDetector />
+
           {/* <QueryClientProvider client={queryClient}> */}
           <BrowserRouter>
             <ScrollToTop />
