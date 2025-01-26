@@ -46,7 +46,14 @@ export const customApiCall = {
       headers["Authorization"] = `Bearer ${user.access || user.access_token}`;
     }
 
-    let config = { headers, onDownloadProgress };
+    let config = {
+      headers: {
+        ...headers,
+        'Cache-Control': 'no-cache, no-store, must-revalidate',  // Disable caching
+        'Pragma': 'no-cache',  // For HTTP/1.0 compatibility
+        'Expires': '0',  // Expired immediately
+      }, onDownloadProgress
+    };
     const resp = await axios.get(url, config);
     return resp.data;
   },
