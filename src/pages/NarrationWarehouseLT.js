@@ -39,7 +39,7 @@ import { AcceptedNarrationSentLabel, CheckingNarrationSentLabel, InsertedNarrati
 import Button from "../components/ui/buttons/primary-button";
 import { InputOld } from "../components/ui/input";
 import { setDataLoaded } from "../features/summaryTree/summaryTreeSlice";
-import { getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
+import { adjustTextSpacing, getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
 import { getFont, isAdmin, isCheckerAdmin, isLoggedIn, isSuperAdmin, isTaggerAdmin } from "../utils/acl";
 import { customApiCall } from "../utils/axios";
 import { shareNarrationStatus } from "../utils/enums";
@@ -89,7 +89,8 @@ function ArabicTextComponent({
   let noteIndex = -1;
   const [showModal, setShowModal] = useState(false);
   const [footnote, setFootnote] = useState("");
-  const singleLangParts = children
+  const adjustedText = adjustTextSpacing(children)
+  const singleLangParts = adjustedText
     .split("ظظظ")
     ?.filter(
       (singleLangText) => singleLangText.replaceAll(" ", "")?.length > 10
@@ -576,7 +577,7 @@ export const SingleNarration = ({
                   <div className="flex items-start flex-col sm:flex-row justify-between w-full pr-3">
                     <ArabicTextComponent
                       className="block w-full sm:w-[48%]"
-                      children={contentItem.summary}
+                      children={adjustTextSpacing(contentItem.summary)}
                     />
                     <p
                       className=" sm:w-[48%]"
@@ -585,7 +586,7 @@ export const SingleNarration = ({
                           getFont(user, 1.4) + "rem",
                       }}
                     >
-                      {contentItem.expression}
+                      {adjustTextSpacing(contentItem.expression)}
                     </p>
 
                     {/* <p className="w-[48%]">{contentItem.summary}</p> */}

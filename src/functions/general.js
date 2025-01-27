@@ -46,3 +46,29 @@ export const getCurrentJalaliDate = () => {
     const jalali = convertGregorianToJalali(updated)
     return jalali
 }
+
+
+export function adjustTextSpacing(input) {
+    let adjustedText = input.replace(/(\S)([,:.،؛?؟])(\S)/g, '$1$2 $3');
+    adjustedText = adjustedText.replaceAll('《', '«')
+    adjustedText = adjustedText.replaceAll('》', '»')
+
+    const openingBrackets = '[\\(\\uFD3E«<\\[{《]';
+    const closingBrackets = '[\\)\\uFD3F»>\\]}》]';
+
+    adjustedText = adjustedText.replace(
+        new RegExp(`\\s*(${openingBrackets})\\s*`, 'g'),
+        ' $1'
+    );
+
+    adjustedText = adjustedText.replace(
+        new RegExp(`\\s*(${closingBrackets})\\s*`, 'g'),
+        '$1 '
+    );
+
+    adjustedText = adjustedText.replace(/\s*([,:.،؛])\s*/g, '$1 ');
+
+    adjustedText = adjustedText.replace(/\s{2,}/g, ' ');
+
+    return adjustedText.trim();
+}
