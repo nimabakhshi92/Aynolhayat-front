@@ -6,7 +6,8 @@ import { toast } from "react-toastify";
 import {
   updateSharedNarrations,
   useGetNarrationIndividual,
-  useGetSingleSharedNarration
+  useGetSingleSharedNarration,
+  useGetTotalQuran
 } from "../api/hooks/allHooks";
 import { NarrationEditForm } from "../components/NarrationSave/NarrationEditForm";
 import { NarrationFootnoteEditForm } from "../components/NarrationSave/NarrationFootnoteEditForm";
@@ -16,6 +17,7 @@ import Button from "../components/ui/buttons/primary-button";
 import { isCheckerAdmin, isLoggedIn, isSuperAdmin, isTaggerAdmin } from "../utils/acl";
 import { shareNarrationStatus } from "../utils/enums";
 import { TextAndAction } from "./Bookmarks";
+import { BiLoader } from "react-icons/bi";
 
 export const NarrationEdit = ({ checkOnly, myNarrations = false, saveNarration = false }) => {
   const { narrationId, sharedNarrationId } = useParams();
@@ -86,6 +88,8 @@ export const NarrationEdit = ({ checkOnly, myNarrations = false, saveNarration =
       return false
   }
 
+
+  const { isLoading: quranIsLoading } = useGetTotalQuran()
 
   // if (!isLoggedIn(user)) return <Navigate to={"/"} />;
   if (checkOnly && !isCheckerAdmin(user))
@@ -159,30 +163,42 @@ export const NarrationEdit = ({ checkOnly, myNarrations = false, saveNarration =
       <NarrationEditForm narration={narration} />
       {narration && (
         <>
-          <NarrationSubjectEditForm narration={narration} />
-          <NarrationSummaryEditForm
-            narration={narration}
-            summaries={narration?.content_summary_tree || []}
-          />
-          <NarrationFootnoteEditForm narration={narration} />
+          {
+            quranIsLoading ? (
+              <Stack className="w-full h-20 items-center justify-center" >
+                <BiLoader className="w-6 h-6 animate-spin" />
+              </Stack>
+            ) :
+              <>
+                <NarrationSubjectEditForm narration={narration} />
+                <NarrationSummaryEditForm
+                  narration={narration}
+                  summaries={narration?.content_summary_tree || []}
+                />
+                <NarrationFootnoteEditForm narration={narration} />
+
+              </>
+          }
         </>
       )}
-      {narration && (
-        <div className="flex justify-end gap-4 mt-4 fixed bottom-8 left-8 shadow-lg">
-          <Button
-            type="button"
-            variant="primary"
-            className="w-40 h-8 "
-            style={{ fontSize: "14px" }}
-            onClickHandler={() => {
-              navigate(-1)
-            }
-            }
-          >
-            اتمام ویرایش و بازگشت
-          </Button>
-        </div>
-      )}
-    </section>
+      {
+        narration && (
+          <div className="flex justify-end gap-4 mt-4 fixed bottom-8 left-8 shadow-lg">
+            <Button
+              type="button"
+              variant="primary"
+              className="w-40 h-8 "
+              style={{ fontSize: "14px" }}
+              onClickHandler={() => {
+                navigate(-1)
+              }
+              }
+            >
+              اتمام ویرایش و بازگشت
+            </Button>
+          </div>
+        )
+      }
+    </section >
   );
 };

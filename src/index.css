@@ -223,3 +223,14 @@ a {
 ::-webkit-scrollbar {
   width: 10px;
 }
+
+
+.MuiAutocomplete-option {
+  font-family: IRANSansWeb;
+  font-size: 16px;
+}
+
+.MuiAutocomplete-option:hover {
+  background-color: var(--blue-200) !important;
+
+}

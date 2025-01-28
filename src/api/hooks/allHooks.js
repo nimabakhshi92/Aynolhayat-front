@@ -93,6 +93,11 @@ export const useGetVerse = (surahNo, verseNo) => {
   return use2GeneralGetHook(["verse", surahNo, verseNo], url, config);
 };
 
+export const useGetTotalQuran = () => {
+  return useGetVerse('all', 'all')
+};
+
+
 // Narration
 export const useGetNarrationIndividual = (narrationId, user) => {
   const url = apiUrls.narration.get(narrationId, user?.id);

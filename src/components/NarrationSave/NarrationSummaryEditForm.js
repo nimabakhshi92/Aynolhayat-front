@@ -20,6 +20,7 @@ import { InputWithSuggestionWithDebounceBlur } from "../general/InputWithSuggest
 import Dropdown from "../ui/dropdown";
 import Input from "../ui/input";
 import { useMediaQuery } from "@mui/material";
+import { InputWithSuggestionAutoCompleteWithDebounceBlur } from "../general/InputWithSuggestionAutoComplete";
 
 const findVerse = (quran, surah_no, verse_no) => {
   const newVerse = quran.find(
@@ -35,6 +36,14 @@ export const SingleNarrationSummariesForEdit = ({
   ss,
   quran,
 }) => {
+
+  const getVerse = (surah_no, verse_no) => {
+    return quran?.find(surahVerse => {
+      return surahVerse.surah_no === surah_no && surahVerse.verse_no === verse_no
+    })
+  }
+
+
   let { data: surah } = useGetSurah();
   surah = surah || [];
   const sortedSurah = surah?.sort((a, b) => a.surah_no - b.surah_no);
@@ -57,8 +66,10 @@ export const SingleNarrationSummariesForEdit = ({
   });
   const [selectedVerse, setSelectedVerse] = useState(summary?.verse?.verse_no);
 
-  let { data: verse } = useGetVerse(summary?.verse?.surah_no, selectedVerse);
-  verse = verse?.length === 1 ? verse[0] : {};
+  // let { data: verse } = useGetVerse(summary?.verse?.surah_no, selectedVerse);
+  let verse = getVerse(summary?.verse?.surah_no, selectedVerse);
+  // verse = verse?.length === 1 ? verse[0] : {};
+
   const getNoOfVerses = (surah_name) => {
     const s = surah?.find((item) => item.surah_name === surah_name);
     if (s) {
@@ -129,15 +140,14 @@ export const SingleNarrationSummariesForEdit = ({
       toast.error("تغییر مورد نظر انجام نشد");
       return;
     }
+    status.current = 'isLoading'
+    flag.current = 'verse'
     setSummary({ ...summary, verse: newVerse });
     mutate({
       narrationId: narration?.id,
       summaryId: summary?.id,
       data: { quran_verse: newVerse.id },
       onSettled: () => {
-        queryClient.refetchQueries({
-          queryKey: ["verse", data?.surah_no, verse_no],
-        });
         queryClient.refetchQueries({
           queryKey: [
             "narrationIndividual",
@@ -146,24 +156,32 @@ export const SingleNarrationSummariesForEdit = ({
         });
       },
     },
+      {
+        onSuccess: () => {
+          status.current = 'success'
+        },
+        onError: () => {
+          status.current = 'error'
+        }
+      }
     );
   };
 
+
   const handleVerseChange = (key, newValue) => {
-    const newVerse = findVerse(quran, summary.verse?.surah_no, newValue);
+    const newVerse = findVerse(quran, Number(summary.verse?.surah_no), Number(newValue));
     if (!newVerse) {
-      toast.error("تغییر مورد نظر انجام نشد");
+      toast.error("تغییر مورد نظر انجام نشد زیرا چنین آیه ای یافت نشد");
       return;
     }
+    status.current = 'isLoading'
+    flag.current = 'verse'
     setSummary({ ...summary, verse: newVerse });
     mutate({
       narrationId: narration?.id,
       summaryId: summary?.id,
       data: { quran_verse: newVerse.id },
       onSettled: () => {
-        // queryClient.refetchQueries({
-        //   queryKey: ["verse", summary.verse?.surah_no, newValue],
-        // });
         queryClient.refetchQueries({
           queryKey: [
             "narrationIndividual",
@@ -171,7 +189,16 @@ export const SingleNarrationSummariesForEdit = ({
           ]
         })
       },
-    });
+    },
+      {
+        onSuccess: () => {
+          status.current = 'success'
+        },
+        onError: () => {
+          status.current = 'error'
+        }
+      }
+    );
   };
 
   const handleDelete = () => {
@@ -261,20 +288,12 @@ export const SingleNarrationSummariesForEdit = ({
     });
   };
 
-  // useEffect(() => {
-  //   if (summary?.verse?.surah_no && selectedVerse) {
-  //     queryClient.refetchQueries({
-  //       queryKey: ["verse", summary?.verse?.surah_no, selectedVerse],
-  //     });
-  //   }
-  // }, [selectedVerse]);
-
   const smallInputsClassName = isSmallScreen ? 'col-span-7' : 'col-span-1'
   const mediumInputsClassName = isSmallScreen ? 'col-span-7' : 'col-span-2'
   const largeInputsClassName = isSmallScreen ? 'col-span-7' : 'col-span-3'
   const xLargeInputsClassName = isSmallScreen ? 'col-span-7' : 'col-span-4'
 
-
+  const maxVerseNo = getNoOfVerses(summary?.verse?.surah_name)
   return (
     <>
       <div className="flex gap-2 items-start">
@@ -408,60 +427,73 @@ export const SingleNarrationSummariesForEdit = ({
             status={status.current}
           />
           <div className={`relative  ${mediumInputsClassName}`}>
-            <Dropdown
-              className="h-full"
-              selected={summary?.verse}
-              setSelected={(newValue) => {
-                // setSelectedSurah(newValue);
+            <InputWithSuggestionAutoCompleteWithDebounceBlur
+              className={'h-full'}
+              value={(!summary?.verse) ? '' : {
+                ...(summary?.verse ?? {}), title:
+                  summary?.verse?.surah_no + "- " + summary?.verse?.surah_name
+              }}
+              onChange={(_, newValue) => {
+                if (!newValue)
+                  return
+
                 handleSurahChange({
                   surah_name: newValue?.surah_name,
                   surah_no: newValue?.surah_no,
                 });
-                // handleVerseChange();
-                // handleVerseBlur();
               }}
-              items={sortedSurah?.map((surah) => ({
+              suggestions={sortedSurah?.map((surah) => ({
                 ...surah,
-                surahWithNo: surah.surah_no + "- " + surah.surah_name,
+                title: surah.surah_no + "- " + surah.surah_name,
               }))}
-              dataKey="surahWithNo"
+              getOptionLabel={(option) => option.title ?? ''}
               placeholder="نام سوره"
-              key={"i7" + summary.id}
+              key={"i7" + summary.verse?.surah_no}
+
             />
             <AiOutlineClose
               color="var(--neutral-color-400)"
-              className="absolute left-8 top-3 w-4 h-4 cursor-pointer"
+              className="absolute left-4 top-3 w-4 h-4 cursor-pointer"
               onClick={() => {
-                // handleSurahChange({
-                //   surah_name: "",
-                //   surah_no: 0,
-                // });
+                setSelectedVerse({});
                 handleVerseRemove();
-                // setSelectedVerse(0);
-                // handleVerseChange("verse_no", 0);
               }}
             />
           </div>
-          <Dropdown
-            selected={selectedVerse}
-            setSelected={(newValue) => {
-              setSelectedVerse(newValue);
-              handleVerseChange("verse_no", newValue);
-            }}
-            items={verseNos}
-            placeholder="شماره آیه"
-            key={"i8" + summary.id}
-            className={smallInputsClassName}
-          />
-          <Input
-            className={xLargeInputsClassName}
-            type="text"
-            placeholder={verse?.verse_content || "متن آیه"}
-            disabled={true}
+          <div className={smallInputsClassName}          >
+            <InputWithSuggestionWithDebounceBlur
+              placeholder="شماره آیه"
+              className={'w-full'}
+              key={"i8" + summary.id + summary?.verse?.verse_no + summary?.verse?.surah_no}
+              value={selectedVerse}
+              onChange={(e) => {
+                const newValue = e.target.value
+                if (
+                  (Number(newValue) <= maxVerseNo &&
+                    Number(newValue) >= 0)
+                  || !newValue
+                )
+                  setSelectedVerse(newValue);
+                // handleVerseChange("verse_no", newValue);
+              }}
+              onBlur={(e) => {
+                const newValue = e.target.value
+                // setSelectedVerse(newValue);
+                handleVerseChange("verse_no", newValue);
+              }}
+              type="number"
+            />
+          </div>
+
+          <InputWithSuggestionWithDebounceBlur
+            parentClassName={xLargeInputsClassName}
+            className="w-full font-sans"
+            value={verse?.verse_content || "متن آیه"}
+            disabled
             key={"i9" + summary.id}
+            flag={flag?.current === 'verse'}
+            status={status.current}
           />
-
-
         </div>
       </div>
     </>

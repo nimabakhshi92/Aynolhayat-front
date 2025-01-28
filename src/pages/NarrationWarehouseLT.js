@@ -49,6 +49,38 @@ import { NarrationSearch } from "./NarrationSearch";
 
 export const removeTashkel = (s) => s.replace(/[\u064B-\u0652]/gm, "");
 
+export function removeArabicCharacters(inputString) {
+  const toGetReplacedCharacters = "يكآةيؤإأۀ";
+  const replacers = "یکاهیوااه";
+
+  const sakenDar = "بْنُ";
+  const saken = sakenDar[1];
+  const toBeRemovedCharacters = "ءًٌٍَُِّ" + saken;
+
+  // Create a mapping for characters to replace
+  const replaceMap = {};
+  for (let i = 0; i < toGetReplacedCharacters.length; i++) {
+    replaceMap[toGetReplacedCharacters[i]] = replacers[i];
+  }
+
+  // Create a Set for characters to be removed
+  const removeSet = new Set(toBeRemovedCharacters);
+
+  // Process the input string
+  let result = "";
+  for (const char of inputString) {
+    if (replaceMap[char]) {
+      // Replace the character
+      result += replaceMap[char];
+    } else if (!removeSet.has(char)) {
+      // Keep the character if it's not in the remove set
+      result += char;
+    }
+  }
+
+  return result;
+}
+
 const getWords = (text) => {
   return removeTashkel(text)
     .replaceAll(".", "")

@@ -19,17 +19,12 @@ export function InputWithSuggestionWithDebounceBlur({
   status,
   textArea,
   debounceDependency,
-  type
+  type,
+  disabled
 }) {
   const [matchedSuggesttions, setMatchedSuggestions] = useState(suggestions);
   const [openSuggestions, setOpenSuggestions] = useState(false);
   const matchSearch = (e) => {
-    // console.log(e.target.value);
-    // console.log(
-    //   suggestions.filter((item) => {
-    //     return item?.includes(e.target.value);
-    //   })
-    // );
     if (!reference) {
       if (!value) return suggestions;
       return suggestions?.filter((item) => {
@@ -93,6 +88,7 @@ export function InputWithSuggestionWithDebounceBlur({
       <InputOld
         value={value}
         style={{ ...style, backgroundColor: bgColor }}
+        disabled={disabled}
         reference={reference}
         className={className}
         type={type ?? "text"}
