@@ -25,7 +25,7 @@ export const NarrationEdit = ({ checkOnly, myNarrations = false, saveNarration =
 
   const navigate = useNavigate();
 
-  const { data: narrationIndividual, isLoading } = useGetNarrationIndividual(
+  const { data: narrationIndividual } = useGetNarrationIndividual(
     narrationId || 0,
     ((isSuperAdmin(user) || isTaggerAdmin(user)) && !myNarrations) ? undefined : user
   );
@@ -105,7 +105,6 @@ export const NarrationEdit = ({ checkOnly, myNarrations = false, saveNarration =
 
   return (
     <section className="mt-8 pb-20 px-2 sm:px-4 ">
-      <div></div>
       {checkOnly &&
         <div className="-mt-8 " style={{
           width: '100vw',
@@ -174,6 +173,7 @@ export const NarrationEdit = ({ checkOnly, myNarrations = false, saveNarration =
                 <NarrationSummaryEditForm
                   narration={narration}
                   summaries={narration?.content_summary_tree || []}
+                  myNarrations={myNarrations}
                 />
                 <NarrationFootnoteEditForm narration={narration} />
 

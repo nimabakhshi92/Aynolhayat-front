@@ -12,6 +12,7 @@ import {
   useAddNarrationSummary,
   useDeleteNarrationSummary,
   useGetNarrationFilterOptions,
+  useGetNarrationIndividual,
   useGetSurah,
   useGetVerse,
   useModifyNarrationSummary
@@ -19,8 +20,11 @@ import {
 import { InputWithSuggestionWithDebounceBlur } from "../general/InputWithSuggestion";
 import Dropdown from "../ui/dropdown";
 import Input from "../ui/input";
-import { useMediaQuery } from "@mui/material";
+import { Stack, useMediaQuery } from "@mui/material";
 import { InputWithSuggestionAutoCompleteWithDebounceBlur } from "../general/InputWithSuggestionAutoComplete";
+import { BiLoader } from "react-icons/bi";
+import { isSuperAdmin, isTaggerAdmin } from "../../utils/acl";
+import { useSelector } from "react-redux";
 
 const findVerse = (quran, surah_no, verse_no) => {
   const newVerse = quran.find(
@@ -35,7 +39,9 @@ export const SingleNarrationSummariesForEdit = ({
   handleCancelNewItem,
   ss,
   quran,
+  myNarrations
 }) => {
+  const { user } = useSelector((store) => store.user);
 
   const getVerse = (surah_no, verse_no) => {
     return quran?.find(surahVerse => {
@@ -43,6 +49,10 @@ export const SingleNarrationSummariesForEdit = ({
     })
   }
 
+  const { isFetching } = useGetNarrationIndividual(narration?.id,
+    ((isSuperAdmin(user) || isTaggerAdmin(user)) && !myNarrations) ? undefined : user
+
+  )
 
   let { data: surah } = useGetSurah();
   surah = surah || [];
@@ -272,6 +282,8 @@ export const SingleNarrationSummariesForEdit = ({
   }
 
   const handleVerseRemove = () => {
+    status.current = 'isLoading'
+    flag.current = 'verse'
     mutate({
       narrationId: narration?.id,
       summaryId: summary?.id,
@@ -284,6 +296,12 @@ export const SingleNarrationSummariesForEdit = ({
             narration?.id,
           ]
         })
+      },
+      onSuccess: () => {
+        status.current = 'success'
+      },
+      onError: () => {
+        status.current = 'error'
       }
     });
   };
@@ -296,6 +314,13 @@ export const SingleNarrationSummariesForEdit = ({
   const maxVerseNo = getNoOfVerses(summary?.verse?.surah_name)
   return (
     <>
+      {isFetching && (
+        <Stack className="rounded-md px-2 absolute bg-orange-300/50 right-2 -top-2 gap-2" alignItems={'center'} flexDirection={'row'}>
+          <BiLoader className="w-5 h-5 animate-spin text-orange-500" />
+          <span className="text-orange-500 text-md">در حال آپدیت ...</span>
+        </Stack>
+
+      )}
       <div className="flex gap-2 items-start">
         <AiFillDelete
           className="cursor-pointer"
@@ -500,7 +525,7 @@ export const SingleNarrationSummariesForEdit = ({
   );
 };
 
-export const NarrationSummaryEditForm = ({ summaries, narration }) => {
+export const NarrationSummaryEditForm = ({ summaries, narration, myNarrations }) => {
   const { data: ss } = useGetNarrationFilterOptions();
   const queryClient = useQueryClient();
   let { data: surah } = useGetSurah();
@@ -558,11 +583,12 @@ export const NarrationSummaryEditForm = ({ summaries, narration }) => {
           ss={ss}
           key={-1}
           quran={quran}
+          myNarrations={myNarrations}
         />
       )}
       {reversed.map((summary, index) => {
         return (
-          <>
+          <div className="relative">
             {/* <Suspense fallback={<div>Loading...</div>} > */}
             <h5 className="text-center">{reversed?.length - index} </h5>
             <SingleNarrationSummariesForEdit
@@ -572,10 +598,11 @@ export const NarrationSummaryEditForm = ({ summaries, narration }) => {
               inSummary={summary}
               ss={ss}
               quran={quran}
+              myNarrations={myNarrations}
             // onInputChange={(newValues) => handleOnInputChange(index, newValues)}
             />
             {/* </Suspense> */}
-          </>
+          </div>
         );
       })}
     </ContentContainer>
