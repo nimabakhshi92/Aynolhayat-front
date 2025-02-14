@@ -32,7 +32,12 @@ const useGeneralGetHook = ({ defaultDataValue, cacheName, getFunction }) => {
   return { data: resultData, isLoading, isError };
 };
 
-const use2GeneralGetHook = (cacheName, url, configs = {}, onDownloadProgress) => {
+const use2GeneralGetHook = (
+  cacheName,
+  url,
+  configs = {},
+  onDownloadProgress
+) => {
   const { user } = useSelector((store) => store.user);
 
   const fn = async () => {
@@ -50,7 +55,7 @@ const use2GeneralGetHook = (cacheName, url, configs = {}, onDownloadProgress) =>
 };
 const allTimeCacheConfig = {
   staleTime: 1000 * 60 * 60 * 24 * 365,
-}
+};
 
 const longCacheConfig = {
   // gcTime: 1000 * 60 * 60 * 24 * 7,
@@ -94,9 +99,8 @@ export const useGetVerse = (surahNo, verseNo) => {
 };
 
 export const useGetTotalQuran = () => {
-  return useGetVerse('all', 'all')
+  return useGetVerse("all", "all");
 };
-
 
 // Narration
 export const useGetNarrationIndividual = (narrationId, user) => {
@@ -104,45 +108,80 @@ export const useGetNarrationIndividual = (narrationId, user) => {
 
   return use2GeneralGetHook(["narrationIndividual", Number(narrationId)], url);
 };
-export const useGetNarrationList = (pageNo, selectedOptions, onDownloadProgress, configs = {}) => {
+export const useGetNarrationList = (
+  pageNo,
+  selectedOptions,
+  onDownloadProgress,
+  configs = {}
+) => {
   const url = apiUrls.narration.list(pageNo, selectedOptions, 10);
-  return use2GeneralGetHook(["narrationList", pageNo, selectedOptions], url, configs, onDownloadProgress);
+  return use2GeneralGetHook(
+    ["narrationList", pageNo, selectedOptions],
+    url,
+    configs,
+    onDownloadProgress
+  );
 };
 
-export const useGetNarrationList2 = (pageNo, selectedOptions, onDownloadProgress, configs = {}) => {
-  console.log(configs)
+export const useGetNarrationList2 = (
+  pageNo,
+  selectedOptions,
+  onDownloadProgress,
+  configs = {}
+) => {
+  console.log(configs);
   let url = apiUrls.narration.list(pageNo, selectedOptions, 10);
-  url = url.replace('narration2', 'narration')
-  return use2GeneralGetHook(["narrationList2", pageNo, selectedOptions], url, configs, onDownloadProgress);
+  url = url.replace("narration2", "narration");
+  return use2GeneralGetHook(
+    ["narrationList2", pageNo, selectedOptions],
+    url,
+    configs,
+    onDownloadProgress
+  );
 };
 
-export const useGetNarrationSummaryList = (pageNo, selectedOptions, onDownloadProgress, configs = {}) => {
+export const useGetNarrationSummaryList = (
+  pageNo,
+  selectedOptions,
+  onDownloadProgress,
+  configs = {}
+) => {
   const url = apiUrls.narrationSummary.list(pageNo, selectedOptions, 10);
-  return use2GeneralGetHook(["narrationSummaryList", pageNo, selectedOptions], url, configs, onDownloadProgress);
+  return use2GeneralGetHook(
+    ["narrationSummaryList", pageNo, selectedOptions],
+    url,
+    configs,
+    onDownloadProgress
+  );
 };
 
-
-export const downloadNarrations = async ({ userId, narrationIds, filename, onDownloadProgress }) => {
-  const url = apiUrls.narration.download(narrationIds, userId)
-  return await customApiCall.download({ url, filename, onDownloadProgress })
-}
+export const downloadNarrations = async ({
+  userId,
+  narrationIds,
+  filename,
+  onDownloadProgress,
+}) => {
+  const url = apiUrls.narration.download(narrationIds, userId);
+  return await customApiCall.download({ url, filename, onDownloadProgress });
+};
 
 export const downloadInstruction = async ({ filename, onDownloadProgress }) => {
-  const url = apiUrls.narration.downloadInstruction.get()
-  return await customApiCall.download({ url, filename, onDownloadProgress })
-}
-
-export const useGetDownloadNarrationsBackupList = () => {
-  const url = apiUrls.narration.downloadBackup.list()
-  return use2GeneralGetHook(["downloadNarrationsBackupList"], url,);
+  const url = apiUrls.narration.downloadInstruction.get();
+  return await customApiCall.download({ url, filename, onDownloadProgress });
 };
 
+export const useGetDownloadNarrationsBackupList = () => {
+  const url = apiUrls.narration.downloadBackup.list();
+  return use2GeneralGetHook(["downloadNarrationsBackupList"], url);
+};
 
-export const downloadNarrationsBackupFile = async ({ filename, onDownloadProgress }) => {
-  const url = apiUrls.narration.downloadBackup.get()
-  await customApiCall.download({ url, filename, onDownloadProgress })
-}
-
+export const downloadNarrationsBackupFile = async ({
+  filename,
+  onDownloadProgress,
+}) => {
+  const url = apiUrls.narration.downloadBackup.get();
+  await customApiCall.download({ url, filename, onDownloadProgress });
+};
 
 export const useGetNarrationFilterOptions = () => {
   const url = apiUrls.narration.filterOptions;
@@ -240,7 +279,6 @@ export const useAddNarrationSubject = () => {
       queryClient.invalidateQueries({
         queryKey: ["subject"],
       });
-
     },
   });
 };
@@ -281,7 +319,6 @@ export const useDeleteNarrationSubject = () => {
       queryClient.invalidateQueries({
         queryKey: ["subject"],
       });
-
     },
   });
 };
@@ -325,7 +362,6 @@ export const useModifyNarrationSummary = () => {
         ["narrationIndividual", context.narrationId],
         context.previousData
       );
-
     },
     onSettled: (inputs, error, variables, context) => {
       // queryClient.invalidateQueries({
@@ -346,43 +382,43 @@ export const useAddNarrationSummary = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: addNarrationSummary,
-    onMutate: async (inputs) => {
-      const { narrationId, data, dataForMutate } = inputs;
-      await queryClient.cancelQueries(["narrationIndividual", narrationId]);
-      const previousData = queryClient.getQueryData([
-        "narrationIndividual",
-        narrationId,
-      ]);
-      queryClient.setQueryData(
-        ["narrationIndividual", narrationId],
-        (oldData) => {
-          return {
-            ...oldData,
-            content_summary_tree: [
-              ...oldData.content_summary_tree,
-              dataForMutate,
-            ],
-          };
-        }
-      );
-      return { previousData, narrationId };
-    },
-    onError: (error, _output, context) => {
-      toast.error("تغییر مورد نظر انجام نشد");
-      queryClient.setQueryData(
-        ["narrationIndividual", context.narrationId],
-        context.previousData
-      );
-      // queryClient.invalidateQueries({queryKey:[
-      //   "narrationIndividual",
-      //   context.narrationId,
-      // ]});
-    },
-    onSettled: (inputs, error, variables, context) => {
-      queryClient.invalidateQueries({
-        queryKey: ["narrationIndividual", context.narrationId],
-      });
-    },
+    // onMutate: async (inputs) => {
+    //   const { narrationId, data, dataForMutate } = inputs;
+    //   await queryClient.cancelQueries(["narrationIndividual", narrationId]);
+    //   const previousData = queryClient.getQueryData([
+    //     "narrationIndividual",
+    //     narrationId,
+    //   ]);
+    //   queryClient.setQueryData(
+    //     ["narrationIndividual", narrationId],
+    //     (oldData) => {
+    //       return {
+    //         ...oldData,
+    //         content_summary_tree: [
+    //           ...oldData.content_summary_tree,
+    //           dataForMutate,
+    //         ],
+    //       };
+    //     }
+    //   );
+    //   return { previousData, narrationId };
+    // },
+    // onError: (error, _output, context) => {
+    //   toast.error("تغییر مورد نظر انجام نشد");
+    //   queryClient.setQueryData(
+    //     ["narrationIndividual", context.narrationId],
+    //     context.previousData
+    //   );
+    //   // queryClient.invalidateQueries({queryKey:[
+    //   //   "narrationIndividual",
+    //   //   context.narrationId,
+    //   // ]});
+    // },
+    // onSettled: (inputs, error, variables, context) => {
+    //   queryClient.invalidateQueries({
+    //     queryKey: ["narrationIndividual", context.narrationId],
+    //   });
+    // },
   });
 };
 
@@ -574,41 +610,41 @@ export const useDeleteNarrationFootnote = () => {
   });
 };
 
-
 export const duplicateSharedNarration = async ({ narrationId }) => {
-  const url = apiUrls.transfer.duplicateNarration(narrationId)
+  const url = apiUrls.transfer.duplicateNarration(narrationId);
   const resp = await customApiCall.post({ url });
   return resp;
 };
 
 export const moveNarrationToMainSite = async ({ narrationId }) => {
-  const url = apiUrls.transfer.moveNarrationToMainSite(narrationId)
+  const url = apiUrls.transfer.moveNarrationToMainSite(narrationId);
   const resp = await customApiCall.post({ url });
   return resp;
 };
 
-
 export const postSharedNarrations = async ({ narrationId }) => {
-  const data = { narration_id: narrationId, status: shareNarrationStatus.PENDING }
-  const url = apiUrls.transfer.sharedNarrations.post(narrationId)
+  const data = {
+    narration_id: narrationId,
+    status: shareNarrationStatus.PENDING,
+  };
+  const url = apiUrls.transfer.sharedNarrations.post(narrationId);
   const resp = await customApiCall.post({ url, data });
   return resp;
 };
 
 export const updateSharedNarrations = async ({ id, data }) => {
-  const url = apiUrls.transfer.sharedNarrations.update(id)
+  const url = apiUrls.transfer.sharedNarrations.update(id);
   const resp = await customApiCall.patch({ url, data });
   return resp;
 };
 
-
 export const useGetSharedNarrations = (status) => {
-  const url = apiUrls.transfer.sharedNarrations.list(status)
+  const url = apiUrls.transfer.sharedNarrations.list(status);
   return use2GeneralGetHook(["sharedNarrations", status], url);
 };
 
 export const useGetSingleSharedNarration = (sharedNarrationId) => {
-  const url = apiUrls.transfer.sharedNarrations.get(sharedNarrationId)
+  const url = apiUrls.transfer.sharedNarrations.get(sharedNarrationId);
   return use2GeneralGetHook(["sharedNarrations", sharedNarrationId], url);
 };
 
@@ -620,7 +656,8 @@ export const useShareNarration = () => {
       const { narrationId } = inputs;
       await queryClient.cancelQueries(["sharedNarrations", undefined]);
       const previousData = queryClient.getQueryData([
-        "sharedNarrations", undefined
+        "sharedNarrations",
+        undefined,
       ]);
       // queryClient.setQueryData(
       //   ["sharedNarrations", undefined],
@@ -648,7 +685,6 @@ export const useShareNarration = () => {
   });
 };
 
-
 export const useUpdateSharedNarration = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -657,17 +693,20 @@ export const useUpdateSharedNarration = () => {
       const { id, narrationId, data } = inputs;
       await queryClient.cancelQueries(["sharedNarrations", undefined]);
       const previousData = queryClient.getQueryData([
-        "sharedNarrations", , undefined
+        "sharedNarrations",
+        ,
+        undefined,
       ]);
-      queryClient.setQueryData(
-        ["sharedNarrations", undefined],
-        (oldData) => {
-          return [
-            ...(oldData),
-            { id: -1, status: shareNarrationStatus.SENDING, narration: { id: narrationId } },
-          ];
-        }
-      );
+      queryClient.setQueryData(["sharedNarrations", undefined], (oldData) => {
+        return [
+          ...oldData,
+          {
+            id: -1,
+            status: shareNarrationStatus.SENDING,
+            narration: { id: narrationId },
+          },
+        ];
+      });
       return { previousData, narrationId };
     },
     onError: (error, _output, context) => {
@@ -684,5 +723,3 @@ export const useUpdateSharedNarration = () => {
     },
   });
 };
-
-

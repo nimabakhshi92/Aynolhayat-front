@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ContentContainer } from "../general/ContentContainer";
 
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,16 +15,16 @@ import {
   useGetNarrationIndividual,
   useGetSurah,
   useGetVerse,
-  useModifyNarrationSummary
+  useModifyNarrationSummary,
 } from "../../api/hooks/allHooks";
 import { InputWithSuggestionWithDebounceBlur } from "../general/InputWithSuggestion";
-import Dropdown from "../ui/dropdown";
-import Input from "../ui/input";
 import { Stack, useMediaQuery } from "@mui/material";
 import { InputWithSuggestionAutoCompleteWithDebounceBlur } from "../general/InputWithSuggestionAutoComplete";
 import { BiLoader } from "react-icons/bi";
 import { isSuperAdmin, isTaggerAdmin } from "../../utils/acl";
 import { useSelector } from "react-redux";
+import { CustomModal } from "../general/CustomModal";
+import Button from "../ui/buttons/primary-button";
 
 const findVerse = (quran, surah_no, verse_no) => {
   const newVerse = quran.find(
@@ -33,26 +33,156 @@ const findVerse = (quran, surah_no, verse_no) => {
   return newVerse;
 };
 
+export const SingleNarrationSummariesForCreate = ({
+  narration,
+  ss,
+  modalOpen,
+  setModalOpen,
+}) => {
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
+  const [summary, setSummary] = useState({
+    alphabet: "",
+    subject: "",
+    sub_subject: "",
+    subject_3: "",
+    subject_4: "",
+    expression: "",
+    summary: "",
+    verse: {
+      surah_no: "",
+      verse_no: "",
+      verse_content: "",
+    },
+  });
+
+  function uniqueArray3(a) {
+    function onlyUnique(value, index, self) {
+      return self?.indexOf(value) === index;
+    }
+
+    // usage
+    var unique = a?.filter(onlyUnique); // returns ['a', 1, 2, '1']
+
+    return unique;
+  }
+
+  const level1 = uniqueArray3(ss?.map((s) => s.alphabet));
+  const { mutate: addSummary } = useAddNarrationSummary();
+  const queryClient = useQueryClient();
+  const handleChange = (key, newValue) => {
+    setSummary({ ...summary, [key]: newValue });
+  };
+
+  const flag = useRef(false);
+  const status = useRef();
+
+  const handleCreate = () => {
+    const newValue = summary.alphabet;
+    if (!newValue || newValue === " ") return;
+    status.current = "isLoading";
+    let key = "alphabet";
+    flag.current = key;
+    addSummary(
+      {
+        narrationId: narration?.id,
+        dataForMutate: {
+          alphabet: newValue,
+          quran_verse: 0,
+          narration: narration?.id,
+        },
+        data: {
+          alphabet: newValue,
+          quran_verse: 0,
+          narration: narration?.id,
+        },
+      },
+      {
+        onSuccess: () => {
+          status.current = "success";
+          toast.success("با موفقیت ایجاد شد");
+          queryClient.invalidateQueries({
+            queryKey: ["narrationIndividual", narration.id],
+          });
+          setTimeout(() => {
+            setModalOpen(false);
+          }, 500);
+        },
+        onError: () => {
+          toast.error("تغییر مورد نظر انجام نشد");
+          status.current = "error";
+        },
+      }
+    );
+  };
+  const smallInputsClassName = isSmallScreen ? "col-span-7" : "col-span-1";
+  return (
+    <CustomModal modalOpen={modalOpen} setModalOpen={setModalOpen}>
+      <Stack className="justify-between flex-col h-full">
+        <div>
+          <h2 className="mb-4">
+            ابتدا سطح 1 را وارد کنید سپس بر روی "ایجاد" کلیک کنید
+          </h2>
+
+          <div
+            style={{
+              marginBottom: "32px",
+              paddingBottom: "32px",
+            }}
+            className=" w-full"
+          >
+            <InputWithSuggestionWithDebounceBlur
+              suggestions={level1?.sort()}
+              className="w-full"
+              parentClassName={smallInputsClassName}
+              onChange={(e) => {
+                handleChange("alphabet", e.target.value);
+              }}
+              value={summary.alphabet}
+              placeholder="سطح 1"
+              key={"i0"}
+              flag={flag?.current === "alphabet"}
+              status={status.current}
+              debounceDependency={summary.id}
+            />
+          </div>
+        </div>
+        <Button
+          disabled={status.current === "isLoading"}
+          variant={"primary"}
+          onClickHandler={handleCreate}
+        >
+          + ایجاد
+        </Button>
+      </Stack>
+    </CustomModal>
+  );
+};
+
 export const SingleNarrationSummariesForEdit = ({
   inSummary,
   narration,
   handleCancelNewItem,
   ss,
   quran,
-  myNarrations
+  myNarrations,
 }) => {
   const { user } = useSelector((store) => store.user);
 
   const getVerse = (surah_no, verse_no) => {
-    return quran?.find(surahVerse => {
-      return surahVerse.surah_no === surah_no && surahVerse.verse_no === verse_no
-    })
-  }
+    return quran?.find((surahVerse) => {
+      return (
+        surahVerse.surah_no === surah_no && surahVerse.verse_no === verse_no
+      );
+    });
+  };
 
-  const { isFetching } = useGetNarrationIndividual(narration?.id,
-    ((isSuperAdmin(user) || isTaggerAdmin(user)) && !myNarrations) ? undefined : user
-
-  )
+  const { isFetching } = useGetNarrationIndividual(
+    narration?.id,
+    (isSuperAdmin(user) || isTaggerAdmin(user)) && !myNarrations
+      ? undefined
+      : user
+  );
 
   let { data: surah } = useGetSurah();
   surah = surah || [];
@@ -137,9 +267,8 @@ export const SingleNarrationSummariesForEdit = ({
   const handleChange = (key, newValue) => {
     setSummary({ ...summary, [key]: newValue });
   };
-  const flag = useRef(false)
-  const status = useRef()
-
+  const flag = useRef(false);
+  const status = useRef();
 
   const handleSurahChange = (data) => {
     const maxNoOfVerses = getNoOfVerses(data.surah_name);
@@ -150,63 +279,62 @@ export const SingleNarrationSummariesForEdit = ({
       toast.error("تغییر مورد نظر انجام نشد");
       return;
     }
-    status.current = 'isLoading'
-    flag.current = 'verse'
+    status.current = "isLoading";
+    flag.current = "verse";
     setSummary({ ...summary, verse: newVerse });
-    mutate({
-      narrationId: narration?.id,
-      summaryId: summary?.id,
-      data: { quran_verse: newVerse.id },
-      onSettled: () => {
-        queryClient.refetchQueries({
-          queryKey: [
-            "narrationIndividual",
-            narration?.id,
-          ]
-        });
+    mutate(
+      {
+        narrationId: narration?.id,
+        summaryId: summary?.id,
+        data: { quran_verse: newVerse.id },
+        onSettled: () => {
+          queryClient.refetchQueries({
+            queryKey: ["narrationIndividual", narration?.id],
+          });
+        },
       },
-    },
       {
         onSuccess: () => {
-          status.current = 'success'
+          status.current = "success";
         },
         onError: () => {
-          status.current = 'error'
-        }
+          status.current = "error";
+        },
       }
     );
   };
 
-
   const handleVerseChange = (key, newValue) => {
-    const newVerse = findVerse(quran, Number(summary.verse?.surah_no), Number(newValue));
+    const newVerse = findVerse(
+      quran,
+      Number(summary.verse?.surah_no),
+      Number(newValue)
+    );
     if (!newVerse) {
       toast.error("تغییر مورد نظر انجام نشد زیرا چنین آیه ای یافت نشد");
       return;
     }
-    status.current = 'isLoading'
-    flag.current = 'verse'
+    status.current = "isLoading";
+    flag.current = "verse";
     setSummary({ ...summary, verse: newVerse });
-    mutate({
-      narrationId: narration?.id,
-      summaryId: summary?.id,
-      data: { quran_verse: newVerse.id },
-      onSettled: () => {
-        queryClient.refetchQueries({
-          queryKey: [
-            "narrationIndividual",
-            narration?.id,
-          ]
-        })
+    mutate(
+      {
+        narrationId: narration?.id,
+        summaryId: summary?.id,
+        data: { quran_verse: newVerse.id },
+        onSettled: () => {
+          queryClient.refetchQueries({
+            queryKey: ["narrationIndividual", narration?.id],
+          });
+        },
       },
-    },
       {
         onSuccess: () => {
-          status.current = 'success'
+          status.current = "success";
         },
         onError: () => {
-          status.current = 'error'
-        }
+          status.current = "error";
+        },
       }
     );
   };
@@ -221,12 +349,12 @@ export const SingleNarrationSummariesForEdit = ({
   };
   const handleBlur = (key, newValue) => {
     if (
-      (!newValue || newValue == ' ') &&
+      (!newValue || newValue == " ") &&
       (key === "alphabet" || key === "subject" || key === "sub_subject")
     )
       return;
-    status.current = 'isLoading'
-    flag.current = key
+    status.current = "isLoading";
+    flag.current = key;
     let keyForPost = "";
     switch (key) {
       case "subject":
@@ -239,87 +367,91 @@ export const SingleNarrationSummariesForEdit = ({
         keyForPost = key;
     }
     if (summary?.id)
-      mutate({
-        narrationId: narration?.id,
-        summaryId: summary?.id,
-        data: { [keyForPost]: newValue, quran_verse: 0 },
-        dataForMutate: { [key]: newValue, quran_verse: 0 },
-      },
+      mutate(
+        {
+          narrationId: narration?.id,
+          summaryId: summary?.id,
+          data: { [keyForPost]: newValue, quran_verse: 0 },
+          dataForMutate: { [key]: newValue, quran_verse: 0 },
+        },
         {
           onSuccess: () => {
-            status.current = 'success'
+            status.current = "success";
           },
           onError: () => {
-            status.current = 'error'
-          }
+            status.current = "error";
+          },
         }
       );
     else {
-      addSummary({
-        narrationId: narration?.id,
-        dataForMutate: {
-          [key]: newValue,
-          quran_verse: 0,
-          narration: narration?.id,
+      addSummary(
+        {
+          narrationId: narration?.id,
+          dataForMutate: {
+            [key]: newValue,
+            quran_verse: 0,
+            narration: narration?.id,
+          },
+          data: {
+            [keyForPost]: newValue,
+            quran_verse: 0,
+            narration: narration?.id,
+          },
         },
-        data: {
-          [keyForPost]: newValue,
-          quran_verse: 0,
-          narration: narration?.id,
-        },
-      }
-        , {
+        {
           onSuccess: () => {
-            status.current = 'success'
+            status.current = "success";
           },
           onError: () => {
-            status.current = 'error'
-          }
+            status.current = "error";
+          },
         }
-
       );
     }
-  }
-
-  const handleVerseRemove = () => {
-    status.current = 'isLoading'
-    flag.current = 'verse'
-    mutate({
-      narrationId: narration?.id,
-      summaryId: summary?.id,
-      data: { quran_verse: -1 },
-    }, {
-      onSettled: () => {
-        queryClient.refetchQueries({
-          queryKey: [
-            "narrationIndividual",
-            narration?.id,
-          ]
-        })
-      },
-      onSuccess: () => {
-        status.current = 'success'
-      },
-      onError: () => {
-        status.current = 'error'
-      }
-    });
   };
 
-  const smallInputsClassName = isSmallScreen ? 'col-span-7' : 'col-span-1'
-  const mediumInputsClassName = isSmallScreen ? 'col-span-7' : 'col-span-2'
-  const largeInputsClassName = isSmallScreen ? 'col-span-7' : 'col-span-3'
-  const xLargeInputsClassName = isSmallScreen ? 'col-span-7' : 'col-span-4'
+  const handleVerseRemove = () => {
+    status.current = "isLoading";
+    flag.current = "verse";
+    mutate(
+      {
+        narrationId: narration?.id,
+        summaryId: summary?.id,
+        data: { quran_verse: -1 },
+      },
+      {
+        onSettled: () => {
+          queryClient.refetchQueries({
+            queryKey: ["narrationIndividual", narration?.id],
+          });
+        },
+        onSuccess: () => {
+          status.current = "success";
+        },
+        onError: () => {
+          status.current = "error";
+        },
+      }
+    );
+  };
 
-  const maxVerseNo = getNoOfVerses(summary?.verse?.surah_name)
+  const smallInputsClassName = isSmallScreen ? "col-span-7" : "col-span-1";
+  const mediumInputsClassName = isSmallScreen ? "col-span-7" : "col-span-2";
+  const largeInputsClassName = isSmallScreen ? "col-span-7" : "col-span-3";
+  const xLargeInputsClassName = isSmallScreen ? "col-span-7" : "col-span-4";
+
+  const maxVerseNo = getNoOfVerses(summary?.verse?.surah_name);
   return (
     <>
       {isFetching && (
-        <Stack className="rounded-md px-2 absolute bg-orange-300/50 right-2 -top-2 gap-2" alignItems={'center'} flexDirection={'row'}>
+        <Stack
+          className="rounded-md px-2 absolute bg-orange-300/50 right-2 -top-2 gap-2"
+          alignItems={"center"}
+          flexDirection={"row"}
+        >
           <BiLoader className="w-5 h-5 animate-spin text-orange-500" />
           <span className="text-orange-500 text-md">در حال آپدیت ...</span>
         </Stack>
-
       )}
       <div className="flex gap-2 items-start">
         <AiFillDelete
@@ -349,9 +481,8 @@ export const SingleNarrationSummariesForEdit = ({
             value={summary.alphabet}
             placeholder="سطح 1"
             onBlur={(e) => handleBlur("alphabet", e.target.value)}
-
             key={"i0"}
-            flag={flag?.current === 'alphabet'}
+            flag={flag?.current === "alphabet"}
             status={status.current}
             debounceDependency={summary.id}
           />
@@ -368,7 +499,7 @@ export const SingleNarrationSummariesForEdit = ({
             placeholder="سطح 2"
             onBlur={(e) => handleBlur("subject", e.target.value)}
             key={"i1" + summary.id}
-            flag={flag?.current === 'subject'}
+            flag={flag?.current === "subject"}
             status={status.current}
           />
 
@@ -384,7 +515,7 @@ export const SingleNarrationSummariesForEdit = ({
             placeholder="سطح 3"
             onBlur={(e) => handleBlur("sub_subject", e.target.value)}
             key={"i2" + summary.id}
-            flag={flag?.current === 'sub_subject'}
+            flag={flag?.current === "sub_subject"}
             status={status.current}
           />
 
@@ -400,7 +531,7 @@ export const SingleNarrationSummariesForEdit = ({
             placeholder="سطح 4"
             onBlur={(e) => handleBlur("subject_3", e.target.value)}
             key={"i3" + summary.id}
-            flag={flag?.current === 'subject_3'}
+            flag={flag?.current === "subject_3"}
             status={status.current}
           />
 
@@ -416,7 +547,7 @@ export const SingleNarrationSummariesForEdit = ({
             placeholder="سطح 5"
             onBlur={(e) => handleBlur("subject_4", e.target.value)}
             key={"i4" + summary.id}
-            flag={flag?.current === 'subject_4'}
+            flag={flag?.current === "subject_4"}
             status={status.current}
           />
           <InputWithSuggestionWithDebounceBlur
@@ -428,9 +559,9 @@ export const SingleNarrationSummariesForEdit = ({
             type="text"
             placeholder="عبارت فارسی"
             onChange={(e) => {
-              handleChange("expression", e.target.value)
+              handleChange("expression", e.target.value);
             }}
-            flag={flag?.current === 'expression'}
+            flag={flag?.current === "expression"}
             key={"i5" + summary.id}
             status={status.current}
           />
@@ -440,27 +571,31 @@ export const SingleNarrationSummariesForEdit = ({
             value={summary.summary}
             onBlur={(e) => handleBlur("summary", e.target.value)}
             onPressEnter={(e) => handleBlur("summary", e.target.value)}
-
             type="text"
             placeholder="عبارت عربی"
-
             onChange={(e) => {
-              handleChange("summary", e.target.value)
+              handleChange("summary", e.target.value);
             }}
-            flag={flag?.current === 'summary'}
+            flag={flag?.current === "summary"}
             key={"i6" + summary.id}
             status={status.current}
           />
           <div className={`relative  ${mediumInputsClassName}`}>
             <InputWithSuggestionAutoCompleteWithDebounceBlur
-              className={'h-full'}
-              value={(!summary?.verse) ? '' : {
-                ...(summary?.verse ?? {}), title:
-                  summary?.verse?.surah_no + "- " + summary?.verse?.surah_name
-              }}
+              className={"h-full"}
+              value={
+                !summary?.verse
+                  ? ""
+                  : {
+                      ...(summary?.verse ?? {}),
+                      title:
+                        summary?.verse?.surah_no +
+                        "- " +
+                        summary?.verse?.surah_name,
+                    }
+              }
               onChange={(_, newValue) => {
-                if (!newValue)
-                  return
+                if (!newValue) return;
 
                 handleSurahChange({
                   surah_name: newValue?.surah_name,
@@ -471,10 +606,9 @@ export const SingleNarrationSummariesForEdit = ({
                 ...surah,
                 title: surah.surah_no + "- " + surah.surah_name,
               }))}
-              getOptionLabel={(option) => option.title ?? ''}
+              getOptionLabel={(option) => option.title ?? ""}
               placeholder="نام سوره"
               key={"i7" + summary.verse?.surah_no}
-
             />
             <AiOutlineClose
               color="var(--neutral-color-400)"
@@ -485,24 +619,28 @@ export const SingleNarrationSummariesForEdit = ({
               }}
             />
           </div>
-          <div className={smallInputsClassName}          >
+          <div className={smallInputsClassName}>
             <InputWithSuggestionWithDebounceBlur
               placeholder="شماره آیه"
-              className={'w-full'}
-              key={"i8" + summary.id + summary?.verse?.verse_no + summary?.verse?.surah_no}
+              className={"w-full"}
+              key={
+                "i8" +
+                summary.id +
+                summary?.verse?.verse_no +
+                summary?.verse?.surah_no
+              }
               value={selectedVerse}
               onChange={(e) => {
-                const newValue = e.target.value
+                const newValue = e.target.value;
                 if (
-                  (Number(newValue) <= maxVerseNo &&
-                    Number(newValue) >= 0)
-                  || !newValue
+                  (Number(newValue) <= maxVerseNo && Number(newValue) >= 0) ||
+                  !newValue
                 )
                   setSelectedVerse(newValue);
                 // handleVerseChange("verse_no", newValue);
               }}
               onBlur={(e) => {
-                const newValue = e.target.value
+                const newValue = e.target.value;
                 // setSelectedVerse(newValue);
                 handleVerseChange("verse_no", newValue);
               }}
@@ -516,7 +654,7 @@ export const SingleNarrationSummariesForEdit = ({
             value={verse?.verse_content || "متن آیه"}
             disabled
             key={"i9" + summary.id}
-            flag={flag?.current === 'verse'}
+            flag={flag?.current === "verse"}
             status={status.current}
           />
         </div>
@@ -525,44 +663,27 @@ export const SingleNarrationSummariesForEdit = ({
   );
 };
 
-export const NarrationSummaryEditForm = ({ summaries, narration, myNarrations }) => {
+export const NarrationSummaryEditForm = ({
+  summaries,
+  narration,
+  myNarrations,
+}) => {
   const { data: ss } = useGetNarrationFilterOptions();
   const queryClient = useQueryClient();
-  let { data: surah } = useGetSurah();
-  surah = surah || [];
 
   const { data: quran } = useGetVerse("all", "all");
 
   const [showEmpty, setShowEmpty] = useState(false);
-  const emptySummary0 = {
-    alphabet: "",
-    subject: "",
-    sub_subject: "",
-    subject_3: "",
-    subject_4: "",
-    expression: "",
-    summary: "",
-    surah_no: "",
-    verse_no: "",
-    verse_content: "",
-  };
-
-  const [emptySummary, setEmptySummary] = useState(emptySummary0);
 
   useEffect(() => {
     setShowEmpty(false);
-    setEmptySummary(emptySummary0);
     queryClient.invalidateQueries({
       queryKey: ["filterOptions"],
     });
-  }, [summaries]);
+  }, [summaries, queryClient]);
   const handleAddInputComponent = () => setShowEmpty(true);
   const reversed = [...summaries].reverse();
 
-  const handleCancelNewItem = () => {
-    setShowEmpty(false);
-    setEmptySummary(emptySummary0);
-  };
   return (
     <ContentContainer
       actionComponent={
@@ -576,15 +697,22 @@ export const NarrationSummaryEditForm = ({ summaries, narration, myNarrations })
       title="خلاصه‌ها و فهرست"
     >
       {showEmpty && (
-        <SingleNarrationSummariesForEdit
+        <SingleNarrationSummariesForCreate
           narration={narration}
-          inSummary={emptySummary}
-          handleCancelNewItem={handleCancelNewItem}
           ss={ss}
-          key={-1}
-          quran={quran}
-          myNarrations={myNarrations}
+          modalOpen={showEmpty}
+          setModalOpen={setShowEmpty}
         />
+
+        // <SingleNarrationSummariesForEdit
+        //   narration={narration}
+        //   inSummary={emptySummary}
+        //   handleCancelNewItem={handleCancelNewItem}
+        //   ss={ss}
+        //   key={-1}
+        //   quran={quran}
+        //   myNarrations={myNarrations}
+        // />
       )}
       {reversed.map((summary, index) => {
         return (
@@ -599,7 +727,7 @@ export const NarrationSummaryEditForm = ({ summaries, narration, myNarrations })
               ss={ss}
               quran={quran}
               myNarrations={myNarrations}
-            // onInputChange={(newValues) => handleOnInputChange(index, newValues)}
+              // onInputChange={(newValues) => handleOnInputChange(index, newValues)}
             />
             {/* </Suspense> */}
           </div>

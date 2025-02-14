@@ -1,9 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  CircularProgress,
-  Tooltip,
-  useMediaQuery
-} from "@mui/material";
+import { CircularProgress, Tooltip, useMediaQuery } from "@mui/material";
 import { tooltipClasses } from "@mui/material/Tooltip";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
@@ -23,7 +19,7 @@ import {
   useGetSubjects,
   useGetSummaryTree,
   useShareNarration,
-  useUpdateSharedNarration
+  useUpdateSharedNarration,
 } from "../api/hooks/allHooks";
 import apiUrls from "../api/urls";
 import noteIcon from "../assets/images/shapes/Icon-Note.svg";
@@ -32,15 +28,31 @@ import { NarrationSummaryNavbar } from "../components/NarrationSummaryNavbar";
 import { Pagination } from "../components/Pagination";
 import { ContentContainer } from "../components/general/ContentContainer";
 import { CustomModal2 } from "../components/general/CustomModal";
+import { FilterModalLT } from "../components/show-traditions/filter-modal";
 import {
-  FilterModalLT,
-} from "../components/show-traditions/filter-modal";
-import { AcceptedNarrationSentLabel, CheckingNarrationSentLabel, InsertedNarrationSentLabel, PendingNarrationSentLabel, RejectedNarrationSentLabel, SendingNarrationSentLabel } from "../components/ui/Label";
+  AcceptedNarrationSentLabel,
+  CheckingNarrationSentLabel,
+  InsertedNarrationSentLabel,
+  PendingNarrationSentLabel,
+  RejectedNarrationSentLabel,
+  SendingNarrationSentLabel,
+} from "../components/ui/Label";
 import Button from "../components/ui/buttons/primary-button";
 import { InputOld } from "../components/ui/input";
 import { setDataLoaded } from "../features/summaryTree/summaryTreeSlice";
-import { adjustTextSpacing, getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
-import { getFont, isAdmin, isCheckerAdmin, isLoggedIn, isSuperAdmin, isTaggerAdmin } from "../utils/acl";
+import {
+  adjustTextSpacing,
+  getSharedNarrationIdFromNarrationId,
+  getSingleNarrationSentStatus,
+} from "../functions/general";
+import {
+  getFont,
+  isAdmin,
+  isCheckerAdmin,
+  isLoggedIn,
+  isSuperAdmin,
+  isTaggerAdmin,
+} from "../utils/acl";
 import { customApiCall } from "../utils/axios";
 import { shareNarrationStatus } from "../utils/enums";
 import { extractTreeWords, makeTreeOptions } from "../utils/manipulation";
@@ -121,7 +133,7 @@ function ArabicTextComponent({
   let noteIndex = -1;
   const [showModal, setShowModal] = useState(false);
   const [footnote, setFootnote] = useState("");
-  const adjustedText = adjustTextSpacing(children)
+  const adjustedText = adjustTextSpacing(children);
   const singleLangParts = adjustedText
     .split("ظظظ")
     ?.filter(
@@ -169,10 +181,9 @@ function ArabicTextComponent({
                     <span
                       style={{
                         color: isTranslation ? "black" : "#102cc9",
-                        fontSize:
-                          isTranslation
-                            ? getFont(user, 1.4) + "rem"
-                            : getFont(user, 1.6) + "rem"
+                        fontSize: isTranslation
+                          ? getFont(user, 1.4) + "rem"
+                          : getFont(user, 1.6) + "rem",
                       }}
                     >
                       {[...word].map((char) => {
@@ -287,8 +298,7 @@ export const SingleNarration = ({
     (contentItem) => {
       if (section !== "surah")
         return (
-          contentItem.alphabet === lvl1 &&
-          contentItem.alphabet !== "بیان"// &&
+          contentItem.alphabet === lvl1 && contentItem.alphabet !== "بیان" // &&
           // contentItem.subject === lvl2 &&
           // contentItem.sub_subject === lvl3
         );
@@ -343,7 +353,7 @@ export const SingleNarration = ({
   }, [openTooltip]);
   const r = useRef();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <ContentContainer
       // title={`${narration.book.name}`}
@@ -351,38 +361,51 @@ export const SingleNarration = ({
       actionComponent={
         <div className=" gap-4 items-center flex">
           <>
-            {isAdmin(user) && personal &&
+            {isAdmin(user) && personal && (
               <>
-                {sentStatus === 'sending' && <SendingNarrationSentLabel />}
-                {sentStatus === 'pending' && <PendingNarrationSentLabel />}
-                {sentStatus === 'checking' && <CheckingNarrationSentLabel />}
-                {sentStatus === 'rejected' && <RejectedNarrationSentLabel />}
-                {sentStatus === 'accepted' && <AcceptedNarrationSentLabel />}
-                {sentStatus === 'transferred' && <InsertedNarrationSentLabel />}
+                {sentStatus === "sending" && <SendingNarrationSentLabel />}
+                {sentStatus === "pending" && <PendingNarrationSentLabel />}
+                {sentStatus === "checking" && <CheckingNarrationSentLabel />}
+                {sentStatus === "rejected" && <RejectedNarrationSentLabel />}
+                {sentStatus === "accepted" && <AcceptedNarrationSentLabel />}
+                {sentStatus === "transferred" && <InsertedNarrationSentLabel />}
 
-                {((['rejected', undefined].includes(sentStatus)) ||
-                  (isCheckerAdmin(user) && [shareNarrationStatus.ACCEPTED, shareNarrationStatus.CHECKING].includes(sentStatus))
-                ) && onSend && (
+                {(["rejected", undefined].includes(sentStatus) ||
+                  (isCheckerAdmin(user) &&
+                    [
+                      shareNarrationStatus.ACCEPTED,
+                      shareNarrationStatus.CHECKING,
+                    ].includes(sentStatus))) &&
+                  onSend && (
                     <FiSend
                       className="cursor-pointer  w-5 h-5"
                       onClick={onSend}
                     />
                   )}
               </>
-            }
-            {(isSuperAdmin(user)
-              || (personal && (isCheckerAdmin(user) || ![shareNarrationStatus.CHECKING, shareNarrationStatus.PENDING].includes(sentStatus)))
-            )
-              && onDelete
-              && (
+            )}
+            {(isSuperAdmin(user) ||
+              (personal &&
+                (isCheckerAdmin(user) ||
+                  ![
+                    shareNarrationStatus.CHECKING,
+                    shareNarrationStatus.PENDING,
+                  ].includes(sentStatus)))) &&
+              onDelete && (
                 <RiDeleteBin2Line
                   className="cursor-pointer w-5 h-5"
                   onClick={() => setOpen(true)}
                 />
               )}
-            {((isSuperAdmin(user) || (isTaggerAdmin(user) && !personal))
-              || (personal && (isCheckerAdmin(user) || ![shareNarrationStatus.CHECKING, shareNarrationStatus.PENDING].includes(sentStatus)))
-            ) && onEdit && (
+            {(isSuperAdmin(user) ||
+              (isTaggerAdmin(user) && !personal) ||
+              (personal &&
+                (isCheckerAdmin(user) ||
+                  ![
+                    shareNarrationStatus.CHECKING,
+                    shareNarrationStatus.PENDING,
+                  ].includes(sentStatus)))) &&
+              onEdit && (
                 <RiEdit2Line
                   className="cursor-pointer  w-5 h-5"
                   onClick={onEdit}
@@ -426,7 +449,6 @@ export const SingleNarration = ({
                 </Popper> */}
               </>
             )}
-
           </>
         </div>
       }
@@ -478,9 +500,7 @@ export const SingleNarration = ({
               className="w-full"
               style={{
                 fontSize:
-                  (getFont(user, 1.1)) *
-                  (isSmallScreen ? 1 : 1.2) +
-                  "rem",
+                  getFont(user, 1.1) * (isSmallScreen ? 1 : 1.2) + "rem",
                 maxWidth: "calc(100% - 100px)",
               }}
             >
@@ -556,9 +576,7 @@ export const SingleNarration = ({
             <span
               style={{
                 fontSize:
-                  getFont(user, 1.2) *
-                  (isSmallScreen ? 1 : 1.2) +
-                  "rem",
+                  getFont(user, 1.2) * (isSmallScreen ? 1 : 1.2) + "rem",
                 marginRight: "12px",
               }}
             >
@@ -568,9 +586,12 @@ export const SingleNarration = ({
               className="absolute left-0 "
               // onClickHandler={() => setIsShowSummary(false)}
               onClickHandler={() => {
-                window.open(`/narration-detail/${narration?.id}${personal ? "?personal=true" : ''}`)
-              }
-              }
+                window.open(
+                  `/narration-detail/${narration?.id}${
+                    personal ? "?personal=true" : ""
+                  }`
+                );
+              }}
               variant="secondary"
               style={{ fontSize: isSmallScreen ? "10px" : "12px" }}
             >
@@ -597,8 +618,7 @@ export const SingleNarration = ({
                       className="flex gap-2"
                       style={{
                         color: "var(--primary-color)",
-                        fontSize:
-                          getFont(user, 1.4) + "rem",
+                        fontSize: getFont(user, 1.4) + "rem",
                       }}
                     >
                       <img src={noteIcon} alt="icon" />
@@ -614,8 +634,7 @@ export const SingleNarration = ({
                     <p
                       className=" sm:w-[48%]"
                       style={{
-                        fontSize:
-                          getFont(user, 1.4) + "rem",
+                        fontSize: getFont(user, 1.4) + "rem",
                       }}
                     >
                       {adjustTextSpacing(contentItem.expression)}
@@ -639,7 +658,8 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
   const queryClient = useQueryClient();
   const { section, selectedNode } = useSelector((store) => store.summaryTree);
   const { user } = useSelector((store) => store.user);
-  const { data: rawData, isLoading: tableOfContentsIsLoading } = useGetSummaryTree(section, user, personal);
+  const { data: rawData, isLoading: tableOfContentsIsLoading } =
+    useGetSummaryTree(section, user, personal);
   const data = rawData?.filter((e) => {
     return section === "surah" || e.alphabet !== "بیان";
   });
@@ -652,53 +672,58 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
 
   const treeOptions = makeTreeOptions(treeWords, section);
 
-  const { data: rawNarrationList, isLoading } = useGetNarrationSummaryList(selectedPage, {
-    ...treeOptions,
-    user_id: personal ? user.id : null,
-  },
+  const { data: rawNarrationList, isLoading } = useGetNarrationSummaryList(
+    selectedPage,
+    {
+      ...treeOptions,
+      user_id: personal ? user.id : null,
+    },
     undefined,
     { enabled: !!treeOptions?.alphabet || !!treeOptions?.surah_name }
   );
 
   const narrationListResult = rawNarrationList?.results?.filter((e) => {
-    if (section === "bank")
-      return true
-    const hasBayan = e?.content_summary_tree?.some(item => (
-      (item.alphabet === "بیان") &&
-      (item?.verse?.verse_no === treeOptions?.verse_no) &&
-      (item?.verse?.surah_name === treeOptions?.surah_name)
-    ))
-    const hasOtherThanBayan = e?.content_summary_tree?.some(item => (
-      (item.alphabet !== "بیان") //&&
-      // (item.alphabet === treeOptions.alphabet) &&
-      // (item?.subject === treeOptions?.subject) &&
-      // (item?.sub_subject === treeOptions?.sub_subject)
-    ))
-    const hasRelevantVerse = e?.content_summary_tree?.some(item => (
-      // (item.alphabet === treeOptions.alphabet) &&
-      // (item.subject === treeOptions.subject) &&
-      // (item.sub_subject === treeOptions.sub_subject) &&
-      (item?.verse?.verse_no) &&
-      (item?.verse?.surah_name)
-    ))
+    if (section === "bank") return true;
+    const hasBayan = e?.content_summary_tree?.some(
+      (item) =>
+        item.alphabet === "بیان" &&
+        item?.verse?.verse_no === treeOptions?.verse_no &&
+        item?.verse?.surah_name === treeOptions?.surah_name
+    );
+    const hasOtherThanBayan = e?.content_summary_tree?.some(
+      (item) =>
+        item.alphabet !== "بیان" //&&
+        // (item.alphabet === treeOptions.alphabet) &&
+        // (item?.subject === treeOptions?.subject) &&
+        // (item?.sub_subject === treeOptions?.sub_subject)
+    );
+    const hasRelevantVerse = e?.content_summary_tree?.some(
+      (item) =>
+        // (item.alphabet === treeOptions.alphabet) &&
+        // (item.subject === treeOptions.subject) &&
+        // (item.sub_subject === treeOptions.sub_subject) &&
+        item?.verse?.verse_no && item?.verse?.surah_name
+    );
 
-    return (section === "surah" && hasBayan) || (section === "narration" && hasOtherThanBayan)
-      || (section === "verse" && hasOtherThanBayan && hasRelevantVerse);
+    return (
+      (section === "surah" && hasBayan) ||
+      (section === "narration" && hasOtherThanBayan) ||
+      (section === "verse" && hasOtherThanBayan && hasRelevantVerse)
+    );
   });
-  const narrationList = { ...rawNarrationList, results: narrationListResult }
+  const narrationList = { ...rawNarrationList, results: narrationListResult };
 
-  const { data: allSentStatus } = useGetSharedNarrations()
+  const { data: allSentStatus } = useGetSharedNarrations();
 
   const { mutate } = useShareNarration();
   const { mutate: updateNarration } = useUpdateSharedNarration();
-
 
   const [openAlertBox, setOpenAlertBox] = useState(false);
 
   const transferNarration = async (narrationId) => {
     try {
-      await moveNarrationToMainSite({ narrationId })
-      toast.success('عملیات مورد نظر انجام شد')
+      await moveNarrationToMainSite({ narrationId });
+      toast.success("عملیات مورد نظر انجام شد");
       queryClient.invalidateQueries([
         "narrationSummaryList",
         selectedPage,
@@ -708,36 +733,44 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
         },
       ]);
     } catch {
-      toast.error('متاسفانه عملیات مورد نظر انجام نشد')
-    }
-  }
-
-  const narrationIdRef = useRef()
-  const pass = useRef()
-
-  const handleCheckerAdminSend = (narrationId) => {
-    setOpenAlertBox(true)
-    narrationIdRef.current = narrationId
-  }
-
-  const onTransfer = (pass) => {
-    if (pass !== "transfer") return;
-    transferNarration(narrationIdRef?.current)
-  }
-
-
-  const handleSend = async (narrationId) => {
-    if (!narrationId) return
-    const sentStatus = getSingleNarrationSentStatus({ narrationId, allSentStatus })
-    const id = getSharedNarrationIdFromNarrationId({ narrationId, allSentStatus })
-
-    if (!sentStatus) {
-      mutate({ narrationId, });
-    } else {
-      updateNarration({ narrationId, id, data: { status: shareNarrationStatus.PENDING } });
+      toast.error("متاسفانه عملیات مورد نظر انجام نشد");
     }
   };
 
+  const narrationIdRef = useRef();
+  const pass = useRef();
+
+  const handleCheckerAdminSend = (narrationId) => {
+    setOpenAlertBox(true);
+    narrationIdRef.current = narrationId;
+  };
+
+  const onTransfer = (pass) => {
+    if (pass !== "transfer") return;
+    transferNarration(narrationIdRef?.current);
+  };
+
+  const handleSend = async (narrationId) => {
+    if (!narrationId) return;
+    const sentStatus = getSingleNarrationSentStatus({
+      narrationId,
+      allSentStatus,
+    });
+    const id = getSharedNarrationIdFromNarrationId({
+      narrationId,
+      allSentStatus,
+    });
+
+    if (!sentStatus) {
+      mutate({ narrationId });
+    } else {
+      updateNarration({
+        narrationId,
+        id,
+        data: { status: shareNarrationStatus.PENDING },
+      });
+    }
+  };
 
   const onBookmarkChange = () =>
     queryClient.invalidateQueries([
@@ -749,14 +782,13 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
       },
     ]);
 
-
   const handleDelete = async (narrationId, pass) => {
     if (pass !== "delete") return;
     const url = apiUrls.narration.get(narrationId);
     try {
       const resp = await customApiCall.delete({ url });
-    } catch { }
-    finally {
+    } catch {
+    } finally {
       queryClient.invalidateQueries([
         "narrationSummaryList",
         selectedPage,
@@ -793,7 +825,6 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
       />
     );
 
-
   // if (personal && !narrationList?.results?.length && !isLoading)
   //   return (
   //     <TextAndAction
@@ -825,8 +856,8 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
                 className="relative p-6 flex gap-8  w-100  items-center "
               >
                 <p className="mt-6">
-                  آیا از انتقال حدیث مطمئن هستید؟ لطفا در کادر زیر کلمه transfer را وارد
-                  کنید:
+                  آیا از انتقال حدیث مطمئن هستید؟ لطفا در کادر زیر کلمه transfer
+                  را وارد کنید:
                 </p>
                 <InputOld reference={pass} />
                 <Button
@@ -848,9 +879,11 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
           )}
           <FilterModalLT
             data={data}
-            className={`${!isSmallScreen || treeIsOpen ? "w-full" : "w-0"
-              }  sm:w-90 sm:mr-22 ${isSmallScreen && !treeIsOpen ? "top-0" : "top-30"
-              } sm:top-50 right-0`}
+            className={`${
+              !isSmallScreen || treeIsOpen ? "w-full" : "w-0"
+            }  sm:w-90 sm:mr-22 ${
+              isSmallScreen && !treeIsOpen ? "top-0" : "top-30"
+            } sm:top-50 right-0`}
             style={{
               zIndex: isSmallScreen ? "110" : 10,
               // height: "calc(100vh - 6rem)",
@@ -918,9 +951,21 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
                             onEdit={() =>
                               navigate(`/edit narration/${narration?.id}`)
                             }
-                            onDelete={(pass) => handleDelete(narration?.id, pass)}
-                            onSend={() => isCheckerAdmin(user) ? handleCheckerAdminSend(narration?.id) : handleSend(narration?.id)}
-                            sentStatus={narration.status ?? getSingleNarrationSentStatus({ narrationId: narration?.id, allSentStatus })}
+                            onDelete={(pass) =>
+                              handleDelete(narration?.id, pass)
+                            }
+                            onSend={() =>
+                              isCheckerAdmin(user)
+                                ? handleCheckerAdminSend(narration?.id)
+                                : handleSend(narration?.id)
+                            }
+                            sentStatus={
+                              narration.status ??
+                              getSingleNarrationSentStatus({
+                                narrationId: narration?.id,
+                                allSentStatus,
+                              })
+                            }
                             narration={narration}
                             showSummary={true}
                             lvl1={treeWords[0]}
@@ -930,7 +975,7 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
                             personal={personal}
                             onBookmarkChange={onBookmarkChange}
                           />
-                        )
+                        );
                       })}
                     </section>
                     {narrationList?.last > 1 && (
