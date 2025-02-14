@@ -3,7 +3,6 @@ import classes from "../ui/dropdown/dropdown.module.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { debounce } from "lodash";
 
-
 export function InputWithSuggestionWithDebounceBlur({
   style,
   placeholder,
@@ -20,7 +19,9 @@ export function InputWithSuggestionWithDebounceBlur({
   textArea,
   debounceDependency,
   type,
-  disabled
+  disabled,
+  onBlur2,
+  ...props
 }) {
   const [matchedSuggesttions, setMatchedSuggestions] = useState(suggestions);
   const [openSuggestions, setOpenSuggestions] = useState(false);
@@ -50,8 +51,8 @@ export function InputWithSuggestionWithDebounceBlur({
   const mouseEntered = useRef(false);
   const suggestionsClicked = useRef(false);
 
-  const [bgColor, setBGColor] = useState('')
-  const ref = useRef(false)
+  const [bgColor, setBGColor] = useState("");
+  const ref = useRef(false);
   // useEffect(() => {
   //   if (ref?.current && flag) {
   //     ref.current.style.backgroundColor = 'var(--primary-color)'
@@ -64,27 +65,29 @@ export function InputWithSuggestionWithDebounceBlur({
   useEffect(() => {
     // console.log(flag, status)
     if (flag) {
-      if (status === 'isLoading') {
-        setBGColor('var(--orange)')
-      } else if (status === 'success') {
-        setBGColor('var( --primary-color-light)')
+      if (status === "isLoading") {
+        setBGColor("var(--orange)");
+      } else if (status === "success") {
+        setBGColor("var( --primary-color-light)");
         setTimeout(() => {
-          setBGColor('white')
+          setBGColor("white");
         }, 1000);
-      } else if (status === 'error') {
-        setBGColor('var(--error-color)')
+      } else if (status === "error") {
+        setBGColor("var(--error-color)");
         setTimeout(() => {
-          setBGColor('white')
+          setBGColor("white");
         }, 1000);
       }
     }
-  }, [flag, status])
+  }, [flag, status]);
 
-  const debouncedBlur = useMemo(() => debounce(onBlur || (() => { }), 1000), [debounceDependency])
+  const debouncedBlur = useMemo(
+    () => debounce(onBlur || (() => {}), 1000),
+    [debounceDependency]
+  );
 
   return (
-    <div className={`relative ${parentClassName}`} ref={ref}
-    >
+    <div className={`relative ${parentClassName}`} ref={ref}>
       <InputOld
         value={value}
         style={{ ...style, backgroundColor: bgColor }}
@@ -109,25 +112,26 @@ export function InputWithSuggestionWithDebounceBlur({
         }}
         onBlur={(e) => {
           if (openSuggestions) return;
-          // if (onBlur) onBlur(e);
+          onBlur2?.();
         }}
         onChange={(e) => {
           setMatchedSuggestions(matchSearch(e));
           if (onChange) onChange(e);
-          debouncedBlur(e)
+          debouncedBlur(e);
         }}
         textArea={textArea}
-      // onKeyDown={(event) => {
-      //   if (event.key === "Enter" || event.key === "NumpadEnter") {
-      //     if (onPressEnter && !onBlur) {
-      //       if (reference) onPressEnter();
-      //       else {
-      //         onPressEnter(event);
-      //       }
-      //     }
-      //     event.currentTarget.blur();
-      //   }
-      // }}
+        {...props}
+        // onKeyDown={(event) => {
+        //   if (event.key === "Enter" || event.key === "NumpadEnter") {
+        //     if (onPressEnter && !onBlur) {
+        //       if (reference) onPressEnter();
+        //       else {
+        //         onPressEnter(event);
+        //       }
+        //     }
+        //     event.currentTarget.blur();
+        //   }
+        // }}
       />
       {openSuggestions && suggestionsExist && (
         <ul
@@ -141,8 +145,8 @@ export function InputWithSuggestionWithDebounceBlur({
               onClick={(e) => {
                 setOpenSuggestions(false);
                 // onMenuClick(item);
-                onChange({ target: { value: item } })
-                debouncedBlur({ target: { value: item } })
+                onChange({ target: { value: item } });
+                debouncedBlur({ target: { value: item } });
               }}
             >
               {item}
@@ -153,7 +157,6 @@ export function InputWithSuggestionWithDebounceBlur({
     </div>
   );
 }
-
 
 export default function InputWithSuggestion({
   style,
@@ -166,7 +169,7 @@ export default function InputWithSuggestion({
   value,
   onBlur,
   parentClassName,
-  flag
+  flag,
 }) {
   const [matchedSuggesttions, setMatchedSuggestions] = useState(suggestions);
   const [openSuggestions, setOpenSuggestions] = useState(false);
@@ -202,8 +205,8 @@ export default function InputWithSuggestion({
   const mouseEntered = useRef(false);
   const suggestionsClicked = useRef(false);
 
-  const [bgColor, setBGColor] = useState('')
-  const ref = useRef(false)
+  const [bgColor, setBGColor] = useState("");
+  const ref = useRef(false);
   // useEffect(() => {
   //   if (ref?.current && flag) {
   //     ref.current.style.backgroundColor = 'var(--primary-color)'
@@ -214,17 +217,15 @@ export default function InputWithSuggestion({
   // }, [flag])
   useEffect(() => {
     if (flag) {
-      setBGColor('var(--primary-color)')
+      setBGColor("var(--primary-color)");
       setTimeout(() => {
-        setBGColor('white')
+        setBGColor("white");
       }, 1000);
     }
-  }, [flag])
-
+  }, [flag]);
 
   return (
-    <div className={`relative ${parentClassName}`} ref={ref}
-    >
+    <div className={`relative ${parentClassName}`} ref={ref}>
       <InputOld
         value={value}
         style={{ ...style, backgroundColor: bgColor }}

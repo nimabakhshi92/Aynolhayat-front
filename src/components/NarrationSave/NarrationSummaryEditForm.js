@@ -25,6 +25,7 @@ import { isSuperAdmin, isTaggerAdmin } from "../../utils/acl";
 import { useSelector } from "react-redux";
 import { CustomModal } from "../general/CustomModal";
 import Button from "../ui/buttons/primary-button";
+import { RiGitBranchFill } from "react-icons/ri";
 
 const findVerse = (quran, surah_no, verse_no) => {
   const newVerse = quran.find(
@@ -187,7 +188,6 @@ export const SingleNarrationSummariesForEdit = ({
   let { data: surah } = useGetSurah();
   surah = surah || [];
   const sortedSurah = surah?.sort((a, b) => a.surah_no - b.surah_no);
-  const [selectedSurah, setSelectedSurah] = useState(null);
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   const [summary, setSummary] = useState({
@@ -217,10 +217,6 @@ export const SingleNarrationSummariesForEdit = ({
     }
     return 0;
   };
-  const verseNos = Array.from(
-    { length: getNoOfVerses(summary?.verse?.surah_name) || 0 },
-    (_, i) => i + 1
-  );
 
   function uniqueArray3(a) {
     function onlyUnique(value, index, self) {
@@ -441,8 +437,31 @@ export const SingleNarrationSummariesForEdit = ({
   const xLargeInputsClassName = isSmallScreen ? "col-span-7" : "col-span-4";
 
   const maxVerseNo = getNoOfVerses(summary?.verse?.surah_name);
+
+  // const [focusRef, setFocusRef] = useState();
+  // let selectedOptions = narration?.content_summary_tree?.map(
+  //   (summary) => summary.alphabet
+  // );
+  // selectedOptions = [...new Set(selectedOptions ?? [])];
   return (
     <>
+      {/* {focusRef && (
+        <Stack className=" fixed top-4 inset-x-4 !flex-row h-140 overflow-auto bg-white/30 flex-wrap gap-4 p-4 rounded shadow-md">
+          {selectedOptions?.map((summary) => {
+            return (
+              <div>
+                <Button
+                  variant={"secondary"}
+                  className={"w-fit  "}
+                  onClickHandler={() => handleBlur("alphabet", summary)}
+                >
+                  {summary}
+                </Button>
+              </div>
+            );
+          })}
+        </Stack>
+      )} */}
       {isFetching && (
         <Stack
           className="rounded-md px-2 absolute bg-orange-300/50 right-2 -top-2 gap-2"
@@ -480,11 +499,18 @@ export const SingleNarrationSummariesForEdit = ({
             }}
             value={summary.alphabet}
             placeholder="سطح 1"
-            onBlur={(e) => handleBlur("alphabet", e.target.value)}
+            // onBlur2={(e) => {
+            //   setTimeout(() => {
+            //     setFocusRef();
+            //   }, 300);
+            // }}
             key={"i0"}
             flag={flag?.current === "alphabet"}
             status={status.current}
             debounceDependency={summary.id}
+            // onFocus={() => {
+            //   setFocusRef("alphabet");
+            // }}
           />
 
           <InputWithSuggestionWithDebounceBlur
@@ -684,6 +710,44 @@ export const NarrationSummaryEditForm = ({
   const handleAddInputComponent = () => setShowEmpty(true);
   const reversed = [...summaries].reverse();
 
+  const { mutate: addSummary } = useAddNarrationSummary();
+
+  const handleDuplicateSummary = (summary) => {
+    if (!summary.subject.trim()) summary.subject = "سطح 2";
+    if (!summary.sub_subject.trim()) summary.sub_subject = "سطح 3";
+
+    addSummary(
+      {
+        data: {
+          alphabet: summary.alphabet,
+          subject_1: summary.subject,
+          subject_2: summary.sub_subject,
+          subject_3: summary.subject_3,
+          narration: narration?.id,
+          expression: summary.expression,
+          summary: summary.summary,
+          quran_verse: summary?.verse?.id ?? 0,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success("با موفقیت ایجاد شد");
+          queryClient.invalidateQueries({
+            queryKey: ["narrationIndividual", narration.id],
+          });
+          scrollRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        },
+        onError: () => {
+          toast.error("تغییر مورد نظر انجام نشد");
+        },
+      }
+    );
+  };
+
+  const scrollRef = useRef();
   return (
     <ContentContainer
       actionComponent={
@@ -696,6 +760,7 @@ export const NarrationSummaryEditForm = ({
       className="mb-4"
       title="خلاصه‌ها و فهرست"
     >
+      <span className="w-0 block h-0" ref={scrollRef}></span>
       {showEmpty && (
         <SingleNarrationSummariesForCreate
           narration={narration}
@@ -703,22 +768,21 @@ export const NarrationSummaryEditForm = ({
           modalOpen={showEmpty}
           setModalOpen={setShowEmpty}
         />
-
-        // <SingleNarrationSummariesForEdit
-        //   narration={narration}
-        //   inSummary={emptySummary}
-        //   handleCancelNewItem={handleCancelNewItem}
-        //   ss={ss}
-        //   key={-1}
-        //   quran={quran}
-        //   myNarrations={myNarrations}
-        // />
       )}
       {reversed.map((summary, index) => {
         return (
           <div className="relative">
             {/* <Suspense fallback={<div>Loading...</div>} > */}
-            <h5 className="text-center">{reversed?.length - index} </h5>
+            <Stack className="!flex-row justify-center !items-start gap-1">
+              <h5 className="text-center">{reversed?.length - index} </h5>
+              <RiGitBranchFill
+                className="w-8 h-8 cursor-pointer hover:bg-green-500/30 rounded p-1"
+                onClick={() => {
+                  handleDuplicateSummary(summary);
+                }}
+              />
+            </Stack>
+
             <SingleNarrationSummariesForEdit
               // key={index + "j" + summary.id}
               key={"j" + summary.id}
