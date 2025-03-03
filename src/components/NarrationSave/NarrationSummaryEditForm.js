@@ -345,7 +345,7 @@ export const SingleNarrationSummariesForEdit = ({
   };
   const handleBlur = (key, newValue) => {
     if (
-      (!newValue || newValue == " ") &&
+      (!newValue || newValue === " ") &&
       (key === "alphabet" || key === "subject" || key === "sub_subject")
     )
       return;
@@ -494,23 +494,16 @@ export const SingleNarrationSummariesForEdit = ({
             className="w-full"
             parentClassName={smallInputsClassName}
             onPressEnter={(e) => handleBlur("alphabet", e.target.value)}
+            onBlur={(e) => handleBlur("alphabet", e.target.value)}
             onChange={(e) => {
               handleChange("alphabet", e.target.value);
             }}
             value={summary.alphabet}
             placeholder="سطح 1"
-            // onBlur2={(e) => {
-            //   setTimeout(() => {
-            //     setFocusRef();
-            //   }, 300);
-            // }}
             key={"i0"}
             flag={flag?.current === "alphabet"}
             status={status.current}
             debounceDependency={summary.id}
-            // onFocus={() => {
-            //   setFocusRef("alphabet");
-            // }}
           />
 
           <InputWithSuggestionWithDebounceBlur
