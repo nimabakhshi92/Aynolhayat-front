@@ -82,16 +82,16 @@ const WeakInternetDetector = () => {
     isWeakConnection == 3
       ? noInternetProps
       : isWeakConnection == 2
-        ? veryPoorProps
-        : isWeakConnection === 1
-          ? badProps
-          : isWeakConnection === 0 && showMessage
-            ? onlineProps
-            : normalProps;
+      ? veryPoorProps
+      : isWeakConnection === 1
+      ? badProps
+      : isWeakConnection === 0 && showMessage
+      ? onlineProps
+      : normalProps;
 
   return (
     <div
-      className="fixed left-0 top-0 w-full text-white text-center p-1 z-[1000]"
+      className="fixed top-0 max-sm:w-[70%] max-sm:left-1/2 max-sm:-translate-x-1/2 w-full lg:left-0 text-white text-center p-1 z-[1000]"
       style={{
         transition: "all 1s linear",
         ...prop.style,
