@@ -2,9 +2,9 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
   bank: {
-    queryParams: '',
-    pageNo: 1
-  }
+    queryParams: "",
+    pageNo: 1,
+  },
 };
 
 const statesSlice = createSlice({
@@ -12,11 +12,12 @@ const statesSlice = createSlice({
   initialState,
   reducers: {
     updateState: (state, { payload }) => {
-      state[payload.tabName] = { ...state[payload.tabName], [payload.key]: payload.value }
+      state[payload.tabName] = {
+        ...state[payload.tabName],
+        [payload.key]: payload.value,
+      };
     },
   },
 });
-export const {
-  updateState,
-} = statesSlice.actions;
+export const { updateState } = statesSlice.actions;
 export default statesSlice.reducer;

@@ -39,7 +39,7 @@ export const ProtectedRoute = ({ children }) => {
     return () => clearInterval(getNewAccessToken);
   }, [user]);
 
-  if (!user) return
+  if (!user) return;
   else {
     return children;
   }

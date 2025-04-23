@@ -19,12 +19,10 @@
   color: var(--secondary-brown-color);
 }
 
-
 .btn-warn {
   background-color: var(--secondary-blue-color);
   color: #fff;
 }
-
 
 .btn-primary:hover,
 .btn-info:hover {

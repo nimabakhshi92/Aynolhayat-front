@@ -1,39 +1,39 @@
 .container {
-    position: relative;
-    display: flex;
+  position: relative;
+  display: flex;
 }
 
 .dots {
-    font-size: 2rem;
-    color: var(--neutral-color-400);
+  font-size: 2rem;
+  color: var(--neutral-color-400);
 }
 
 .menu {
-    position: absolute;
-    left: 0;
-    top: 25px;
-    width: 14rem;
-    list-style-type: none;
-    border: 1px solid #D9D9D9;
-    border-radius: 8px;
-    overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 25px;
+  width: 14rem;
+  list-style-type: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .menu > li {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: right;
-    gap: 0.8rem;
-    align-items: center;
-    padding: 0.6rem 1.6rem;
-    background-color: white;
-    font-size: 1.2rem;
-    color: var(--neutral-color-400);
-    border: none;
-    margin: 0;
-    cursor: pointer;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: right;
+  gap: 0.8rem;
+  align-items: center;
+  padding: 0.6rem 1.6rem;
+  background-color: white;
+  font-size: 1.2rem;
+  color: var(--neutral-color-400);
+  border: none;
+  margin: 0;
+  cursor: pointer;
 }
 
 .menu > li:hover {
-    background-color: var(--neutral-color-100);
+  background-color: var(--neutral-color-100);
 }

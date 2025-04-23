@@ -13,18 +13,14 @@ import SingUp from "./components/user-entrance/sing-up";
 import { Bookmarks } from "./pages/Bookmarks";
 import { NarrationEdit } from "./pages/NarrationEdit";
 import { NarrationSearch } from "./pages/NarrationSearch";
-import {
-  NarrationWarehouseLT
-} from "./pages/NarrationWarehouseLT";
+import { NarrationWarehouseLT } from "./pages/NarrationWarehouseLT";
 import { ProtectedRoute } from "./pages/ProtectedRoute";
 import { SharedLayoutLT } from "./pages/SharedLayout";
 import { store } from "./store";
 import { theme } from "./styles/theme";
 
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
-import {
-  PersistQueryClientProvider
-} from "@tanstack/react-query-persist-client";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { Transfer } from "./pages/Transfer";
 import { Download } from "./pages/Download";
 import { NarrationDetail } from "./pages/NarrationDetail";
@@ -78,7 +74,10 @@ function App() {
               <Route path="login" element={<Login />}></Route>
               <Route path="signup" element={<SingUp />}></Route>
               <Route path=":narrationId" element={<NarrationEdit />}></Route>
-              <Route path="save narration/" element={<NarrationEdit saveNarration={true} />}></Route>
+              <Route
+                path="save narration/"
+                element={<NarrationEdit saveNarration={true} />}
+              ></Route>
               <Route
                 path="save narration/:narrationId"
                 element={<NarrationEdit />}
@@ -121,7 +120,10 @@ function App() {
                 <Route path="search/" element={<NarrationSearch />}></Route>
                 <Route path="transfer/" element={<Transfer />}></Route>
                 <Route path="download/" element={<Download />}></Route>
-                <Route path="download2/" element={<Download test={true} />}></Route>
+                <Route
+                  path="download2/"
+                  element={<Download test={true} />}
+                ></Route>
               </Route>
             </Routes>
           </BrowserRouter>

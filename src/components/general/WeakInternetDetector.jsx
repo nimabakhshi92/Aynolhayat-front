@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const WeakInternetDetector = () => {
   const [isWeakConnection, setIsWeakConnection] = useState(null);
@@ -9,10 +9,14 @@ const WeakInternetDetector = () => {
     const checkLatency = async () => {
       const startTime = Date.now();
       try {
-        await fetch(`https://jsonplaceholder.typicode.com/posts/`, { method: "HEAD" });
+        await fetch(`https://jsonplaceholder.typicode.com/posts/`, {
+          method: "HEAD",
+        });
         const endTime = Date.now();
         const duration = endTime - startTime;
-        setIsWeakConnection(prev => duration > 2000 ? 2 : duration > 1000 ? 1 : prev > 0 ? 0 : null);
+        setIsWeakConnection((prev) =>
+          duration > 2000 ? 2 : duration > 1000 ? 1 : prev > 0 ? 0 : null
+        );
       } catch (error) {
         console.error("Error checking latency:", error);
         setIsWeakConnection(3);
@@ -28,64 +32,69 @@ const WeakInternetDetector = () => {
 
   useEffect(() => {
     if (isWeakConnection === 0) {
-      setShowMessage(true)
+      setShowMessage(true);
       setTimeout(() => {
-        setShowMessage(false)
+        setShowMessage(false);
       }, 3000);
     }
-  }, [isWeakConnection])
+  }, [isWeakConnection]);
 
   const onlineProps = {
     style: {
-      background: 'var(--primary-color)',
-      display: 'block'
+      background: "var(--primary-color)",
+      display: "block",
     },
-    text: 'سرعت اینترنت مطلوب است'
-  }
+    text: "سرعت اینترنت مطلوب است",
+  };
 
   const badProps = {
     style: {
-      background: 'orange',
-      display: 'block'
+      background: "orange",
+      display: "block",
     },
-    text: 'سرعت اینترنت اندکی ضعیف به نظر می رسد',
-  }
+    text: "سرعت اینترنت اندکی ضعیف به نظر می رسد",
+  };
 
   const veryPoorProps = {
     style: {
-      background: 'yellow',
-      display: 'block',
-      color: 'black'
+      background: "yellow",
+      display: "block",
+      color: "black",
     },
-    text: 'سرعت اینترنت ضعیف به نظر می رسد',
-  }
-
+    text: "سرعت اینترنت ضعیف به نظر می رسد",
+  };
 
   const noInternetProps = {
     style: {
-      background: 'red',
-      display: 'block',
+      background: "red",
+      display: "block",
     },
-    text: 'ممکن است اینترنت قطع باشد',
-  }
-
+    text: "ممکن است اینترنت قطع باشد",
+  };
 
   const normalProps = {
     style: {
-      display: 'none'
-    }
-  }
+      display: "none",
+    },
+  };
 
-
-  const prop = isWeakConnection == 3 ? noInternetProps : isWeakConnection == 2 ? veryPoorProps
-    : isWeakConnection === 1 ? badProps
-      : ((isWeakConnection === 0) && showMessage) ? onlineProps : normalProps
+  const prop =
+    isWeakConnection == 3
+      ? noInternetProps
+      : isWeakConnection == 2
+        ? veryPoorProps
+        : isWeakConnection === 1
+          ? badProps
+          : isWeakConnection === 0 && showMessage
+            ? onlineProps
+            : normalProps;
 
   return (
-    <div className='fixed left-0 top-0 w-full text-white text-center p-1 z-[1000]'
+    <div
+      className="fixed left-0 top-0 w-full text-white text-center p-1 z-[1000]"
       style={{
-        transition: 'all 1s linear',
-        ...prop.style
+        transition: "all 1s linear",
+        ...prop.style,
       }}
     >
       {prop.text}

@@ -10,7 +10,9 @@ import {
   useModifyNarrationFootnote,
 } from "../../api/hooks/allHooks";
 import { InputWithState } from "../general/InputWithState";
-import InputWithSuggestion, { InputWithSuggestionWithDebounceBlur } from "../general/InputWithSuggestion";
+import InputWithSuggestion, {
+  InputWithSuggestionWithDebounceBlur,
+} from "../general/InputWithSuggestion";
 import { useMediaQuery } from "@mui/material";
 const emptyFootnote0 = {
   expression: "",
@@ -23,8 +25,8 @@ export const SingleNarrationFootnoteForEdit = ({
   last,
   handleAddInputComponent,
 }) => {
-  const flag = useRef(false)
-  const status = useRef()
+  const flag = useRef(false);
+  const status = useRef();
 
   const [footnote, setFootnote] = useState(inFootnote);
   useEffect(() => {
@@ -48,44 +50,47 @@ export const SingleNarrationFootnoteForEdit = ({
   };
 
   const handleBlur = (key, newValue) => {
-    flag.current = key
-    status.current = 'isLoading'
+    flag.current = key;
+    status.current = "isLoading";
     if (footnote?.id)
-      modifyFootnote({
-        narrationId: narration?.id,
-        footnoteId: footnote?.id,
-        data: { [key]: newValue },
-      },
+      modifyFootnote(
         {
-          onSuccess: () => {
-            status.current = 'success'
-          },
-          onError: () => {
-            status.current = 'error'
-          }
-        });
-    else {
-      addFootnote({
-        narrationId: narration?.id,
-        data: {
-          [key]: newValue,
-          narration: narration?.id,
+          narrationId: narration?.id,
+          footnoteId: footnote?.id,
+          data: { [key]: newValue },
         },
-      },
         {
           onSuccess: () => {
-            status.current = 'success'
+            status.current = "success";
           },
           onError: () => {
-            status.current = 'error'
-          }
+            status.current = "error";
+          },
+        }
+      );
+    else {
+      addFootnote(
+        {
+          narrationId: narration?.id,
+          data: {
+            [key]: newValue,
+            narration: narration?.id,
+          },
+        },
+        {
+          onSuccess: () => {
+            status.current = "success";
+          },
+          onError: () => {
+            status.current = "error";
+          },
         }
       );
     }
   };
 
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  const inputSizeClassName = isSmallScreen ? 'col-span-2' : 'col-span-1'
+  const inputSizeClassName = isSmallScreen ? "col-span-2" : "col-span-1";
 
   return (
     <div className="flex gap-2 items-start">
@@ -124,9 +129,8 @@ export const SingleNarrationFootnoteForEdit = ({
             handleChange("expression", e.target.value);
           }}
           parentClassName={inputSizeClassName}
-
           key={"f0" + footnote.id}
-          flag={flag?.current === 'expression'}
+          flag={flag?.current === "expression"}
           status={status.current}
         />
         <InputWithSuggestionWithDebounceBlur
@@ -140,7 +144,7 @@ export const SingleNarrationFootnoteForEdit = ({
             handleChange("explanation", e.target.value);
           }}
           key={"f1" + footnote.id}
-          flag={flag?.current === 'explanation'}
+          flag={flag?.current === "explanation"}
           status={status.current}
         />
       </div>

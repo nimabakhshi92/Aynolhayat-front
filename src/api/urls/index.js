@@ -17,5 +17,5 @@ export default {
   subject,
   quran,
   narration,
-  transfer
+  transfer,
 };

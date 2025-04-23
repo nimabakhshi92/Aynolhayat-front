@@ -68,7 +68,7 @@ export const HeaderLT = () => {
           className="sm:w-24 w-16 sm:h-16 h-10 relative sm:-top-4 top-0 cursor-pointer"
           style={{}}
           onClick={() => {
-            window.open(`/`, '_self')
+            window.open(`/`, "_self");
           }}
         />
         {!isSmallScreen && (

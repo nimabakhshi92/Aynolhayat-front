@@ -1,7 +1,7 @@
 import axios from "axios";
 // import { toast } from "react-toastify";
 import { getUserFromLocalStorage } from "./localStorage";
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver";
 
 export const customRequestErrorHandler = ({ error, callbacks, thunkAPI }) => {
   // if (error.response.status === 401) {
@@ -40,7 +40,12 @@ export const customApiCall = {
     const resp = await axios.delete(url, config);
     return resp.data;
   },
-  get: async function ({ url, headers = {}, useToken = true, onDownloadProgress }) {
+  get: async function ({
+    url,
+    headers = {},
+    useToken = true,
+    onDownloadProgress,
+  }) {
     const user = getUserFromLocalStorage();
     if (user && useToken) {
       headers["Authorization"] = `Bearer ${user.access || user.access_token}`;
@@ -49,29 +54,35 @@ export const customApiCall = {
     let config = {
       headers: {
         ...headers,
-        'Cache-Control': 'no-cache, no-store, must-revalidate',  // Disable caching
-        'Pragma': 'no-cache',  // For HTTP/1.0 compatibility
-        'Expires': '0',  // Expired immediately
-      }, onDownloadProgress
+        "Cache-Control": "no-cache, no-store, must-revalidate", // Disable caching
+        Pragma: "no-cache", // For HTTP/1.0 compatibility
+        Expires: "0", // Expired immediately
+      },
+      onDownloadProgress,
     };
     const resp = await axios.get(url, config);
     return resp.data;
   },
-  download: async function ({ url, headers = {}, useToken = true,
-    onDownloadProgress, filename, filetype = 'application/zip' }) {
+  download: async function ({
+    url,
+    headers = {},
+    useToken = true,
+    onDownloadProgress,
+    filename,
+    filetype = "application/zip",
+  }) {
     const user = getUserFromLocalStorage();
     if (user && useToken) {
       headers["Authorization"] = `Bearer ${user.access || user.access_token}`;
     }
 
-    let config = { headers, responseType: 'blob', onDownloadProgress };
-    const resp = await axios.get(url, config)
+    let config = { headers, responseType: "blob", onDownloadProgress };
+    const resp = await axios.get(url, config);
     const blob = new Blob([resp.data], { type: filetype });
     saveAs(blob, filename);
-    return resp.data
-  }
+    return resp.data;
+  },
   // Create a Blob from the response data with the correct MIME type
-
 
   // // Create a temporary URL for the blob
   // const downloadUrl = window.URL.createObjectURL(blob);

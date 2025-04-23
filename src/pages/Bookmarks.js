@@ -63,8 +63,8 @@ export const Bookmarks = () => {
         const url = apiUrls.narration.bookmark;
         const response = await customApiCall.get({ url });
         setBookmarkedNarrations(response);
-      } catch { }
-    } catch { }
+      } catch {}
+    } catch {}
   };
   const navigate = useNavigate();
 
@@ -75,7 +75,7 @@ export const Bookmarks = () => {
       const url = apiUrls.narration.bookmark;
       const response = await customApiCall.get({ url });
       setBookmarkedNarrations(response);
-    } catch { }
+    } catch {}
   };
   // queryClient.invalidateQueries([
   //   "narrationList",
@@ -138,7 +138,7 @@ export const Bookmarks = () => {
                       key={bookmark.id}
                       narration={narration}
                       onBookmarkChange={onBookmarkChange}
-                    // onBookmark={() => handleDeleteBookmark(bookmark.id)}
+                      // onBookmark={() => handleDeleteBookmark(bookmark.id)}
                     />
                   );
                 })}

@@ -3,20 +3,19 @@ import classes from "./input.module.css";
 
 export default function Input(props) {
   const { className, textArea, subText, color, flag } = props;
-  const ref = useRef(false)
+  const ref = useRef(false);
   useEffect(() => {
     if (ref?.current && flag) {
-      ref.current.style.backgroundColor = 'var(--primary-color)'
+      ref.current.style.backgroundColor = "var(--primary-color)";
       setTimeout(() => {
-        ref.current.style.backgroundColor = ''
+        ref.current.style.backgroundColor = "";
       }, 1000);
     }
-  }, [flag])
+  }, [flag]);
   if (textArea)
     return (
       <>
         <textarea
-
           {...props}
           ref={ref}
           className={`${classes.input} ${className}`}
@@ -29,19 +28,13 @@ export default function Input(props) {
 
   return (
     <>
-      <input
-        {...props}
-        ref={ref}
-        className={`${classes.input} ${className}`}
-      />
+      <input {...props} ref={ref} className={`${classes.input} ${className}`} />
       {subText && (
         <p style={{ marginTop: "-2px", fontSize: 10, color }}>{subText}</p>
       )}
     </>
   );
 }
-
-
 
 export function InputOld(props) {
   const { reference, className, textArea, subText, color } = props;
