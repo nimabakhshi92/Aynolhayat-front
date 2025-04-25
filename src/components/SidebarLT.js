@@ -25,7 +25,7 @@ const NavIcon = ({ iconName, isActive, ...props }) => {
     saved: BiBookmark,
     "my-narrations": PiFolderUser,
     transfer: FiSend,
-    download: MdOutlineCloudDownload
+    download: MdOutlineCloudDownload,
   };
   const SelectedIcon = icons[iconName];
   return (
@@ -35,11 +35,10 @@ const NavIcon = ({ iconName, isActive, ...props }) => {
       {...props}
     />
   );
-
 };
 
 export const SidebarLT = () => {
-  console.log('sidebar')
+  console.log("sidebar");
   const { pathname } = useLocation();
   const pageName = pathname.includes("search")
     ? "search"
@@ -115,8 +114,6 @@ export const SidebarLT = () => {
       isActive: pageName === "download",
       show: true,
     },
-
-
   ];
 
   const [navItems, setNavItems] = useState(navItemsDefault);
@@ -132,8 +129,8 @@ export const SidebarLT = () => {
   }, []);
 
   useEffect(() => {
-    setNavItems(navItemsDefault)
-  }, [pageName])
+    setNavItems(navItemsDefault);
+  }, [pageName]);
 
   const changeLink = (clickedNavLinkName) => {
     const newNavlinks = navItems?.map((item) => {
@@ -143,13 +140,14 @@ export const SidebarLT = () => {
     setNavItems(newNavlinks);
   };
 
-  const openRef = useRef(false)
-  console.log(pageName)
+  const openRef = useRef(false);
+  console.log(pageName);
 
   return (
     <nav
-      className={`bg-white fixed right-0 ${isSmallScreen ? "bottom-0" : "top-32 h-full"
-        }`}
+      className={`bg-white fixed right-0 ${
+        isSmallScreen ? "bottom-0" : "top-32 h-full"
+      }`}
       style={{
         transition: "all 0.3s linear",
         // display: open ? "block" : "none",
@@ -159,21 +157,18 @@ export const SidebarLT = () => {
         boxShadow: open ? "-10px 10px 30px gray" : "-5px 5px 10px gray",
       }}
       onMouseEnter={() => {
-        openRef.current = true
+        openRef.current = true;
         setTimeout(() => {
-          if (openRef.current === true)
-            setOpen(true)
-        }, 300)
-      }
-      }
+          if (openRef.current === true) setOpen(true);
+        }, 300);
+      }}
       onMouseLeave={() => {
-        openRef.current = false
+        openRef.current = false;
         if (openRef.current === false)
           setTimeout(() => {
-            setOpen(false)
-          }, 300)
-      }
-      }
+            setOpen(false);
+          }, 300);
+      }}
     >
       <Stack
         justifyContent={isSmallScreen ? "center" : "flex-start"}
@@ -195,19 +190,20 @@ export const SidebarLT = () => {
                   justifyContent={isSmallScreen ? "center" : "space-between"}
                   alignItems="center"
                   flexDirection="row"
-                  className={`w-full h-10 px-3 ${item.isActive
-                    ? "bg-[#0bab6425] pl-2"
-                    : "bg-[white] hover:bg-[#0bab6410] hover:scale-105"
-                    }  ${isSmallScreen && "justify-center"} `}
+                  className={`w-full h-10 px-3 ${
+                    item.isActive
+                      ? "bg-[#0bab6425] pl-2"
+                      : "bg-[white] hover:bg-[#0bab6410] hover:scale-105"
+                  }  ${isSmallScreen && "justify-center"} `}
                   style={{
                     borderLeft:
                       !isSmallScreen && item.isActive && "4px solid #0bab64",
                     borderBottom:
                       isSmallScreen && item.isActive && "4px solid #0bab64",
                   }}
-                // style={{
-                //   backgroundColor: item.isActive ? "#0bab6425" : "white",
-                // }}
+                  // style={{
+                  //   backgroundColor: item.isActive ? "#0bab6425" : "white",
+                  // }}
                 >
                   {!isSmallScreen && (
                     <span

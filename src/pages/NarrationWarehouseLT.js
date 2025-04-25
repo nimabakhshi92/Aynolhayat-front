@@ -691,11 +691,10 @@ export const NarrationWarehouseLT = ({ personal = false }) => {
         item?.verse?.surah_name === treeOptions?.surah_name
     );
     const hasOtherThanBayan = e?.content_summary_tree?.some(
-      (item) =>
-        item.alphabet !== "بیان" //&&
-        // (item.alphabet === treeOptions.alphabet) &&
-        // (item?.subject === treeOptions?.subject) &&
-        // (item?.sub_subject === treeOptions?.sub_subject)
+      (item) => item.alphabet !== "بیان" //&&
+      // (item.alphabet === treeOptions.alphabet) &&
+      // (item?.subject === treeOptions?.subject) &&
+      // (item?.sub_subject === treeOptions?.sub_subject)
     );
     const hasRelevantVerse = e?.content_summary_tree?.some(
       (item) =>

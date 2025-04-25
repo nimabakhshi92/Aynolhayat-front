@@ -36,16 +36,15 @@ export default {
   bookmark: `${url}/bookmark/`,
   bookmarkRemove: (id) => `${url}/bookmark/${id}/`,
   download: (narrationIds, userId) => {
-    const base = `${url}/download_narrations/?ids=${narrationIds.join(',')}`
-    if (userId)
-      return base + `&user=${userId}`
+    const base = `${url}/download_narrations/?ids=${narrationIds.join(",")}`;
+    if (userId) return base + `&user=${userId}`;
   },
 
   downloadBackup: {
     list: () => `${url}/download_narrations_backup/`,
-    get: (id) => `${url}/download_narrations_backup/1`
+    get: (id) => `${url}/download_narrations_backup/1`,
   },
   downloadInstruction: {
-    get: () => `${url}/download_instruction/1/`
-  }
+    get: () => `${url}/download_instruction/1/`,
+  },
 };

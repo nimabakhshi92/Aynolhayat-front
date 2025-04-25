@@ -33,7 +33,7 @@ const emptyNarration = {
   book_vol_no: null,
   book_page_no: null,
   book_narration_no: null,
-  is_complete: null
+  is_complete: null,
 };
 
 const SimilarNarrations = ({
@@ -44,13 +44,13 @@ const SimilarNarrations = ({
   trigger,
   setTrigger,
   isLoading,
-  setIsLoading
+  setIsLoading,
 }) => {
   const [similar, setSimilar] = useState([]);
   const url = apiUrls.narration.similar;
   useEffect(() => {
     const fn = async () => {
-      setTrigger(false)
+      setTrigger(false);
       setIsLoading(true);
       try {
         const data = { text: narrationContent };
@@ -64,8 +64,7 @@ const SimilarNarrations = ({
         setIsLoading(false);
       }
     };
-    if (trigger)
-      fn();
+    if (trigger) fn();
   }, [trigger, narrationContent]);
 
   if (similar.length && isOpen)
@@ -115,8 +114,8 @@ const SimilarNarrations = ({
               variant="primary"
               className="w-30"
               onClickHandler={() => {
-                setTrigger(false)
-                setIsOpen(false)
+                setTrigger(false);
+                setIsOpen(false);
               }}
             >
               بستن
@@ -125,8 +124,8 @@ const SimilarNarrations = ({
           <AiOutlineClose
             className="absolute cursor-pointer right-2 top-2"
             onClick={() => {
-              setTrigger(false)
-              setIsOpen(false)
+              setTrigger(false);
+              setIsOpen(false);
             }}
           />
         </div>
@@ -155,10 +154,12 @@ const narrationHasSimilarConfig = (hasSimilar) => {
 };
 
 export const NarrationEditForm = ({ narration }) => {
-  const [trigger, setTrigger] = useState(false)
+  const [trigger, setTrigger] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [updatedNarration, setUpdatedNarration] = useState(emptyNarration);
-  const { narration: storeNarration, isLoading } = useSelector((store) => store.narration);
+  const { narration: storeNarration, isLoading } = useSelector(
+    (store) => store.narration
+  );
   let { data: imam } = useGetImam();
   imam = imam || [];
   let { data: book } = useGetBooks();
@@ -172,39 +173,41 @@ export const NarrationEditForm = ({ narration }) => {
   const { mutate } = useModifyNarrationInfo();
   const navigate = useNavigate();
 
-  const flag = useRef(false)
-  const status = useRef()
+  const flag = useRef(false);
+  const status = useRef();
 
   const handleBlur = (fieldName, fieldValue, triggerRefetch = false) => {
-    status.current = 'isLoading'
-    if (narration)
-      flag.current = fieldName
+    status.current = "isLoading";
+    if (narration) flag.current = fieldName;
     if (!narration && fieldName === "content" && fieldValue) {
       // setIsModalOpen(true);
       setTrigger(true);
     }
-    if (!fieldValue || fieldValue == ' ')
-      return;
+    if (!fieldValue || fieldValue == " ") return;
     if (narration) {
-      flag.current = fieldName
-      mutate({
-        narrationId: narration?.id,
-        data: { [fieldName]: fieldValue },
-      }, {
-        onSuccess: () => {
-          status.current = 'success'
-          if (triggerRefetch)
-            queryClient.invalidateQueries({ queryKey: ["narrationIndividual", Number(narration?.id)] })
+      flag.current = fieldName;
+      mutate(
+        {
+          narrationId: narration?.id,
+          data: { [fieldName]: fieldValue },
         },
-        onError: () => {
-          status.current = 'error'
+        {
+          onSuccess: () => {
+            status.current = "success";
+            if (triggerRefetch)
+              queryClient.invalidateQueries({
+                queryKey: ["narrationIndividual", Number(narration?.id)],
+              });
+          },
+          onError: () => {
+            status.current = "error";
+          },
         }
-      });
+      );
     } else {
-      flag.current = undefined
+      flag.current = undefined;
     }
   };
-
 
   const handleSubmit = (e) => {
     if (
@@ -241,7 +244,7 @@ export const NarrationEditForm = ({ narration }) => {
       dispatch(clearNarration());
       navigate(`/my-narrations/${storeNarration?.id}`, {
         preventScrollReset: false,
-        replace: true
+        replace: true,
       });
     }
   }, [storeNarration]);
@@ -254,18 +257,19 @@ export const NarrationEditForm = ({ narration }) => {
   const { border, color, subText } = narrationHasSimilarConfig(hasSimilar);
 
   const isCompletedItems = [
-    { is_complete: 'کامل', id: 0, dataToSend: true },
-    { is_complete: 'ناقص', id: 1, dataToSend: false },
-  ]
+    { is_complete: "کامل", id: 0, dataToSend: true },
+    { is_complete: "ناقص", id: 1, dataToSend: false },
+  ];
 
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  const smallInputsClassName = isSmallScreen ? 'col-span-3' : 'col-span-1'
+  const smallInputsClassName = isSmallScreen ? "col-span-3" : "col-span-1";
 
-  const [similarNarrationsIsLoading, setSimilarNarrationsIsLoading] = useState(false);
+  const [similarNarrationsIsLoading, setSimilarNarrationsIsLoading] =
+    useState(false);
 
   return (
     <>
-      {(
+      {
         <SimilarNarrations
           narrationContent={updatedNarration.content}
           setIsOpen={setIsModalOpen}
@@ -275,27 +279,32 @@ export const NarrationEditForm = ({ narration }) => {
           setTrigger={setTrigger}
           isLoading={similarNarrationsIsLoading}
           setIsLoading={setSimilarNarrationsIsLoading}
-
         />
-      )}
+      }
       <ContentContainer className="mb-4" title="اطلاعات شناسنامه‌ای حدیث">
         <div className="grid gap-4 grid-cols-3 grid-rows-3">
-          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
+          <div
+            className={"flex gap-1 " + smallInputsClassName}
+            style={{ flexDirection: "column" }}
+          >
             <p>نام حدیث</p>
             <InputWithSuggestionWithDebounceBlur
-              className='w-full'
+              className="w-full"
               value={updatedNarration?.name}
               onChange={(e) => handleChange("name", e.target.value)}
               onBlur={(e) => handleBlur("name", e.target.value)}
               type="text"
               placeholder="نام حدیث"
-              flag={flag?.current === 'name'}
+              flag={flag?.current === "name"}
               status={status.current}
               key={"i0"}
               debounceDependency={narration?.id}
             />
           </div>
-          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
+          <div
+            className={"flex gap-1 " + smallInputsClassName}
+            style={{ flexDirection: "column" }}
+          >
             <p>نام معصوم</p>
             <Dropdown
               selected={updatedNarration?.imam}
@@ -307,22 +316,25 @@ export const NarrationEditForm = ({ narration }) => {
               items={imam}
               dataKey="name"
               placeholder="نام معصوم"
-              flag={flag?.current === 'imam'}
+              flag={flag?.current === "imam"}
               key={"i1"}
               debounceDependency={narration?.id}
             />
           </div>
 
-          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
+          <div
+            className={"flex gap-1 " + smallInputsClassName}
+            style={{ flexDirection: "column" }}
+          >
             <p>راویان حدیث</p>
             <InputWithSuggestionWithDebounceBlur
-              className='w-full'
+              className="w-full"
               value={updatedNarration?.narrator}
               onChange={(e) => handleChange("narrator", e.target.value)}
               onBlur={(e) => handleBlur("narrator", e.target.value)}
               type="text"
               placeholder="راویان حدیث"
-              flag={flag?.current === 'narrator'}
+              flag={flag?.current === "narrator"}
               status={status.current}
               key={"i2"}
               debounceDependency={narration?.id}
@@ -334,7 +346,7 @@ export const NarrationEditForm = ({ narration }) => {
           >
             <p>متن حدیث</p>
             <InputWithSuggestionWithDebounceBlur
-              className='w-full'
+              className="w-full"
               style={{
                 height: "100%",
                 border,
@@ -346,43 +358,43 @@ export const NarrationEditForm = ({ narration }) => {
               subText={subText}
               color={color}
               placeholder="متن حدیث"
-              flag={flag?.current === 'content'}
+              flag={flag?.current === "content"}
               status={status.current}
               textArea={true}
               key={"i3"}
               debounceDependency={narration?.id}
             />
-            {hasSimilar !== null &&
+            {hasSimilar !== null && (
               <p className="t-semi-large">
                 {similarNarrationsIsLoading && (
                   <div className="flex gap-1 items-center text-2xl text-orange-500">
                     <BiLoader className="w-6 h-6 animate-spin" />
                     <span>در حال بررسی تکراری بودن حدیث. لطفا صبر کنید...</span>
-                  </div >
-                )
-                }
-                {!similarNarrationsIsLoading && hasSimilar &&
+                  </div>
+                )}
+                {!similarNarrationsIsLoading && hasSimilar && (
                   <>
                     <span className="text-[red]">
-                      حدیث ممکن است تکراری باشد.
-                      برای دیدن احادیث مشابه احتمالی
+                      حدیث ممکن است تکراری باشد. برای دیدن احادیث مشابه احتمالی
                     </span>
-                    <span onClick={() => setIsModalOpen(true)}
-                      className="underline inline-block mx-1 text-[blue] cursor-pointer">
+                    <span
+                      onClick={() => setIsModalOpen(true)}
+                      className="underline inline-block mx-1 text-[blue] cursor-pointer"
+                    >
                       کلیک کنید
                     </span>
                   </>
-                }
-                {!similarNarrationsIsLoading && !hasSimilar && <>
-                  {<p className="text-[green]">این حدیث تکراری نیست</p>}
-
-                </>
-
-                }
+                )}
+                {!similarNarrationsIsLoading && !hasSimilar && (
+                  <>{<p className="text-[green]">این حدیث تکراری نیست</p>}</>
+                )}
               </p>
-            }
+            )}
           </div>
-          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
+          <div
+            className={"flex gap-1 " + smallInputsClassName}
+            style={{ flexDirection: "column" }}
+          >
             <p>نام کتاب</p>
             <Dropdown
               selected={updatedNarration?.book}
@@ -393,71 +405,78 @@ export const NarrationEditForm = ({ narration }) => {
               items={book}
               dataKey="name"
               placeholder="نام کتاب"
-              flag={flag?.current === 'book'}
+              flag={flag?.current === "book"}
               key={"i4"}
               debounceDependency={narration?.id}
             />
           </div>
-          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
+          <div
+            className={"flex gap-1 " + smallInputsClassName}
+            style={{ flexDirection: "column" }}
+          >
             <p>شماره جلد کتاب</p>
             <InputWithSuggestionWithDebounceBlur
-              className='w-full'
+              className="w-full"
               value={updatedNarration?.book_vol_no}
               onChange={(e) => handleChange("book_vol_no", e.target.value)}
-              onBlur={(e) =>
-                handleBlur("book_vol_no", e.target.value)
-              }
+              onBlur={(e) => handleBlur("book_vol_no", e.target.value)}
               type="number"
               placeholder="شماره جلد کتاب"
-              flag={flag?.current === 'book_vol_no'}
+              flag={flag?.current === "book_vol_no"}
               status={status.current}
               key={"i5"}
               debounceDependency={narration?.id}
             />
           </div>
-          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
+          <div
+            className={"flex gap-1 " + smallInputsClassName}
+            style={{ flexDirection: "column" }}
+          >
             <p>شماره صفحه</p>
             <InputWithSuggestionWithDebounceBlur
-              className='w-full'
+              className="w-full"
               value={updatedNarration?.book_page_no}
               onChange={(e) => handleChange("book_page_no", e.target.value)}
-              onBlur={(e) =>
-                handleBlur("book_page_no", e.target.value)
-              }
+              onBlur={(e) => handleBlur("book_page_no", e.target.value)}
               type="number"
               placeholder="شماره صفحه"
-              flag={flag?.current === 'book_page_no'}
+              flag={flag?.current === "book_page_no"}
               status={status.current}
               key={"i6"}
               debounceDependency={narration?.id}
             />
           </div>
-          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
+          <div
+            className={"flex gap-1 " + smallInputsClassName}
+            style={{ flexDirection: "column" }}
+          >
             <p>شماره حدیث</p>
             <InputWithSuggestionWithDebounceBlur
-              className='w-full'
+              className="w-full"
               value={updatedNarration?.book_narration_no}
               onChange={(e) =>
                 handleChange("book_narration_no", e.target.value)
               }
-              onBlur={(e) =>
-                handleBlur(
-                  "book_narration_no",
-                  e.target.value
-                )
-              }
+              onBlur={(e) => handleBlur("book_narration_no", e.target.value)}
               type="number"
               placeholder="شماره حدیث"
               status={status.current}
-              flag={flag?.current === 'book_narration_no'}
+              flag={flag?.current === "book_narration_no"}
               key={"i7"}
               debounceDependency={narration?.id}
             />
           </div>
-          <div className={"flex gap-1 " + smallInputsClassName} style={{ flexDirection: "column" }}>
+          <div
+            className={"flex gap-1 " + smallInputsClassName}
+            style={{ flexDirection: "column" }}
+          >
             <p>حدیث کامل است؟</p>
             <Dropdown
-              selected={!updatedNarration?.is_complete ? isCompletedItems[1] : isCompletedItems[0]}
+              selected={
+                !updatedNarration?.is_complete
+                  ? isCompletedItems[1]
+                  : isCompletedItems[0]
+              }
               setSelected={(newValue) => {
                 handleChange("is_complete", newValue?.dataToSend);
                 handleBlur("is_complete", newValue?.dataToSend);
@@ -465,7 +484,7 @@ export const NarrationEditForm = ({ narration }) => {
               items={isCompletedItems}
               dataKey="is_complete"
               placeholder=""
-              flag={flag?.current === 'is_complete'}
+              flag={flag?.current === "is_complete"}
               key={"i8" + narration?.id}
             />
           </div>
@@ -474,7 +493,7 @@ export const NarrationEditForm = ({ narration }) => {
       {!narration && (
         <div className="flex justify-end gap-4 my-8">
           <Button
-            key={'cancel'}
+            key={"cancel"}
             variant="secondary"
             type="button"
             className="w-40 h-8"
@@ -484,7 +503,7 @@ export const NarrationEditForm = ({ narration }) => {
             انصراف
           </Button>
           <Button
-            key={'submit'}
+            key={"submit"}
             type="button"
             variant="primary"
             className="w-40 h-8"

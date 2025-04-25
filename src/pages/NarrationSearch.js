@@ -13,7 +13,7 @@ import {
   useGetSubjects,
   useGetSummaryTree,
   useShareNarration,
-  useUpdateSharedNarration
+  useUpdateSharedNarration,
 } from "../api/hooks/allHooks";
 import apiUrls from "../api/urls";
 import { Pagination } from "../components/Pagination";
@@ -21,7 +21,10 @@ import InputWithSuggestion from "../components/general/InputWithSuggestion";
 import Button from "../components/ui/buttons/primary-button";
 import Dropdown from "../components/ui/dropdown";
 import { InputOld } from "../components/ui/input";
-import { getSharedNarrationIdFromNarrationId, getSingleNarrationSentStatus } from "../functions/general";
+import {
+  getSharedNarrationIdFromNarrationId,
+  getSingleNarrationSentStatus,
+} from "../functions/general";
 import { isCheckerAdmin } from "../utils/acl";
 import { customApiCall } from "../utils/axios";
 import { shareNarrationStatus } from "../utils/enums";
@@ -36,39 +39,40 @@ const sort = (array) => {
 };
 
 export const NarrationSearch = ({ personal }) => {
-  const dispatch = useDispatch()
-  const [enableDataGetting, setEnableDataGetting] = useState(false)
+  const dispatch = useDispatch();
+  const [enableDataGetting, setEnableDataGetting] = useState(false);
 
   // const history = useHisto
 
   const sortOptionsNew = [
     { id: 1, title: "آخرین" },
     { id: 2, title: "اولین" },
-    { id: 3, title: 'به روز ترین' }
+    { id: 3, title: "به روز ترین" },
   ];
   const navigate = useNavigate();
 
   const [selectedSortOptionNewId, setSelectedSortOptionNewId] = useState(1);
 
-  const selectedSortOptionNew = sortOptionsNew.find(option => option.id === (selectedSortOptionNewId || 1))
+  const selectedSortOptionNew = sortOptionsNew.find(
+    (option) => option.id === (selectedSortOptionNewId || 1)
+  );
 
   const setSelectedSortOptionNew = (newValue) => {
-    const newSortId = newValue?.id
+    const newSortId = newValue?.id;
     const params = new URLSearchParams(window.location.search);
-    params.set('sortId', newSortId);
-    window.location.search = params.toString()
+    params.set("sortId", newSortId);
+    window.location.search = params.toString();
 
-    setSelectedSortOptionNewId(newSortId)
-  }
+    setSelectedSortOptionNewId(newSortId);
+  };
 
   const [selectedPage, setSelectedPageTemp] = useState(1);
   const setSelectedPage = (newPageNo) => {
     const params = new URLSearchParams(window.location.search);
-    params.set('pageNo', newPageNo);
-    window.location.search = params.toString()
+    params.set("pageNo", newPageNo);
+    window.location.search = params.toString();
     // setSelectedPageTemp(newPageNo)
-  }
-
+  };
 
   const onBookmarkChange = () =>
     queryClient.invalidateQueries([
@@ -81,14 +85,13 @@ export const NarrationSearch = ({ personal }) => {
       },
     ]);
 
-
   const setSearchTermAndSubject = () => {
     const params = new URLSearchParams(window.location.search);
-    params.set('searchTerm', searchTerm?.current?.value);
-    params.set('searchSubject', searchSubject?.current?.value);
-    params.set('pageNo', 1);
-    window.location.search = params.toString()
-  }
+    params.set("searchTerm", searchTerm?.current?.value);
+    params.set("searchSubject", searchSubject?.current?.value);
+    params.set("pageNo", 1);
+    window.location.search = params.toString();
+  };
 
   const queryClient = useQueryClient();
   const searchTerm = useRef();
@@ -96,16 +99,13 @@ export const NarrationSearch = ({ personal }) => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    setSelectedPageTemp(parseInt(params.get('pageNo') ?? 1));
-    setSelectedSortOptionNewId(parseInt(params.get('sortId') ?? 1));
-    if (!enableDataGetting)
-      setEnableDataGetting(true)
+    setSelectedPageTemp(parseInt(params.get("pageNo") ?? 1));
+    setSelectedSortOptionNewId(parseInt(params.get("sortId") ?? 1));
+    if (!enableDataGetting) setEnableDataGetting(true);
 
-    searchTerm.current.value = params.get('searchTerm');
-    searchSubject.current.value = params.get('searchSubject');
-
+    searchTerm.current.value = params.get("searchTerm");
+    searchSubject.current.value = params.get("searchSubject");
   }, []);
-
 
   const { section, selectedNode } = useSelector((store) => store.summaryTree);
   const { user } = useSelector((store) => store.user);
@@ -121,12 +121,11 @@ export const NarrationSearch = ({ personal }) => {
   //   window.scrollTo(0, 0);
   // }, [selectedPage]);
 
-
   const serachOptions = {
     subjects_search: searchSubject?.current?.value || "",
     texts_search: removeTashkel(searchTerm?.current?.value || ""),
     // sort_by: selectedSortOption?.id === 2 ? "modified" : "created",
-    sort_by: selectedSortOptionNew?.id === 3 ? 'modified' : "created",
+    sort_by: selectedSortOptionNew?.id === 3 ? "modified" : "created",
     sort_type: selectedSortOptionNew?.id === 2 ? "asc" : "desc",
   };
   // const { data: options } = useGetNarrationFilterOptions();
@@ -148,15 +147,14 @@ export const NarrationSearch = ({ personal }) => {
   // ]);
   const [selectedSubSubject, setSelectedSubSubject] = useState();
 
-
   const [progress, setProgress] = useState(0);
 
-  const onDownloadProgress = progressEvent => {
+  const onDownloadProgress = (progressEvent) => {
     const total = progressEvent.total;
     const current = progressEvent.loaded;
     const percentage = Math.floor((current / total) * 100);
     setProgress(percentage);
-  }
+  };
   const { data: narrationList, isLoading } = useGetNarrationList(
     selectedPage,
     {
@@ -175,10 +173,10 @@ export const NarrationSearch = ({ personal }) => {
     try {
       const resp = await customApiCall.delete({ url });
       queryClient.refetchQueries();
-    } catch { }
+    } catch {}
   };
 
-  const { data: allSentStatus } = useGetSharedNarrations()
+  const { data: allSentStatus } = useGetSharedNarrations();
 
   const { mutate } = useShareNarration();
   const { mutate: updateNarration } = useUpdateSharedNarration();
@@ -187,8 +185,8 @@ export const NarrationSearch = ({ personal }) => {
 
   const transferNarration = async (narrationId) => {
     try {
-      await moveNarrationToMainSite({ narrationId })
-      toast.success('عملیات مورد نظر انجام شد')
+      await moveNarrationToMainSite({ narrationId });
+      toast.success("عملیات مورد نظر انجام شد");
       queryClient.invalidateQueries([
         "narrationList",
         selectedPage,
@@ -199,34 +197,42 @@ export const NarrationSearch = ({ personal }) => {
         },
       ]);
     } catch {
-      toast.error('متاسفانه عملیات مورد نظر انجام نشد')
+      toast.error("متاسفانه عملیات مورد نظر انجام نشد");
     }
-  }
+  };
 
-  const narrationIdRef = useRef()
-  const pass = useRef()
+  const narrationIdRef = useRef();
+  const pass = useRef();
 
   const handleCheckerAdminSend = (narrationId) => {
-    setOpenAlertBox(true)
-    narrationIdRef.current = narrationId
-  }
+    setOpenAlertBox(true);
+    narrationIdRef.current = narrationId;
+  };
 
   const onTransfer = (pass) => {
     if (pass !== "transfer") return;
-    transferNarration(narrationIdRef?.current)
-  }
-
-
+    transferNarration(narrationIdRef?.current);
+  };
 
   const handleSend = async (narrationId) => {
-    if (!narrationId) return
-    const sentStatus = getSingleNarrationSentStatus({ narrationId, allSentStatus })
-    const id = getSharedNarrationIdFromNarrationId({ narrationId, allSentStatus })
+    if (!narrationId) return;
+    const sentStatus = getSingleNarrationSentStatus({
+      narrationId,
+      allSentStatus,
+    });
+    const id = getSharedNarrationIdFromNarrationId({
+      narrationId,
+      allSentStatus,
+    });
 
     if (!sentStatus) {
-      mutate({ narrationId, });
+      mutate({ narrationId });
     } else {
-      updateNarration({ narrationId, id, data: { status: shareNarrationStatus.PENDING } });
+      updateNarration({
+        narrationId,
+        id,
+        data: { status: shareNarrationStatus.PENDING },
+      });
     }
   };
 
@@ -255,8 +261,8 @@ export const NarrationSearch = ({ personal }) => {
             className="relative p-6 flex gap-8  w-100  items-center "
           >
             <p className="mt-6">
-              آیا از انتقال حدیث مطمئن هستید؟ لطفا در کادر زیر کلمه transfer را وارد
-              کنید:
+              آیا از انتقال حدیث مطمئن هستید؟ لطفا در کادر زیر کلمه transfer را
+              وارد کنید:
             </p>
             <InputOld reference={pass} />
             <Button
@@ -287,36 +293,40 @@ export const NarrationSearch = ({ personal }) => {
       >
         <div className={`px-2 ${searchStarted ? "w-full" : "sm:w-3/4"}`}>
           <section
-            className={`relative grid ${searchStarted
-              ? "grid-cols-[1fr_1fr_1fr_1fr_1fr]"
-              : "grid-cols-[1fr_1fr]"
-              } gap-4 sm:gap-8 py-2 -px-4`}
+            className={`relative grid ${
+              searchStarted
+                ? "grid-cols-[1fr_1fr_1fr_1fr_1fr]"
+                : "grid-cols-[1fr_1fr]"
+            } gap-4 sm:gap-8 py-2 -px-4`}
           >
             <InputOld
-              className={`w-full ${searchStarted ? "col-span-2" : "col-span-1"
-                }`}
+              className={`w-full ${
+                searchStarted ? "col-span-2" : "col-span-1"
+              }`}
               type="search"
               reference={searchTerm}
               placeholder="جستجو در متن عربی احادیث"
-            // onChange={() => queryClient.refetchQueries()}
+              // onChange={() => queryClient.refetchQueries()}
             />
             <InputWithSuggestion
-              parentClassName={`w-full ${searchStarted ? "col-span-2" : "col-span-1"
-                }`}
+              parentClassName={`w-full ${
+                searchStarted ? "col-span-2" : "col-span-1"
+              }`}
               className="w-full"
               reference={searchSubject}
               placeholder="#هشتگ"
               suggestions={subject}
-            // onChange={() => queryClient.refetchQueries()}
+              // onChange={() => queryClient.refetchQueries()}
             />
             <div
-              className={`w-full flex justify-center items-center ${searchStarted ? "col-span-1" : "col-span-2"
-                } `}
+              className={`w-full flex justify-center items-center ${
+                searchStarted ? "col-span-1" : "col-span-2"
+              } `}
             >
               <Button
                 onClickHandler={() => {
                   // setSelectedPageTemp(1);
-                  setSearchTermAndSubject()
+                  setSearchTermAndSubject();
                   setProgress(0);
                   setFlag(!flag);
                   setSearchStarted(true);
@@ -324,7 +334,7 @@ export const NarrationSearch = ({ personal }) => {
                 }}
                 variant="primary"
                 className={`${searchStarted ? "w-full" : "w-1/3 sm:w-1/5"}`}
-              // style={{}}
+                // style={{}}
               >
                 جستجو
               </Button>
@@ -347,7 +357,6 @@ export const NarrationSearch = ({ personal }) => {
 
       {searchStarted && (
         <div className="mt-3">
-
           <article
             style={{
               minHeight: "80vh",
@@ -360,22 +369,27 @@ export const NarrationSearch = ({ personal }) => {
                 color="success"
               />
             )}
-            {isLoading && progress < 100 && !narrationList?.results?.length &&
+            {isLoading && progress < 100 && !narrationList?.results?.length && (
               <div className="text-center flex justify-center items-center flex-col">
-
                 <h1>{progress} %</h1>
 
-                <div className="w-1/2 h-[10px] absolute bg-[white] flex items-center mt-6 rounded" style={{
-                  border: '1px solid #ddd',
-                  overflow: 'hidden',
-                  zIndex: 4,
-                }}>
-                  <div style={{
-                    width: progress + '%'
-                  }} className="h-2 bg-[green]"></div>
+                <div
+                  className="w-1/2 h-[10px] absolute bg-[white] flex items-center mt-6 rounded"
+                  style={{
+                    border: "1px solid #ddd",
+                    overflow: "hidden",
+                    zIndex: 4,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: progress + "%",
+                    }}
+                    className="h-2 bg-[green]"
+                  ></div>
                 </div>
               </div>
-            }
+            )}
             {!isLoading && narrationList?.results?.length >= 0 && (
               <>
                 <div
@@ -391,9 +405,9 @@ export const NarrationSearch = ({ personal }) => {
                   <div style={{ fontSize: isSmallScreen ? "10px" : "14px" }}>
                     <span>{narrationList?.number_of_records || 0}</span>
                     &nbsp;
-                    <span>حدیث یافت شد.  </span>
+                    <span>حدیث یافت شد. </span>
                     &nbsp;
-                    <span> صفحه  {selectedPage}</span>
+                    <span> صفحه {selectedPage}</span>
                     &nbsp;
                     <span>از {narrationList.last}</span>
                   </div>
@@ -470,8 +484,18 @@ export const NarrationSearch = ({ personal }) => {
                       key={index}
                       onEdit={() => navigate(`${narration?.id}`)}
                       onDelete={(pass) => handleDelete(narration?.id, pass)}
-                      onSend={() => isCheckerAdmin(user) ? handleCheckerAdminSend(narration?.id) : handleSend(narration?.id)}
-                      sentStatus={narration.status ?? getSingleNarrationSentStatus({ narrationId: narration?.id, allSentStatus })}
+                      onSend={() =>
+                        isCheckerAdmin(user)
+                          ? handleCheckerAdminSend(narration?.id)
+                          : handleSend(narration?.id)
+                      }
+                      sentStatus={
+                        narration.status ??
+                        getSingleNarrationSentStatus({
+                          narrationId: narration?.id,
+                          allSentStatus,
+                        })
+                      }
                       narration={narration}
                       showSummary={false}
                       personal={personal}

@@ -12,5 +12,4 @@ export default {
     baseUrl += `${index !== 0 ? "&" : ""}page=${pageNo}&page_size=${pageSize}`;
     return baseUrl;
   },
-
 };

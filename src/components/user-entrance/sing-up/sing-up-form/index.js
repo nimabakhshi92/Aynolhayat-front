@@ -7,8 +7,7 @@ export default function SingUpForm() {
   const emailRef = useRef();
   const passwordRef = useRef();
 
-  function onClickHandler() {
-  }
+  function onClickHandler() {}
 
   return (
     <EntranceForm>

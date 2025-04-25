@@ -12,8 +12,8 @@ import Input from "../../../ui/input";
 
 export default function LoginForm() {
   const { t } = useTranslation();
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const { user, isLoading } = useSelector((store) => store.user);
   const [next, setNext] = useState(false);

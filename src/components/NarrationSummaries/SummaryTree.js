@@ -52,7 +52,7 @@ export function SummaryTree({ data, section, selectedNode }) {
                     index3 +
                     "l3" +
                     level3.title ===
-                    clicked.value
+                  clicked.value
                     ? "b-red"
                     : null,
                 children: level2.subjects_3?.map((level4, index4) => {
@@ -123,7 +123,7 @@ export function SummaryTree({ data, section, selectedNode }) {
 
     if (
       node.label.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase()) >
-      -1 ||
+        -1 ||
       children.length
     ) {
       filtered.push({ ...node, children });
@@ -186,23 +186,26 @@ export const SummaryTreeOld = ({ data, section, selectedNode }) => {
       {data.map((item, index) => (
         <Fragment key={index}>
           <div
-            className={`${classes.alphabet_container} ${selectedNode[section] !== item.alphabet
-              ? ""
-              : classes.alphabet_open
-              }`}
+            className={`${classes.alphabet_container} ${
+              selectedNode[section] !== item.alphabet
+                ? ""
+                : classes.alphabet_open
+            }`}
             onClick={() => toggleVisibility(index, item.alphabet)}
           >
             <p>{item.alphabet}</p>
             <MdOutlineArrowForwardIos
-              className={`${classes.arrow} ${selectedNode[section] !== item.alphabet ? "" : classes.arrow__up
-                }`}
+              className={`${classes.arrow} ${
+                selectedNode[section] !== item.alphabet ? "" : classes.arrow__up
+              }`}
             />
           </div>
           <div
-            className={`${selectedNode[section] !== item.alphabet
-              ? classes.subject_container__hidden
-              : classes.subject_container__visible
-              }`}
+            className={`${
+              selectedNode[section] !== item.alphabet
+                ? classes.subject_container__hidden
+                : classes.subject_container__visible
+            }`}
           >
             {item.subjects.map((sub, subIndex) => (
               <p key={subIndex} className={classes.subject}>
@@ -238,8 +241,7 @@ export const TreeItem = ({
 
   return (
     <li
-      className={` ${!children && "hover:bg-[#deffe8]"} cursor-pointer`
-      }
+      className={` ${!children && "hover:bg-[#deffe8]"} cursor-pointer`}
       // onMouseEnter={() => setShowChildren(true)}
       // onMouseLeave={() => setShowChildren(false)}
       onClick={(e) => {
@@ -252,22 +254,27 @@ export const TreeItem = ({
       style={{
         // transition: "all 0.3s linear",
         paddingRight: "7%",
-        color: !children ? '#006600' : (level === 2) ? 'var(--primary-color)' : (showChildren && "black"),
+        color: !children
+          ? "#006600"
+          : level === 2
+            ? "var(--primary-color)"
+            : showChildren && "black",
         backgroundColor: selected
           ? "#beffc8"
           : !showChildren
             ? bgColor
             : children && showChildren && getBGColor(level),
         cursor: !children && "pointer",
-        fontSize: (level === 2) ? 15 : !children && 13,
-        borderBottom: (level === 2) && '1px solid #ddd',
-        paddingBottom: (level === 2) && 8,
-        paddingTop: (level === 2) && 8,
+        fontSize: level === 2 ? 15 : !children && 13,
+        borderBottom: level === 2 && "1px solid #ddd",
+        paddingBottom: level === 2 && 8,
+        paddingTop: level === 2 && 8,
       }}
     >
       <div
-        className={`flex justify-start ${children ? "items-start" : "items-start"
-          }`}
+        className={`flex justify-start ${
+          children ? "items-start" : "items-start"
+        }`}
       >
         {children && (
           <div
@@ -367,7 +374,7 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
                     index3 +
                     "l3" +
                     level3.title ===
-                    clicked.value
+                  clicked.value
                     ? "b-red"
                     : null,
                 children: level2.subjects_3?.map((level4, index4) => {
@@ -486,7 +493,7 @@ export const MySummaryTree = ({ data, section, selectedNode }) => {
     return false;
   };
   return (
-    <div className={classes.alphabet} style={{ paddingBottom: '40px' }}>
+    <div className={classes.alphabet} style={{ paddingBottom: "40px" }}>
       <p style={{ fontSize: 18 }}>فهرست موضوعات</p>
       <Input
         className="w-full my-2"

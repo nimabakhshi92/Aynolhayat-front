@@ -2,17 +2,22 @@ import Input, { InputOld } from "../ui/input";
 import classes from "../ui/dropdown/dropdown.module.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { debounce } from "lodash";
-import { Autocomplete, createFilterOptions, createTheme, TextField } from "@mui/material";
-import { removeArabicCharacters, removeTashkel } from "../../pages/NarrationWarehouseLT";
-
+import {
+  Autocomplete,
+  createFilterOptions,
+  createTheme,
+  TextField,
+} from "@mui/material";
+import {
+  removeArabicCharacters,
+  removeTashkel,
+} from "../../pages/NarrationWarehouseLT";
 
 const filterOptions = createFilterOptions({
   ignoreAccents: true,
   ignoreCase: true,
   stringify: (option) => removeTashkel(removeArabicCharacters(option.title)),
 });
-
-
 
 export function InputWithSuggestionAutoCompleteWithDebounceBlur({
   style,
@@ -30,7 +35,7 @@ export function InputWithSuggestionAutoCompleteWithDebounceBlur({
   textArea,
   debounceDependency,
   type,
-  getOptionLabel
+  getOptionLabel,
 }) {
   const [matchedSuggesttions, setMatchedSuggestions] = useState(suggestions);
   const [openSuggestions, setOpenSuggestions] = useState(false);
@@ -66,8 +71,8 @@ export function InputWithSuggestionAutoCompleteWithDebounceBlur({
   const mouseEntered = useRef(false);
   const suggestionsClicked = useRef(false);
 
-  const [bgColor, setBGColor] = useState('')
-  const ref = useRef(false)
+  const [bgColor, setBGColor] = useState("");
+  const ref = useRef(false);
   // useEffect(() => {
   //   if (ref?.current && flag) {
   //     ref.current.style.backgroundColor = 'var(--primary-color)'
@@ -80,52 +85,55 @@ export function InputWithSuggestionAutoCompleteWithDebounceBlur({
   useEffect(() => {
     // console.log(flag, status)
     if (flag) {
-      if (status === 'isLoading') {
-        setBGColor('var(--orange)')
-      } else if (status === 'success') {
-        setBGColor('var( --primary-color-light)')
+      if (status === "isLoading") {
+        setBGColor("var(--orange)");
+      } else if (status === "success") {
+        setBGColor("var( --primary-color-light)");
         setTimeout(() => {
-          setBGColor('white')
+          setBGColor("white");
         }, 1000);
-      } else if (status === 'error') {
-        setBGColor('var(--error-color)')
+      } else if (status === "error") {
+        setBGColor("var(--error-color)");
         setTimeout(() => {
-          setBGColor('white')
+          setBGColor("white");
         }, 1000);
       }
     }
-  }, [flag, status])
+  }, [flag, status]);
 
-  const debouncedBlur = useMemo(() => debounce(onBlur || (() => { }), 1000), [debounceDependency])
+  const debouncedBlur = useMemo(
+    () => debounce(onBlur || (() => {}), 1000),
+    [debounceDependency]
+  );
   return (
-
-    <div className={`relative ${parentClassName}`} ref={ref}
-    >
+    <div className={`relative ${parentClassName}`} ref={ref}>
       <Autocomplete
         filterOptions={filterOptions}
         disablePortal
         options={suggestions}
-        renderInput={(params) => <TextField {...params}
-          sx={{
-            "& .MuiInputBase-root": {
-              fontSize: "16px", // Input text size
-              height: '40px',
-              borderRadius: '7px',
-              fontFamily: 'IRANSansWeb'
-            },
-          }}
-        />}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            sx={{
+              "& .MuiInputBase-root": {
+                fontSize: "16px", // Input text size
+                height: "40px",
+                borderRadius: "7px",
+                fontFamily: "IRANSansWeb",
+              },
+            }}
+          />
+        )}
         disableClearable
         onChange={(e, newValue) => onChange?.(e, newValue)}
         value={value}
         placeholder={placeholder}
         getOptionLabel={getOptionLabel}
         style={style}
-      // className={className}
-      // inputValue={value ?? ''}
-      // onInputChange={onchange}
+        // className={className}
+        // inputValue={value ?? ''}
+        // onInputChange={onchange}
       />
     </div>
   );
 }
-
