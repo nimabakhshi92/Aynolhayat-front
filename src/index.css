@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@theme{
-  --breakpoint-xsm: 300px
-}
-
 @font-face {
   font-family: IRANSansWeb;
   src: url("./assets/fonts/IRANSansWeb(FaNum).woff");

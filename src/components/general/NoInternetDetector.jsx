@@ -50,12 +50,12 @@ const NoInternetAlarm = () => {
   const prop = !isOnline
     ? offlineProps
     : isOnline && showText
-    ? onlineProps
-    : normalProps;
+      ? onlineProps
+      : normalProps;
 
   return (
     <div
-      className="fixed top-0 max-sm:w-[70%] max-sm:left-1/2 max-sm:-translate-x-1/2 w-full lg:left-0 text-white text-center p-2 z-[1000]"
+      className="fixed top-0 max-sm:w-[45%] text-2xl max-sm:left-1/2 max-sm:-translate-x-1/2 w-full lg:left-0 text-white text-center p-2 z-[1000]"
       style={{
         transition: "all 1s linear",
         ...prop.style,
