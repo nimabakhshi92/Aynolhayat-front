@@ -55,7 +55,7 @@ const NoInternetAlarm = () => {
 
   return (
     <div
-      className="fixed left-0 top-0 w-full text-white text-center p-2 z-[1000]"
+      className="fixed top-0 max-sm:w-[45%] text-2xl max-sm:left-1/2 max-sm:-translate-x-1/2 w-full lg:left-0 text-white text-center p-2 z-[1000]"
       style={{
         transition: "all 1s linear",
         ...prop.style,
